@@ -1,0 +1,156 @@
+{
+    "Devilboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole14.png",
+        "desc": "The only thing more tempting than a devil... is Devilboo!",
+        "id": "54003",
+        "name": "Devilboo",
+        "availability": "A"
+    },
+    "Cryboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole02.png",
+        "desc": "Who knows what troubles plague a young Bangboo?",
+        "id": "53007",
+        "name": "Cryboo",
+        "availability": "A"
+    },
+    "Paperboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole04.png",
+        "desc": "Always nostalgic over when it hatched from its shell.",
+        "id": "53005",
+        "name": "Paperboo",
+        "availability": "A"
+    },
+    "Booressure": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole17.png",
+        "desc": "Understanding the mood of a conversation is key to becoming a Bangboo social expert.",
+        "id": "53012",
+        "name": "Booressure",
+        "availability": "A"
+    },
+    "Exploreboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole06.png",
+        "desc": "Beep-beep-beep-beep. Does that mean there treasure or that it's running outta battery?",
+        "id": "53003",
+        "name": "Exploreboo",
+        "availability": "A"
+    },
+    "Magnetiboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole21.png",
+        "desc": "Suffering from anxiety caused by an attachment disorder. Treatment plan: Its master should refrain from wearing any metal accessories.",
+        "id": "53011",
+        "name": "Magnetiboo",
+        "availability": "A"
+    },
+    "Resonaboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole20.png",
+        "desc": "Accumulating Ether energy...",
+        "id": "54009",
+        "name": "Resonaboo",
+        "availability": "S"
+    },
+    "Plugboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole19.png",
+        "desc": "\"Beeeeep... beep... beep beep.\"",
+        "id": "54008",
+        "name": "Plugboo",
+        "availability": "S"
+    },
+    "Boollseye": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole18.png",
+        "desc": "Right in the bull's eye!",
+        "id": "53009",
+        "name": "Boollseye",
+        "availability": "A"
+    },
+    "Sharkboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole07.png",
+        "desc": "Seen in the distant seas and the seafood section of the fresh food market.",
+        "id": "54001",
+        "name": "Sharkboo",
+        "availability": "S"
+    },
+    "Avocaboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole03.png",
+        "desc": "A massive success among people who love veggie salads.",
+        "id": "53008",
+        "name": "Avocaboo",
+        "availability": "A"
+    },
+    "Rocketboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole15.png",
+        "desc": "This Bangboo accelerates for 17.5 steps when running a hundred kilometers.",
+        "id": "54006",
+        "name": "Rocketboo",
+        "availability": "S"
+    },
+    "Bagboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole01.png",
+        "desc": "There's a dark past hidden under that bag...",
+        "id": "53006",
+        "name": "Bagboo",
+        "availability": "A"
+    },
+    "Electroboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole16.png",
+        "desc": "Bzzzt... Please wear insulated gloves when petting.",
+        "id": "53010",
+        "name": "Electroboo",
+        "availability": "A"
+    },
+    "...": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole25.png",
+        "desc": "...",
+        "id": "54012",
+        "name": "...",
+        "availability": "S"
+    },
+    "Luckyboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole11.png",
+        "desc": "Takes up quite a bit of space when placed on the counter.",
+        "id": "53002",
+        "name": "Luckyboo",
+        "availability": "A"
+    },
+    "Safety": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole10.png",
+        "desc": "Safety first, ehn-na second.",
+        "id": "54002",
+        "name": "Safety",
+        "availability": "S"
+    },
+    "Sumoboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole05.png",
+        "desc": "A sumo wrestler never retreats!",
+        "id": "53004",
+        "name": "Sumoboo",
+        "availability": "A"
+    },
+    "Bangvolver": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole23.png",
+        "desc": "Today's Fortune: Amazing!",
+        "id": "54013",
+        "name": "Bangvolver",
+        "availability": "S"
+    },
+    "Butler": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole09.png",
+        "desc": "A perfect butler for a perfect you.",
+        "id": "54004",
+        "name": "Butler",
+        "availability": "S"
+    },
+    "Penguinboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole12.png",
+        "desc": "Widdly-waddly, icy and chilly.",
+        "id": "53001",
+        "name": "Penguinboo",
+        "availability": "A"
+    },
+    "Amillion": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole13.png",
+        "desc": "A million Dennies in one Bangboo.",
+        "id": "54005",
+        "name": "Amillion",
+        "availability": "S"
+    }
+}
