@@ -1,4 +1,3 @@
-import csv
 import json
 from comp_rates_config import archetype
 
@@ -27,5 +26,6 @@ def resetfind():
     return foundchar
 
 def findchars(char, foundchar):
+    # not used
     pass
     # foundchar["foundPyro"] = char in elementChars["Pyro"] or foundchar["foundPyro"]

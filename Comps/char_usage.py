@@ -1,15 +1,14 @@
 import json
 import os.path
-import pandas as pd
-import operator
+# import operator
 import csv
 import statistics
-import matplotlib
-import matplotlib.pyplot as plt
+# import matplotlib
+# import matplotlib.pyplot as plt
 import warnings
 from scipy.stats import skew, trim_mean
-from archetypes import *
-from comp_rates_config import RECENT_PHASE, pf_mode, as_mode, whaleOnly
+from archetypes import (find_archetype, findchars, resetfind)
+from comp_rates_config import (RECENT_PHASE, pf_mode, whaleOnly)
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 if pf_mode:
@@ -21,7 +20,7 @@ gear_app_threshold = 0
 with open('../data/characters.json') as char_file:
     CHARACTERS = json.load(char_file)
 
-def ownership(players, chambers=ROOMS):
+def ownership(players):
     # Create the dict
     owns = {}
     for phase in players:
@@ -85,7 +84,7 @@ def ownership(players, chambers=ROOMS):
 
     return owns
 
-def appearances(players, owns, archetype, chambers=ROOMS, offset=1, info_char=False):
+def appearances(players, chambers=ROOMS, offset=1, info_char=False):
     appears = {}
     players_chars = {}
     if os.path.exists("../char_results/duo_check.csv"):
@@ -98,8 +97,8 @@ def appearances(players, owns, archetype, chambers=ROOMS, offset=1, info_char=Fa
         total_battle = 0
         appears[star_num] = {}
         players_chars[star_num] = {}
-        comp_error = False
-        error_comps = []
+        # comp_error = False
+        # error_comps = []
 
         for character in CHARACTERS:
             players_chars[star_num][character] = set()
@@ -158,10 +157,11 @@ def appearances(players, owns, archetype, chambers=ROOMS, offset=1, info_char=Fa
                     continue
                 # dps_count = 1
 
-                # findchars(char, foundchar)
-                # if find_archetype(foundchar):
+                foundchar = resetfind()
+                for char in player.chambers[chamber].characters:
+                    findchars(char, foundchar)
+                if find_archetype(foundchar):
                 # if player.chambers[chamber].characters == ['Kafka', 'Sampo', 'Silver Wolf', 'Bailu']:
-                if True:
                     for char in player.chambers[chamber].characters:
                         # to print the amount of players using a character, for char infographics
                         # if chambers == ["7-1", "7-2"] or (pf_mode and chambers == ["4-1", "4-2"]):
@@ -231,14 +231,14 @@ def appearances(players, owns, archetype, chambers=ROOMS, offset=1, info_char=Fa
                             if not whale_comp and dps_count == 1:
                                 appears[star_num][char_name]["arti_freq"][player.owned[char]["artifacts"]]["round"][list(str(chamber).split("-"))[0]].append(player.chambers[chamber].round_num)
 
-        if comp_error:
-            df_char = pd.read_csv('../data/phase_characters.csv')
-            df_spiral = pd.read_csv('../data/compositions.csv')
-            df_char = df_char[~df_char['uid'].isin(error_comps)]
-            df_spiral = df_spiral[~df_spiral['uid'].isin(error_comps)]
-            df_char.to_csv("phase_characters.csv", index=False)
-            df_spiral.to_csv("compositions.csv", index=False)
-            raise ValueError("There are missing comps from character data.")
+        # if comp_error:
+        #     df_char = pd.read_csv('../data/phase_characters.csv')
+        #     df_spiral = pd.read_csv('../data/compositions.csv')
+        #     df_char = df_char[~df_char['uid'].isin(error_comps)]
+        #     df_spiral = df_spiral[~df_spiral['uid'].isin(error_comps)]
+        #     df_char.to_csv("phase_characters.csv", index=False)
+        #     df_spiral.to_csv("compositions.csv", index=False)
+        #     raise ValueError("There are missing comps from character data.")
 
         total = total_battle * offset/200.0
         all_rounds = {}
@@ -462,7 +462,7 @@ def appearances(players, owns, archetype, chambers=ROOMS, offset=1, info_char=Fa
             # exit()
     return appears
 
-def usages(owns, appears, past_phase, filename, chambers=ROOMS, offset=1):
+def usages(appears, past_phase, chambers=ROOMS, offset=1):
     uses = {}
 
     try:

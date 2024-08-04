@@ -7,11 +7,11 @@ with open('../data/w-engine.json') as char_file:
     LIGHT_CONES = json.load(char_file)
 
 # no need to add 2.2.1"_pf"
-RECENT_PHASE = "1.0.1"
+RECENT_PHASE = "1.0.2"
 
 # if no past phase, put invalid folder
 # add 2.2.1"_pf"
-past_phase = "asdf"
+past_phase = "1.0.1"
 global pf_mode
 global as_mode
 # if as: pf_mode = True
@@ -48,8 +48,8 @@ run_commands = [
     "Char usages 8 - 10",
     "Char usages for each stage",
     "Char usages for each stage (combined)",
-    # "Comp usage 8 - 10",
-    # "Comp usages for each stage",
+    "Comp usage 8 - 10",
+    "Comp usages for each stage",
     # "Character specific infographics",
     # "Char usages all stages",
     # "Comp usage all stages",

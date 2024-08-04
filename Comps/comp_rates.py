@@ -1,18 +1,15 @@
 import csv
-import re
 import time
-import operator
 import char_usage as cu
 import statistics
-import pygsheets
 import os
 from scipy.stats import skew, trim_mean
 from itertools import permutations
 from plyer import notification
 from composition import Composition
 from player_phase import PlayerPhase
-from comp_rates_config import *
-from archetypes import *
+from archetypes import (find_archetype, findchars, resetfind)
+from comp_rates_config import (RECENT_PHASE, pf_mode, as_mode, skip_random, skip_self, alt_comps, run_commands, past_phase, whaleOnly, json, char_infographics, CHARACTERS, char_app_rate_threshold, app_rate_threshold, app_rate_threshold_round, json_threshold, archetype, duo_dict_len)
 
 def main():
     for make_path in [
@@ -45,7 +42,7 @@ def main():
 
     # uid_freq_comp will help detect duplicate UIDs
     reader = csv.reader(stats)
-    col_names_comps = next(reader)
+    next(reader)
     all_comps = []
     if pf_mode:
         all_chambers = ["1", "2", "3", "4"]
@@ -56,7 +53,7 @@ def main():
         three_star_sample[chamber_num] = 0
     uid_freq_comp = {}
     self_freq_comp = {}
-    dps_freq_comp = {}
+    # dps_freq_comp = {}
     last_uid = "0"
 
     for line in reader:
@@ -68,12 +65,10 @@ def main():
                 star_num = 2
             case "S":
                 star_num = 3
-        if skip_self:
-            if line[0] in self_uids:
-                continue
-        if skip_random:
-            if line[0] not in self_uids:
-                continue
+        if skip_self and line[0] in self_uids:
+            continue
+        if skip_random and line[0] not in self_uids:
+            continue
         if line[0] != last_uid:
             skip_uid = False
             if line[0] in uid_freq_comp:
@@ -95,7 +90,7 @@ def main():
             for i in range(4, 7):
                 if line[i] != "":
                     comp_chars_temp.append(line[i])
-            cons_chars_temp = []
+            # cons_chars_temp = []
             # for i in range(9, 13):
             #     if line[i] != "":
             #         cons_chars_temp.append(line[i])
@@ -138,7 +133,7 @@ def main():
             valid_duo_dps = list(csv.reader(f, delimiter=','))
     else:
         valid_duo_dps = []
-    max_weight = 0
+    # max_weight = 0
     sample_size["all"] = {
         "total": len(uid_freq_comp),
         "self_report": len(self_freq_comp),
@@ -158,7 +153,7 @@ def main():
 
     # uid_freq_char and last_uid will help detect duplicate UIDs
     reader = csv.reader(stats)
-    col_names = next(reader)
+    next(reader)
     all_players = {}
     all_players[RECENT_PHASE] = {}
     last_uid = "0"
@@ -203,15 +198,17 @@ def main():
         three_double_stages = [["4-1", "4-2"]]
         one_stage = ["4-1", "4-2"]
         all_stages = ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2"]
-        all_double_stages = [["1-1", "1-2"], ["2-1", "2-2"], ["3-1", "3-2"], ["4-1", "4-2"]]
+        # all_double_stages = [["1-1", "1-2"], ["2-1", "2-2"], ["3-1", "3-2"], ["4-1", "4-2"]]
     else:
         one_stage = ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2", "5-1", "5-2", "6-1", "6-2", "7-1", "7-2"]
         # three_stages = ["5-1", "5-2", "6-1", "6-2", "7-1", "7-2"]
         # three_double_stages = [["5-1", "5-2"], ["6-1", "6-2"], ["7-1", "7-2"]]
+
         three_stages = ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2", "5-1", "5-2", "6-1", "6-2", "7-1", "7-2"]
         three_double_stages = [["1-1", "1-2"], ["2-1", "2-2"], ["3-1", "3-2"], ["4-1", "4-2"], ["5-1", "5-2"], ["6-1", "6-2"], ["7-1", "7-2"]]
         all_stages = ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2", "5-1", "5-2", "6-1", "6-2", "7-1", "7-2"]
-        all_double_stages = [["1-1", "1-2"], ["2-1", "2-2"], ["3-1", "3-2"], ["4-1", "4-2"], ["5-1", "5-2"], ["6-1", "6-2"], ["7-1", "7-2"]]
+        # all_double_stages = [["1-1", "1-2"], ["2-1", "2-2"], ["3-1", "3-2"], ["4-1", "4-2"], ["5-1", "5-2"], ["6-1", "6-2"], ["7-1", "7-2"]]
+
         # three_stages = ["8-1", "8-2", "9-1", "9-2", "10-1", "10-2"]
         # three_double_stages = [["8-1", "8-2"], ["9-1", "9-2"], ["10-1", "10-2"]]
         # one_stage = ["10-1", "10-2"]
@@ -219,16 +216,16 @@ def main():
         # all_double_stages = [["1-1", "1-2"], ["2-1", "2-2"], ["3-1", "3-2"], ["4-1", "4-2"], ["5-1", "5-2"], ["6-1", "6-2"], ["7-1", "7-2"], ["8-1", "8-2"], ["9-1", "9-2"], ["10-1", "10-2"]]
 
     if "Char usages all stages" in run_commands:
-        usage_low = char_usages(all_players, archetype, past_phase, all_stages, filename="all", floor=True)
+        char_usages(all_players, archetype, past_phase, all_stages, filename="all")
         cur_time = time.time()
         print("done char: ", (cur_time - start_time), "s")
 
     if "Duos check" in run_commands:
-        usage = char_usages(all_players, archetype, past_phase, three_stages, filename="all", floor=True)
+        usage = char_usages(all_players, archetype, past_phase, three_stages, filename="all")
         duo_usages(all_comps, all_players, usage, archetype, three_stages, check_duo=True)
 
     if "Char usages 8 - 10" in run_commands:
-        usage = char_usages(all_players, archetype, past_phase, one_stage, filename="all", floor=True)
+        usage = char_usages(all_players, archetype, past_phase, one_stage, filename="all")
         if not whaleOnly:
             duo_usages(all_comps, all_players, usage, archetype, one_stage, check_duo=False)
         # appearances = {}
@@ -282,7 +279,7 @@ def main():
                         "rarity": char_chambers[room][star_num][char]["rarity"],
                         "diff": char_chambers[room][star_num][char]["diff"]
                     }
-                    if char_chambers[room][star_num][char]["round"] == 0.0:
+                    if char_chambers[room][star_num][char]["round"] == 0:
                         continue
                     rounds[room][star_num][char] = {
                         "round": char_chambers[room][star_num][char]["round"],
@@ -324,7 +321,7 @@ def main():
                         "rarity": char_chambers[room][star_num][char]["rarity"],
                         "diff": char_chambers[room][star_num][char]["diff"]
                     }
-                    if char_chambers[room][star_num][char]["round"] == 0.0:
+                    if char_chambers[room][star_num][char]["round"] == 0:
                         continue
                     rounds[room][star_num][char] = {
                         "round": char_chambers[room][star_num][char]["round"],
@@ -391,23 +388,23 @@ def comp_usages(comps,
                 floor=False):
     global top_comps_app
     top_comps_app = {}
-    comps_dict = used_comps(players, comps, rooms, filename, floor=floor, offset=offset)
+    comps_dict = used_comps(players, comps, rooms, filename)
     rank_usages(comps_dict, rooms, owns_offset=offset)
     comp_usages_write(comps_dict, filename, floor, info_char, True)
     comp_usages_write(comps_dict, filename, floor, info_char, False)
 
-def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE, floor=False, offset=1):
+def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE):
     # Returns the dictionary of all the comps used and how many times they were used
     comps_dict = [{},{},{},{},{}]
-    error_uids = []
+    # error_uids = []
     # lessFour = []
     # lessFourComps = {}
     global total_comps
     total_comps = 0
     total_self_comps = 0
-    whaleCount = 0
-    dual_dps = {}
-    total_char_comps = {}
+    whale_count = 0
+    # dual_dps = {}
+    # total_char_comps = {}
     for comp in comps:
         comp_tuple = tuple(comp.characters)
         # Check if the comp is used in the rooms that are being checked
@@ -425,12 +422,12 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE, floor=False,
             #     lessFour.append(comp.player)
                 continue
 
-            whaleComp = False
-            dpsCount = 0
+            whale_comp = False
+            dps_count = 0
             for char in range (3):
                 if comp_tuple[char] in players[phase][comp.player].owned:
                     # if players[phase][comp.player].owned[comp_tuple[char]]["level"] > 51:
-                    #     whaleComp = True
+                    #     whale_comp = True
                     if CHARACTERS[comp_tuple[char]]["availability"] == "Limited S":
                     # if comp_tuple[char] in players[phase][comp.player].owned and comp_tuple[char] == "Blade":
                         if (
@@ -438,24 +435,24 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE, floor=False,
                         # ) or (
                         #     whaleSigWeap and players[phase][comp.player].owned[comp_tuple[char]]["weapon"] in sigWeaps
                         ):
-                            whaleComp = True
+                            whale_comp = True
                     # if comp.char_cons[comp_tuple[char]] > 0:
-                    #     whaleComp = True
+                    #     whale_comp = True
                 # if comp_tuple[char] not in total_char_comps:
                 #     total_char_comps[comp_tuple[char]] = 0
                 # total_char_comps[comp_tuple[char]] += 1
                 if CHARACTERS[comp_tuple[char]]["role"] == "Damage Dealer":
-                    dpsCount += 1
+                    dps_count += 1
                 for duo_dps in valid_duo_dps:
                     if set(duo_dps).issubset(comp_tuple):
-                        dpsCount = 1
+                        dps_count = 1
                         break
 
-            if whaleComp:
-                whaleCount += 1
-            if whaleOnly and not whaleComp:
+            if whale_comp:
+                whale_count += 1
+            if whaleOnly and not whale_comp:
                 continue
-            # if dpsCount > 1:
+            # if dps_count > 1:
             #     for char in range (3):
             #         if comp_tuple[char] not in dual_dps:
             #             dual_dps[comp_tuple[char]] = 0
@@ -488,9 +485,9 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE, floor=False,
                 comps_dict[star_threshold][comp_tuple]["uses"] += 1
                 # comps_dict[star_threshold][comp_tuple]["round_num"][list(str(comp.room).split("-"))[0]].append(comp.round_num)
                 comps_dict[star_threshold][comp_tuple]["players"].add(comp.player)
-                if whaleComp:
+                if whale_comp:
                     comps_dict[star_threshold][comp_tuple]["whale_count"].add(comp.player)
-                if whaleComp == whaleOnly:
+                if whale_comp == whaleOnly:
                     # for i in range (3):
                     #     if comp_tuple[i] in players[phase][comp.player].owned:
                     #         if players[phase][comp.player].owned[comp_tuple[i]]["weapon"] in comps_dict[star_threshold][comp_tuple][comp_tuple[i]]["weapon"]:
@@ -504,7 +501,7 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE, floor=False,
                     #                 comps_dict[star_threshold][comp_tuple][comp_tuple[i]]["artifacts"][players[phase][comp.player].owned[comp_tuple[i]]["artifacts"]] = 1
                     #         comps_dict[star_threshold][comp_tuple][comp_tuple[i]]["cons"][str(players[phase][comp.player].owned[comp_tuple[i]]["cons"])] += 1
                     comps_dict[star_threshold][comp_tuple]["round_num"][list(str(comp.room).split("-"))[0]].append(comp.round_num)
-                    if star_threshold == 4 and dpsCount == 1:
+                    if star_threshold == 4 and dps_count == 1:
                         avg_round_stage[list(str(comp.room).split("-"))[0]].append(comp.round_num)
                         # if pf_mode:
                         #     if "buff_" + comp.buff not in sample_size[list(str(comp.room).split("-"))[0]]:
@@ -519,12 +516,12 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE, floor=False,
 
     chamber_num = list(str(filename).split("-"))
     if len(chamber_num) > 1:
+        # if total_comps == 0:
+        #     del sample_size[chamber_num[0]]
         if chamber_num[1] == "1":
             sample_size[chamber_num[0]]["total"] = total_comps
             sample_size[chamber_num[0]]["self_report"] = total_self_comps
             sample_size[chamber_num[0]]["random"] = total_comps - total_self_comps
-        # if total_comps == 0:
-        #     del sample_size[chamber_num[0]]
     # print(error_uids)
     # print("Less than four: " + str(lessFour))
     # print("Less than four: " + str(len(lessFour)/total_comps))
@@ -536,14 +533,14 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE, floor=False,
     #         print("    Dual DPS: " + str(dual_percent))
     #         print()
     if whaleOnly:
-        print("Whale percentage: " + str(whaleCount/total_comps))
+        print("Whale percentage: " + str(whale_count/total_comps))
     return comps_dict
 
 def rank_usages(comps_dict, rooms, owns_offset=1):
     # Calculate the usage rate and sort the comps according to it
     for star_threshold in range(1, 5):
         rates = []
-        rounds = []
+        # rounds = []
         for comp in comps_dict[star_threshold]:
             avg_round = []
             uses_room = {}
@@ -636,10 +633,10 @@ def duo_usages(comps,
                 rooms,
                 check_duo=False,
                 filename="duo_usages"):
-    duos_dict = used_duos(players, comps, rooms, usage, check_duo, archetype)
+    duos_dict = used_duos(players, comps, rooms, usage, check_duo)
     duo_write(duos_dict, usage, filename, archetype, check_duo)
 
-def used_duos(players, comps, rooms, usage, archetype, check_duo, phase=RECENT_PHASE):
+def used_duos(players, comps, rooms, usage, check_duo, phase=RECENT_PHASE):
     # Returns dictionary of all the duos used and how many times they were used
     duos_dict = {}
 
@@ -648,15 +645,15 @@ def used_duos(players, comps, rooms, usage, archetype, check_duo, phase=RECENT_P
             continue
 
         foundchar = resetfind()
-        whaleComp = False
+        whale_comp = False
         for char in comp.characters:
             findchars(char, foundchar)
             if CHARACTERS[char]["availability"] == "Limited S":
                 if char in players[phase][comp.player].owned:
                     if players[phase][comp.player].owned[char]["cons"] > 0:
-                        whaleComp = True
+                        whale_comp = True
                 # if comp.char_cons[char] > 0:
-                #     whaleComp = True
+                #     whale_comp = True
         if not find_archetype(foundchar):
             continue
 
@@ -680,7 +677,7 @@ def used_duos(players, comps, rooms, usage, archetype, check_duo, phase=RECENT_P
 
             if is_triple_dps and check_duo:
                 continue
-            if not whaleComp:
+            if not whale_comp:
                 duos_dict[duo]["round_num"][list(str(comp.room).split("-"))[0]].append(comp.round_num)
 
     sorted_duos = (sorted(
@@ -731,17 +728,15 @@ def char_usages(players,
                 rooms,
                 filename="char_usages",
                 offset=1,
-                info_char=False,
-                floor=False):
-    # own = cu.ownership(players, chambers = rooms)
-    own = {}
-    app = cu.appearances(players, own, archetype, chambers = rooms, offset = offset, info_char = info_char)
-    chars_dict = cu.usages(own, app, past_phase, filename, chambers = rooms, offset = offset)
+                info_char=False):
+    # own = cu.ownership(players)
+    app = cu.appearances(players, chambers = rooms, offset = offset, info_char = info_char)
+    chars_dict = cu.usages(app, past_phase, chambers = rooms, offset = offset)
     # # Print the list of weapons and artifacts used for a character
     # if floor:
     #     print(app[RECENT_PHASE][filename])
     if (not pf_mode and rooms == one_stage) or (pf_mode and rooms == ["4-1", "4-2"]):
-        char_usages_write(chars_dict[4], filename, floor, archetype)
+        char_usages_write(chars_dict[4], filename, archetype)
     return chars_dict
 
 def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
@@ -749,7 +744,7 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
     out_comps = []
     outvar_comps = []
     var_comps = []
-    exc_comps = []
+    # exc_comps = []
     variations = {}
     if sort_app:
         threshold = app_rate_threshold
@@ -787,7 +782,6 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
                     #         continue
                     if comps_dict[star_threshold][comp]["is_count_round"] and (comps_dict[star_threshold][comp]["app_rate"] >= threshold
                         or (info_char and comps_dict[star_threshold][comp]["app_rate"] > char_app_rate_threshold)):
-                        temp_comp_name = "-"
                         if alt_comp_name != "-":
                             temp_comp_name = alt_comp_name
                         else:
@@ -846,7 +840,6 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
                             comp_names.append(alt_comp_name)
 
                     # elif floor:
-                    #     temp_comp_name = "-"
                     #     if alt_comp_name != "-":
                     #         temp_comp_name = alt_comp_name
                     #     else:
@@ -863,7 +856,6 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
                     #     exc_comps_append["avg_round"] = str(comps_dict[star_threshold][comp]["round"])
                     #     exc_comps.append(exc_comps_append)
                 elif comp_name in comp_names:
-                    temp_comp_name = "-"
                     if alt_comp_name != "-":
                         temp_comp_name = alt_comp_name
                     else:
@@ -958,7 +950,7 @@ def duo_write(duos_dict, usage, filename, archetype, check_duo):
     if pf_mode:
         out_duos = sorted(out_duos, key=lambda t: t["round"], reverse = True)
     else:
-        out_duos = sorted(out_duos, key=lambda t: t["round"], reverse = True)
+        out_duos = sorted(out_duos, key=lambda t: t["round"], reverse = False)
 
     if archetype != "all":
         filename = filename + "_" + archetype
@@ -1059,7 +1051,7 @@ def duo_write(duos_dict, usage, filename, archetype, check_duo):
     with open("../char_results/" + filename + ".json", "w") as out_file:
         out_file.write(json.dumps(out_duos,indent=2))
 
-def char_usages_write(chars_dict, filename, floor, archetype):
+def char_usages_write(chars_dict, filename, archetype):
     out_chars = []
     out_chars_csv = []
     weap_len = 10
@@ -1200,7 +1192,8 @@ def char_usages_write(chars_dict, filename, floor, archetype):
         for value in iterate_value_round:
             if out_chars[i][value].replace(".", "").replace("-", "").isnumeric():
                 out_chars[i][value] = round(float(out_chars[i][value])) if pf_mode else float(out_chars[i][value])
-                out_chars_csv[i][value] = str(round(float(out_chars_csv[i][value]) / 1000 if pf_mode else float(out_chars_csv[i][value]), 2)) if not as_mode else out_chars_csv[i][value]
+                chars_csv_value = float(out_chars_csv[i][value]) / 1000 if pf_mode else float(out_chars_csv[i][value])
+                out_chars_csv[i][value] = str(round(chars_csv_value, 2)) if not as_mode else out_chars_csv[i][value]
             else:
                 out_chars[i][value] = 1
                 if pf_mode:
@@ -1234,6 +1227,5 @@ def name_filter(comp, mode="out"):
             # else:
             filtered.append(char)
     return filtered
-    #TODO Need to create a structure for bad names --> names 
 
 main()
