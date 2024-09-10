@@ -71,17 +71,15 @@ class Composition:
 
             if character in ["Corin","Billy","Nekomata","Zhu Yuan","Anton","Soldier 11","Ellen"]:
                 self.dps.insert(0, character)
-            elif character in ["Grace","Piper"]:
+            elif character in ["Grace","Piper","Jane"]:
                 self.subdps.insert(0, character)
-            elif character in ["Anby","Lycaon","Koleda"]:
+                self.anomaly.append(character)
+            elif character in ["Anby","Lycaon","Koleda","Qingyi"]:
                 self.stun.insert(0, character)
             elif character in ["Ben"]:
                 self.stun.append(character)
-            elif character in ["Soukaku","Nicole","Rina","Lucy"]:
+            elif character in ["Soukaku","Nicole","Rina","Lucy","Seth"]:
                 self.support.insert(0, character)
-
-            if character in ["Grace","Piper"]:
-                self.anomaly.append(character)
 
             if CHARACTERS[character]["element"] == "Ice":
                 len_element["Ice"] += 1
@@ -95,6 +93,10 @@ class Composition:
                 len_element["Physical"] += 1
         self.fivecount = len(fives)
         self.characters = self.dps + self.subdps + self.stun + self.support
+
+        if not self.dps and not self.subdps and "Soukaku" in self.support:
+            self.support.remove("Soukaku")
+            self.dps.append("Soukaku")
 
         """Name structure creator.
         """

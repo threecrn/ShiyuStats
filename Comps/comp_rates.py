@@ -3,7 +3,7 @@ import time
 import char_usage as cu
 import statistics
 import os
-from scipy.stats import skew, trim_mean
+# from scipy.stats import skew, trim_mean
 from itertools import permutations
 from plyer import notification
 from composition import Composition
@@ -200,7 +200,7 @@ def main():
         all_stages = ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2"]
         # all_double_stages = [["1-1", "1-2"], ["2-1", "2-2"], ["3-1", "3-2"], ["4-1", "4-2"]]
     else:
-        one_stage = ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2", "5-1", "5-2", "6-1", "6-2", "7-1", "7-2"]
+        one_stage = ["7-1", "7-2"]
         # three_stages = ["5-1", "5-2", "6-1", "6-2", "7-1", "7-2"]
         # three_double_stages = [["5-1", "5-2"], ["6-1", "6-2"], ["7-1", "7-2"]]
 
@@ -208,12 +208,6 @@ def main():
         three_double_stages = [["1-1", "1-2"], ["2-1", "2-2"], ["3-1", "3-2"], ["4-1", "4-2"], ["5-1", "5-2"], ["6-1", "6-2"], ["7-1", "7-2"]]
         all_stages = ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2", "5-1", "5-2", "6-1", "6-2", "7-1", "7-2"]
         # all_double_stages = [["1-1", "1-2"], ["2-1", "2-2"], ["3-1", "3-2"], ["4-1", "4-2"], ["5-1", "5-2"], ["6-1", "6-2"], ["7-1", "7-2"]]
-
-        # three_stages = ["8-1", "8-2", "9-1", "9-2", "10-1", "10-2"]
-        # three_double_stages = [["8-1", "8-2"], ["9-1", "9-2"], ["10-1", "10-2"]]
-        # one_stage = ["10-1", "10-2"]
-        # all_stages = ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2", "5-1", "5-2", "6-1", "6-2", "7-1", "7-2", "8-1", "8-2", "9-1", "9-2", "10-1", "10-2"]
-        # all_double_stages = [["1-1", "1-2"], ["2-1", "2-2"], ["3-1", "3-2"], ["4-1", "4-2"], ["5-1", "5-2"], ["6-1", "6-2"], ["7-1", "7-2"], ["8-1", "8-2"], ["9-1", "9-2"], ["10-1", "10-2"]]
 
     if "Char usages all stages" in run_commands:
         char_usages(all_players, archetype, past_phase, all_stages, filename="all")
@@ -549,11 +543,11 @@ def rank_usages(comps_dict, rooms, owns_offset=1):
                 if (comps_dict[star_threshold][comp]["round_num"][str(room_num)]):
                     uses_room[room_num] = len(comps_dict[star_threshold][comp]["round_num"][str(room_num)])
                     if comps_dict[star_threshold][comp]["uses"] > 1:
-                        skewness = skew(comps_dict[star_threshold][comp]["round_num"][str(room_num)], axis=0, bias=True)
-                        if abs(skewness) > 0.8:
-                            avg_round.append(trim_mean(comps_dict[star_threshold][comp]["round_num"][str(room_num)], 0.25))
-                        else:
-                            avg_round.append(statistics.mean(comps_dict[star_threshold][comp]["round_num"][str(room_num)]))
+                        # skewness = skew(comps_dict[star_threshold][comp]["round_num"][str(room_num)], axis=0, bias=True)
+                        # if abs(skewness) > 0.8:
+                        #     avg_round.append(trim_mean(comps_dict[star_threshold][comp]["round_num"][str(room_num)], 0.25))
+                        # else:
+                        avg_round.append(statistics.mean(comps_dict[star_threshold][comp]["round_num"][str(room_num)]))
                     else:
                         avg_round.append(statistics.mean(comps_dict[star_threshold][comp]["round_num"][str(room_num)]))
                     # avg_round.append(statistics.mean(comps_dict[star_threshold][comp]["round_num"][str(room_num)]))

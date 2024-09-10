@@ -374,5 +374,53 @@
         "name": "Roaring Ride",
         "availability": "A",
         "role": "Damage Dealer"
+    },
+    "Item_Weapon_S_1071_Name": {
+        "icon": "Weapon_S_1071",
+        "desc": "Item_Weapon_S_1071_ShortDesc",
+        "id": "14107",
+        "name": "Item_Weapon_S_1071_Name",
+        "availability": "Limited S",
+        "role": "Stun"
+    },
+    "Item_Weapon_S_1171_Name": {
+        "icon": "Weapon_S_1171",
+        "desc": "Item_Weapon_S_1171_ShortDesc",
+        "id": "14117",
+        "name": "Item_Weapon_S_1171_Name",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Peacekeeper - Specialized": {
+        "icon": "Weapon_A_1271",
+        "desc": "A defensive W-Engine independently researched and created by Public Security which simplifies the offensive components to enhance the energy conversion ability in its shield. ",
+        "id": "13127",
+        "name": "Peacekeeper - Specialized",
+        "availability": "A",
+        "role": "Stun"
+    },
+    "Gilded Blossom": {
+        "icon": "Weapon_A_Common_13",
+        "desc": "A W-Engine with a grandiose and luxurious appearance equipped with a premium Ether-powered anti-theft device. Actually used to provide the equipper with energy.",
+        "id": "13013",
+        "name": "Gilded Blossom",
+        "availability": "A",
+        "role": "Damage Dealer"
+    },
+    "Sharpened Stinger": {
+        "icon": "Weapon_S_1261",
+        "desc": "A deadly W-Engine from unknown sources, modified personally by Jane Doe with the intent to deal severe physical damage and Anomaly.",
+        "id": "14126",
+        "name": "Sharpened Stinger",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Ice-Jade Teapot": {
+        "icon": "Weapon_S_1251",
+        "desc": "A custom stun W-Engine made for an Automaton referencing the combat style and abilities of one. Energy is stored within, then lashes outwards upon conversion.",
+        "id": "14125",
+        "name": "Ice-Jade Teapot",
+        "availability": "Limited S",
+        "role": "Stun"
     }
 }

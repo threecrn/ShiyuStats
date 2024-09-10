@@ -1,17 +1,29 @@
 import json
+import argparse
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-with open('../data/characters.json') as char_file:
+parser = argparse.ArgumentParser()
+parser.add_argument("-a", "--all", action = "store_true")
+parser.add_argument("-d", "--duos", action = "store_true")
+parser.add_argument("-t", "--top", action = "store_true")
+parser.add_argument("-w", "--whale", action = "store_true")
+
+args = parser.parse_args()
+
+with open(os.getenv("REPO_PATH") + "/data/characters.json") as char_file:
     CHARACTERS = json.load(char_file)
 
-with open('../data/w-engine.json') as char_file:
+with open(os.getenv("REPO_PATH") + "/data/w-engine.json") as char_file:
     LIGHT_CONES = json.load(char_file)
 
 # no need to add 2.2.1"_pf"
-RECENT_PHASE = "1.0.2"
+RECENT_PHASE = "1.1.2"
 
 # if no past phase, put invalid folder
 # add 2.2.1"_pf"
-past_phase = "1.0.1"
+past_phase = "1.1.1"
 global pf_mode
 global as_mode
 # if as: pf_mode = True
@@ -39,7 +51,7 @@ duo_dict_len_print = 10
 skip_self = False
 skip_random = False
 archetype = "all"
-whaleOnly = False
+whaleOnly = args.whale
 whaleSigWeap = False
 
 # Char infographics should be separated from overall comp rankings
@@ -48,12 +60,32 @@ run_commands = [
     "Char usages 8 - 10",
     "Char usages for each stage",
     "Char usages for each stage (combined)",
-    "Comp usage 8 - 10",
-    "Comp usages for each stage",
+    # "Comp usage 8 - 10",
+    # "Comp usages for each stage",
     # "Character specific infographics",
     # "Char usages all stages",
     # "Comp usage all stages",
 ]
+
+if args.whale or args.top:
+    run_commands = [
+        "Char usages 8 - 10",
+        "Comp usage 8 - 10",
+    ]
+
+elif args.all:
+    run_commands = [
+        "Char usages 8 - 10",
+        "Char usages for each stage",
+        "Char usages for each stage (combined)",
+        "Comp usage 8 - 10",
+        "Comp usages for each stage",
+    ]
+
+elif args.duos:
+    run_commands = [
+        "Duos check",
+    ]
 
 alt_comps = "Character specific infographics" in run_commands
 if alt_comps and char_app_rate_threshold > app_rate_threshold:

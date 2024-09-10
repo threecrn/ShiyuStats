@@ -168,5 +168,35 @@
         "name": "Ellen",
         "availability": "Limited S",
         "role": "Damage Dealer"
+    },
+    "Qingyi": {
+        "element": "Electric",
+        "camp": "New Eridu Public Security",
+        "icon": "IconRole29",
+        "desc": "Qingyi is a rookie officer in the Criminal Investigation Special Response Team.\nAs an artificial human, her personality is derived from ancient cultural texts from the old civilization. Her body, known as an \"Automaton,\" is an intelligent construct composed of biological materials.\nRecommended by White Star Institute, she was assigned to Public Security as a rookie officer partnered with Zhu Yuan.\n\nQingyi always exhibits an easygoing, laid-back demeanor, not restricted by rules.\nIn contrast to modern individuals affected by today's society, Qingyi frequently proposes unexpected solutions to problems.\n\nQingyi always carries a cup of hot water and takes occasional sips.\n\"Drinking hot water is good for your health.\"\nSuggestion: Approaching Qingyi is also an ill-considered decision that may compromise your cover. Please remember your true identity as a Proxy.",
+        "id": "1251",
+        "name": "Qingyi",
+        "availability": "Limited S",
+        "role": "Stun"
+    },
+    "Jane": {
+        "element": "Physical",
+        "camp": "New Eridu Public Security",
+        "icon": "IconRole24",
+        "desc": "Jane, a criminal behavior specialist, has had a \"colorful\" career as a consultant with Public Security over the years.\nShe is an expert in disguise, infiltration, and other investigative work.\nShe has a bad habit of trolling others and sometimes plays harmless pranks.\nShe's a skilled mimic, able to change her appearance and demeanor at will, making people wonder what the \"real\" Jane is like.\n\nJane has a wealth of life experience and can seamlessly blend into any environment, as though she has dabbled in everything there is to do.\nHowever, if you ask her for any further details, she'll give you a different story every time.\nWho knows which, if any, are true.\n\nNote 1: Jane does not know our true identity. Do not reveal this to her under any circumstances.\nNote 2: Despite \"Jane Doe\" being an obvious alias, we haven't found any information about her real or former name.\nThis is not my problem. My guess is that her true identity has been completely erased due to her special status.\nLet me reiterate: This is not my problem.",
+        "id": "1261",
+        "name": "Jane",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Seth": {
+        "element": "Electric",
+        "camp": "New Eridu Public Security",
+        "icon": "IconRole30",
+        "desc": "Seth, a rookie officer in the Public Security Criminal Investigation Special Response Team, is a key player in providing fire support during criminal investigations.\nHe graduated at the top of his class in the academy and could have landed a higher position, but he chose the tougher path of the Special Response Team.\nHis impressive profile makes him seem like a genius, but he's actually a hard worker who has had his own struggles. There have been times when he practiced the subjects he wasn't good at until he cried.\nSeth is quite smart, but his personality often leads to him being taken advantage of by cunning criminals, or sometimes, coworkers (?).\nThe subject he's worst at is infiltration. Rumor has it that he holds the academy record for \"fastest to get busted\" in infiltration tasks. Based on the video intel we have, he seems a bit slow to catch on. For instance, when someone is being sarcastic, it takes him a long time to realize it.",
+        "id": "1271",
+        "name": "Seth",
+        "availability": "A",
+        "role": "Support"
     }
 }

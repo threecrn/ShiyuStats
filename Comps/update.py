@@ -70,45 +70,42 @@ wengine2 = json.load((io.StringIO(download)))
 for weap in wengine2:
     weap_name = wengine2[weap]["EN"]
     if weap_name not in wengine1:
-        add_weap = input("Add " + weap_name + "? (y/n): ")
-        if add_weap == "y":
-            wengine1[weap_name] = wengine2[weap].copy()
-            wengine1[weap_name]["id"] = weap
-            wengine1[weap_name]["name"] = weap_name
+        # add_weap = input("Add " + weap_name + "? (y/n): ")
+        # if add_weap == "y":
+        wengine1[weap_name] = wengine2[weap].copy()
+        wengine1[weap_name]["id"] = weap
+        wengine1[weap_name]["name"] = weap_name
 
-            if wengine2[weap]["rank"] == 2:
-                wengine1[weap_name]["availability"] = "B"
-            elif wengine2[weap]["rank"] == 3:
-                wengine1[weap_name]["availability"] = "A"
-            elif wengine2[weap]["rank"] == 4:
-                print(weap_name)
-                add_weap = input("Limited W-Engine? (y/n): ")
-                if add_weap == "y":
-                    wengine1[weap_name]["availability"] = "Limited S"
-                else:
-                    wengine1[weap_name]["availability"] = "Standard S"
+        if wengine2[weap]["rank"] == 2:
+            wengine1[weap_name]["availability"] = "B"
+        elif wengine2[weap]["rank"] == 3:
+            wengine1[weap_name]["availability"] = "A"
+        elif wengine2[weap]["rank"] == 4:
+            # print(weap_name)
+            # add_weap = input("Limited W-Engine? (y/n): ")
+            # if add_weap == "y":
+            wengine1[weap_name]["availability"] = "Limited S"
+            # else:
+            #     wengine1[weap_name]["availability"] = "Standard S"
 
-            # print("Role? 0: DPS, 1: Amplifier, 2: Sustain")
-            # role_weap = input()
-            # match str(role_weap):
-            match str(wengine1[weap_name]["type"]):
-                case "1":
-                    wengine1[weap_name]["role"] = "Damage Dealer"
-                case "2":
-                    wengine1[weap_name]["role"] = "Stun"
-                case "3":
-                    wengine1[weap_name]["role"] = "Damage Dealer"
-                case "4":
-                    wengine1[weap_name]["role"] = "Support"
-                case "5":
-                    wengine1[weap_name]["role"] = "Stun"
+        match str(wengine1[weap_name]["type"]):
+            case "1":
+                wengine1[weap_name]["role"] = "Damage Dealer"
+            case "2":
+                wengine1[weap_name]["role"] = "Stun"
+            case "3":
+                wengine1[weap_name]["role"] = "Damage Dealer"
+            case "4":
+                wengine1[weap_name]["role"] = "Support"
+            case "5":
+                wengine1[weap_name]["role"] = "Stun"
 
-            del wengine1[weap_name]["rank"]
-            del wengine1[weap_name]["type"]
-            del wengine1[weap_name]["EN"]
-            del wengine1[weap_name]["KO"]
-            del wengine1[weap_name]["CHS"]
-            del wengine1[weap_name]["JA"]
+        del wengine1[weap_name]["rank"]
+        del wengine1[weap_name]["type"]
+        del wengine1[weap_name]["EN"]
+        del wengine1[weap_name]["KO"]
+        del wengine1[weap_name]["CHS"]
+        del wengine1[weap_name]["JA"]
 
 with open('../data/w-engine.json','w') as out_file:
     out_file.write(json.dumps(wengine1,indent=4))

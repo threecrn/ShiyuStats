@@ -152,5 +152,12 @@
         "id": "54005",
         "name": "Amillion",
         "availability": "S"
+    },
+    "Officer Cui": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole25.png",
+        "desc": "Though it may be a Bangboo, it's even more intimidating than a Security Canine!",
+        "id": "54012",
+        "name": "Officer Cui",
+        "availability": "S"
     }
 }
