@@ -2,28 +2,29 @@ import json
 import argparse
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-a", "--all", action = "store_true")
-parser.add_argument("-d", "--duos", action = "store_true")
-parser.add_argument("-t", "--top", action = "store_true")
-parser.add_argument("-w", "--whale", action = "store_true")
+parser.add_argument("-a", "--all", action="store_true")
+parser.add_argument("-d", "--duos", action="store_true")
+parser.add_argument("-t", "--top", action="store_true")
+parser.add_argument("-w", "--whale", action="store_true")
 
 args = parser.parse_args()
 
-with open(os.getenv("REPO_PATH") + "/data/characters.json") as char_file:
+with open(str(os.getenv("REPO_PATH")) + "/data/characters.json") as char_file:
     CHARACTERS = json.load(char_file)
 
-with open(os.getenv("REPO_PATH") + "/data/w-engine.json") as char_file:
+with open(str(os.getenv("REPO_PATH")) + "/data/w-engine.json") as char_file:
     LIGHT_CONES = json.load(char_file)
 
 # no need to add 2.2.1"_pf"
-RECENT_PHASE = "1.1.2"
+RECENT_PHASE = "1.2.3"
 
 # if no past phase, put invalid folder
 # add 2.2.1"_pf"
-past_phase = "1.1.1"
+past_phase = "1.2.2"
 global pf_mode
 global as_mode
 # if as: pf_mode = True

@@ -2,35 +2,38 @@ import json
 
 # Set class constants in initialization
 # Load the list of characters from their file
-with open('../data/characters.json') as char_file:
+with open("../data/characters.json") as char_file:
     CHARACTERS = json.load(char_file)
 
 # # Load the list of elements from the reactions file
 # with open('../data/reaction.json') as react_file:
 #     ELEMENTS = list(json.load(react_file).keys())
 
+
 class Composition:
     """An object that stores information about a particular composition. Has:
-        player: a string for the player who used this comp.
-        phase: a string for the phase this composition was used in.
-        room: a string in the form XX-X-X for the room this comp was used in.
-        char_presence: a string --> boolean dict for chars in this comp.
-        characters: a list of strings for the names of the chars in this comp.
-        elements: a string --> int dict for the num of chars for each element.
-        resonance: a string --> boolean dict for which resonances are active.
-        
-        Additional methods are:
-        resonance_string: returns the resonances active as a string.
-        on_res_chars: returns the list of characters activating the resonance.
-        char_elemeent_list: returns the list of character's elements.
+    player: a string for the player who used this comp.
+    phase: a string for the phase this composition was used in.
+    room: a string in the form XX-X-X for the room this comp was used in.
+    char_presence: a string --> boolean dict for chars in this comp.
+    characters: a list of strings for the names of the chars in this comp.
+    elements: a string --> int dict for the num of chars for each element.
+    resonance: a string --> boolean dict for which resonances are active.
+
+    Additional methods are:
+    resonance_string: returns the resonances active as a string.
+    on_res_chars: returns the list of characters activating the resonance.
+    char_elemeent_list: returns the list of character's elements.
     """
 
-    def __init__(self, uid, comp_chars, phase, round_num, star_num, room, info_char, bangboo):
+    def __init__(
+        self, uid, comp_chars, phase, round_num, star_num, room, info_char, bangboo
+    ):
         """Composition constructor. Takes in:
-            A player, as a UID string
-            A composition, as a length-four list of character strings
-            A phase, as a string
-            A room, as a string
+        A player, as a UID string
+        A composition, as a length-four list of character strings
+        A phase, as a string
+        A room, as a string
         """
         self.player = str(uid)
         self.phase = phase
@@ -69,16 +72,24 @@ class Composition:
             if CHARACTERS[character]["availability"] in ["Limited S", "Standard S"]:
                 fives.append(character)
 
-            if character in ["Corin","Billy","Nekomata","Zhu Yuan","Anton","Soldier 11","Ellen"]:
+            if character in [
+                "Corin",
+                "Billy",
+                "Nekomata",
+                "Zhu Yuan",
+                "Anton",
+                "Soldier 11",
+                "Ellen",
+            ]:
                 self.dps.insert(0, character)
-            elif character in ["Grace","Piper","Jane"]:
+            elif character in ["Grace", "Piper", "Jane", "Burnice", "Yanagi"]:
                 self.subdps.insert(0, character)
                 self.anomaly.append(character)
-            elif character in ["Anby","Lycaon","Koleda","Qingyi"]:
+            elif character in ["Anby", "Lycaon", "Koleda", "Qingyi"]:
                 self.stun.insert(0, character)
             elif character in ["Ben"]:
                 self.stun.append(character)
-            elif character in ["Soukaku","Nicole","Rina","Lucy","Seth"]:
+            elif character in ["Soukaku", "Nicole", "Rina", "Lucy", "Seth", "Caesar"]:
                 self.support.insert(0, character)
 
             if CHARACTERS[character]["element"] == "Ice":
@@ -150,7 +161,7 @@ class Composition:
     #     self.elements = dict.fromkeys(ELEMENTS, 0)
     #     for char in self.characters:
     #         self.elements[CHARACTERS[char]["element"]] += 1
-        
+
     #     # self.resonance = dict.fromkeys(ELEMENTS, False)
 
     #     # # Add the unique resonance to the list of element resonances,
@@ -161,7 +172,7 @@ class Composition:
     #     #     if self.elements[ele] >= 2:
     #     #         self.resonance[ele] = True
     #     #         self.resonance['Unique'] = False
-    
+
     # def resonance_string(self):
     #     """Returns the resonance of the composition. Two resos are joined by a ,"""
     #     resos = []
@@ -169,7 +180,7 @@ class Composition:
     #         if self.resonance[reso]:
     #             resos.append(reso)
     #     return ", ".join(resos)
-    
+
     # def on_res_chars(self):
     #     """Returns the list of characters who match the composition's resonance."""
     #     chars = []

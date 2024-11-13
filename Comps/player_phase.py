@@ -2,24 +2,25 @@ import json
 
 # Set class constants in initialization
 # Load the list of characters from their file
-with open('../data/characters.json') as char_file:
+with open("../data/characters.json") as char_file:
     CHARACTERS = json.load(char_file)
-with open('../data/drive_affixes.json') as relic_file:
+with open("../data/drive_affixes.json") as relic_file:
     articombinations = json.load(relic_file)
+
 
 class PlayerPhase:
     """An object that stores information about a player on a phase. Has:
-        player: a string for this player.
-        phase: a string for the phase.
-        chambers: a string->composition dict for the comps they used.
-        owned: a string->dict (character) dict for the characters they owned: 
-            None if they don't own the character.
+    player: a string for this player.
+    phase: a string for the phase.
+    chambers: a string->composition dict for the comps they used.
+    owned: a string->dict (character) dict for the characters they owned:
+        None if they don't own the character.
     """
 
     def __init__(self, player, phase):
         """Composition constructor. Takes in:
-            A player, as a string
-            A phase, as a string
+        A player, as a string
+        A phase, as a string
         """
         self.player = player
         self.phase = phase
@@ -28,12 +29,12 @@ class PlayerPhase:
 
     def add_character(self, name, level, cons, weapon, element, artifacts):
         """Adds in a character to the owned characters dict. Takes in:
-            A name, a string.
-            A level, an integer.
-            A cons, an integer.
-            A weapon, a string.
-            Artifacts, a string.
-            Element, a string.
+        A name, a string.
+        A level, an integer.
+        A cons, an integer.
+        A weapon, a string.
+        Artifacts, a string.
+        Element, a string.
         """
         for arti in articombinations:
             articom = []
@@ -42,10 +43,10 @@ class PlayerPhase:
                 articom.append(artiset + ", ")
                 comarti.append(", " + artiset)
             for i in articom:
-                if i in artifacts:
+                if i in artifacts and "4p" not in artifacts:
                     artifacts = artifacts.replace(i, arti + ", ")
             for i in comarti:
-                if i in artifacts:
+                if i in artifacts and "4p" not in artifacts:
                     artifacts = artifacts.replace(i, "")
                     artifacts = arti + ", " + artifacts
 
@@ -54,9 +55,9 @@ class PlayerPhase:
             "cons": int(cons),
             "weapon": weapon,
             "element": element,
-            "artifacts": artifacts
+            "artifacts": artifacts,
         }
-    
+
     def add_comp(self, composition):
         """Adds a composition to the chambers dict."""
         if composition.phase != self.phase or composition.player != self.player:
@@ -64,7 +65,7 @@ class PlayerPhase:
         if composition.room in self.chambers:
             return
         self.chambers[composition.room] = composition
-    
+
     def chars_owned(self, characters):
         """Takes in an iter of character names, and returns true if the player owned them all."""
         for char in characters:
@@ -107,18 +108,36 @@ class PlayerPhase:
         return False
 
     def chars_placement(self, characters):
-        """Takes in an iter of character names, and if the player owns them all, 
+        """Takes in an iter of character names, and if the player owns them all,
         returns a dict of which chambers each was used in.
         """
         if not self.chars_owned(characters):
             return None
-        chambers = { 
-            "1-1": [], "1-2": [], "2-1": [], "2-2": [],
-            "3-1": [], "3-2": [], "4-1": [], "4-2": [],
-            "5-1": [], "5-2": [], "6-1": [], "6-2": [],
-            "7-1": [], "7-2": [], "8-1": [], "8-2": [],
-            "9-1": [], "9-2": [], "10-1": [], "10-2": [],
-            "11-1": [], "11-2": [], "12-1": [], "12-2": []
+        chambers = {
+            "1-1": [],
+            "1-2": [],
+            "2-1": [],
+            "2-2": [],
+            "3-1": [],
+            "3-2": [],
+            "4-1": [],
+            "4-2": [],
+            "5-1": [],
+            "5-2": [],
+            "6-1": [],
+            "6-2": [],
+            "7-1": [],
+            "7-2": [],
+            "8-1": [],
+            "8-2": [],
+            "9-1": [],
+            "9-2": [],
+            "10-1": [],
+            "10-2": [],
+            "11-1": [],
+            "11-2": [],
+            "12-1": [],
+            "12-2": [],
         }
         for char in characters:
             for chamber in chambers:

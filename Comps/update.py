@@ -3,10 +3,12 @@ import requests
 import re
 import io
 
-download = requests.get("https://api.hakush.in/zzz/data/equipment.json").content.decode('utf-8')
+download = requests.get("https://api.hakush.in/zzz/data/equipment.json").content.decode(
+    "utf-8"
+)
 artifacts = json.load(io.StringIO(download))
 
-with open('../data/drive_affixes.json') as artifact_file:
+with open("../data/drive_affixes.json") as artifact_file:
     artifacts2 = json.load(artifact_file)
 # artifacts2 = {}
 
@@ -14,13 +16,16 @@ artifacts_affixes = {}
 for artifact in artifacts:
     artifacts[artifact]["id"] = artifact
     artifacts[artifact]["name"] = artifacts[artifact]["EN"]["name"]
-    artifacts[artifact]["desc"] = [artifacts[artifact]["EN"]["desc2"], artifacts[artifact]["EN"]["desc4"]]
+    artifacts[artifact]["desc"] = [
+        artifacts[artifact]["EN"]["desc2"],
+        artifacts[artifact]["EN"]["desc4"],
+    ]
     del artifacts[artifact]["EN"]
     del artifacts[artifact]["KO"]
     del artifacts[artifact]["CHS"]
     del artifacts[artifact]["JA"]
-    artifacts[artifact]["desc"][0] = re.sub("<.*?>","", artifacts[artifact]["desc"][0])
-    artifacts[artifact]["desc"][1] = re.sub("<.*?>","", artifacts[artifact]["desc"][1])
+    artifacts[artifact]["desc"][0] = re.sub("<.*?>", "", artifacts[artifact]["desc"][0])
+    artifacts[artifact]["desc"][1] = re.sub("<.*?>", "", artifacts[artifact]["desc"][1])
     affix = artifacts[artifact]["desc"][0]
 
     if affix[-1] == ".":
@@ -39,6 +44,7 @@ for artifact in artifacts:
         # affix = split[1] + " +" + split[0]
 
     affix = affix.replace("CRIT Rate", "CR")
+    affix = affix.replace("Anomaly Proficiency", "AP")
 
     if affix not in artifacts_affixes:
         artifacts_affixes[affix] = []
@@ -46,25 +52,30 @@ for artifact in artifacts:
 
 for artifact in list(artifacts_affixes.keys()):
     if len(artifacts_affixes[artifact]) > 1:
-        if artifact not in artifacts2 and len(artifact) > 12:
-            print("Set name too long: " + artifact)
+        if artifact not in artifacts2:
+            if len(artifact) > 12:
+                print("Set name too long: " + artifact)
+            else:
+                add_arti = input("Add " + artifact + "? (y/n): ")
         else:
-            add_arti = input("Add " + artifact + "? (y/n): ")
-            if add_arti == "y":
-                artifacts2[artifact] = artifacts_affixes[artifact]
+            add_arti = "y"
+        if add_arti == "y":
+            artifacts2[artifact] = artifacts_affixes[artifact]
     else:
         del artifacts_affixes[artifact]
 print()
 
 with open("../data/drive_sets.json", "w") as out_file:
-    out_file.write(json.dumps(artifacts,indent=4))
+    out_file.write(json.dumps(artifacts, indent=4))
 
 with open("../data/drive_affixes.json", "w") as out_file:
-    out_file.write(json.dumps(artifacts2,indent=4))
+    out_file.write(json.dumps(artifacts2, indent=4))
 
-with open('../data/w-engine.json') as char_file:
+with open("../data/w-engine.json") as char_file:
     wengine1 = json.load(char_file)
-download = requests.get("https://api.hakush.in/zzz/data/weapon.json").content.decode('utf-8')
+download = requests.get("https://api.hakush.in/zzz/data/weapon.json").content.decode(
+    "utf-8"
+)
 wengine2 = json.load((io.StringIO(download)))
 
 for weap in wengine2:
@@ -107,14 +118,15 @@ for weap in wengine2:
         del wengine1[weap_name]["CHS"]
         del wengine1[weap_name]["JA"]
 
-with open('../data/w-engine.json','w') as out_file:
-    out_file.write(json.dumps(wengine1,indent=4))
+with open("../data/w-engine.json", "w") as out_file:
+    out_file.write(json.dumps(wengine1, indent=4))
 
 
-
-with open('../data/characters.json') as char_file:
+with open("../data/characters.json") as char_file:
     chars1 = json.load(char_file)
-download = requests.get("https://api.hakush.in/zzz/data/character.json").content.decode('utf-8')
+download = requests.get("https://api.hakush.in/zzz/data/character.json").content.decode(
+    "utf-8"
+)
 chars2 = json.load((io.StringIO(download)))
 
 for char in chars2:
@@ -190,14 +202,15 @@ for char in chars2:
             del chars1[char_name]["CHS"]
             del chars1[char_name]["JA"]
 
-with open('../data/characters.json','w') as out_file:
-    out_file.write(json.dumps(chars1,indent=4))
+with open("../data/characters.json", "w") as out_file:
+    out_file.write(json.dumps(chars1, indent=4))
 
 
-
-with open('../data/bangboos.json') as bangboo_file:
+with open("../data/bangboos.json") as bangboo_file:
     bangboos1 = json.load(bangboo_file)
-download = requests.get("https://api.hakush.in/zzz/data/bangboo.json").content.decode('utf-8')
+download = requests.get("https://api.hakush.in/zzz/data/bangboo.json").content.decode(
+    "utf-8"
+)
 bangboos2 = json.load((io.StringIO(download)))
 
 for bangboo in bangboos2:
@@ -225,8 +238,8 @@ for bangboo in bangboos2:
             del bangboos1[bangboo_name]["CHS"]
             del bangboos1[bangboo_name]["JA"]
 
-with open('../data/bangboos.json','w') as out_file:
-    out_file.write(json.dumps(bangboos1,indent=4))
+with open("../data/bangboos.json", "w") as out_file:
+    out_file.write(json.dumps(bangboos1, indent=4))
 
 # download = requests.get("https://github.com/Mar-7th/StarRailRes/raw/master/index_new/en/simulated_blessings.json").content.decode('utf-8')
 # with open("../data/simulated_blessings.json", "w") as out_file:

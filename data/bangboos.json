@@ -159,5 +159,33 @@
         "id": "54012",
         "name": "Officer Cui",
         "availability": "S"
+    },
+    "Baddieboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole24.png",
+        "desc": "Bangboo_Desc_53013",
+        "id": "53013",
+        "name": "Baddieboo",
+        "availability": "A"
+    },
+    "Red Moccus": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole26.png",
+        "desc": "I'll be waiting for you on the off-road section of the Outer Ring!",
+        "id": "54011",
+        "name": "Red Moccus",
+        "availability": "S"
+    },
+    "Knightboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole27.png",
+        "desc": "My steed and I can both bounce to accelerate!",
+        "id": "53017",
+        "name": "Knightboo",
+        "availability": "A"
+    },
+    "Agent Gulliver": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole28.png",
+        "desc": "Security check! Open up!",
+        "id": "54014",
+        "name": "Agent Gulliver",
+        "availability": "S"
     }
 }

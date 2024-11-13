@@ -422,5 +422,77 @@
         "name": "Ice-Jade Teapot",
         "availability": "Limited S",
         "role": "Stun"
+    },
+    "Tusks of Fury": {
+        "icon": "Weapon_S_1071",
+        "desc": "A versatile W-Engine based on a motorcycle tire that Big Daddy made for Caesar.",
+        "id": "14107",
+        "name": "Tusks of Fury",
+        "availability": "Limited S",
+        "role": "Stun"
+    },
+    "Item_Weapon_S_1161_Name": {
+        "icon": "Weapon_S_1161",
+        "desc": "Item_Weapon_S_1161_ShortDesc",
+        "id": "14116",
+        "name": "Item_Weapon_S_1161_Name",
+        "availability": "Limited S",
+        "role": "Stun"
+    },
+    "Item_Weapon_S_1221_Name": {
+        "icon": "Weapon_S_1221",
+        "desc": "Item_Weapon_S_1221_ShortDesc",
+        "id": "14122",
+        "name": "Item_Weapon_S_1221_Name",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Flamemaker Shaker": {
+        "icon": "Weapon_S_1171",
+        "desc": "Modified by Burnice, this W-Engine uses a special fuel as its power source to boost combustion performance to the max.",
+        "id": "14117",
+        "name": "Flamemaker Shaker",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Blazing Laurel": {
+        "icon": "Weapon_S_1161",
+        "desc": "A violent W-Engine that can ignite flames with a siphon. It deals simple and crude burn damage, encouraging relentless, bone-crushing follow-up attacks.",
+        "id": "14116",
+        "name": "Blazing Laurel",
+        "availability": "Limited S",
+        "role": "Stun"
+    },
+    "Timeweaver": {
+        "icon": "Weapon_S_1221",
+        "desc": "A new model of supercomputing W-Engine custom-made by HSO Section 6, equipped with the most elite calculation and analysis functions.",
+        "id": "14122",
+        "name": "Timeweaver",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Item_Weapon_A_Common_15_Name": {
+        "icon": "Weapon_A_Common_15",
+        "desc": "Item_Weapon_A_Common_15_ShortDesc",
+        "id": "13015",
+        "name": "Item_Weapon_A_Common_15_Name",
+        "availability": "A",
+        "role": "Damage Dealer"
+    },
+    "Item_Weapon_S_1201_Name": {
+        "icon": "Weapon_S_1201",
+        "desc": "Item_Weapon_S_1201_ShortDesc",
+        "id": "14120",
+        "name": "Item_Weapon_S_1201_Name",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Item_Weapon_S_1109_Name": {
+        "icon": "Weapon_S_1091",
+        "desc": "Item_Weapon_S_1091_ShortDesc",
+        "id": "14109",
+        "name": "Item_Weapon_S_1109_Name",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
     }
 }
