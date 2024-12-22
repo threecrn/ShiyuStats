@@ -494,5 +494,53 @@
         "name": "Item_Weapon_S_1109_Name",
         "availability": "Limited S",
         "role": "Damage Dealer"
+    },
+    "Item_Weapon_S_1091_Name": {
+        "icon": "Weapon_S_1091",
+        "desc": "Item_Weapon_S_1091_ShortDesc",
+        "id": "14109",
+        "name": "Item_Weapon_S_1091_Name",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Marcato Desire": {
+        "icon": "Weapon_A_Common_15",
+        "desc": "Gather 'round, mortals! Turn up the music!",
+        "id": "13015",
+        "name": "Marcato Desire",
+        "availability": "A",
+        "role": "Damage Dealer"
+    },
+    "Zanshin Herb Case": {
+        "icon": "Weapon_S_1201",
+        "desc": "Bitterness and pain beget hope, and he devours them all.",
+        "id": "14120",
+        "name": "Zanshin Herb Case",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Item_Weapon_S_1321_Name": {
+        "icon": "Weapon_S_1321",
+        "desc": "Item_Weapon_S_1321_ShortDesc",
+        "id": "14132",
+        "name": "Item_Weapon_S_1321_Name",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Hailstorm Shrine": {
+        "icon": "Weapon_S_1091",
+        "desc": "Hail falls before the shrine, waking her. The blizzard is coming.",
+        "id": "14109",
+        "name": "Hailstorm Shrine",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Item_Weapon_S_1311_Name": {
+        "icon": "Weapon_S_1311",
+        "desc": "Item_Weapon_S_1311_ShortDesc",
+        "id": "14131",
+        "name": "Item_Weapon_S_1311_Name",
+        "availability": "Limited S",
+        "role": "Support"
     }
 }

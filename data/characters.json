@@ -228,5 +228,35 @@
         "name": "Yanagi",
         "availability": "Limited S",
         "role": "Damage Dealer"
+    },
+    "Lighter": {
+        "element": "Fire",
+        "camp": "Sons of Calydon",
+        "icon": "IconRole26",
+        "desc": "...",
+        "id": "1161",
+        "name": "Lighter",
+        "availability": "Limited S",
+        "role": "Stun"
+    },
+    "Harumasa": {
+        "element": "Electric",
+        "camp": "Hollow Special Operations Section 6",
+        "icon": "IconRole35",
+        "desc": "...",
+        "id": "1201",
+        "name": "Harumasa",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Miyabi": {
+        "element": "Ice",
+        "camp": "Hollow Special Operations Section 6",
+        "icon": "IconRole13",
+        "desc": "...",
+        "id": "1091",
+        "name": "Miyabi",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
     }
 }

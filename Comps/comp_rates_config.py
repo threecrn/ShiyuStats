@@ -20,11 +20,11 @@ with open(str(os.getenv("REPO_PATH")) + "/data/w-engine.json") as char_file:
     LIGHT_CONES = json.load(char_file)
 
 # no need to add 2.2.1"_pf"
-RECENT_PHASE = "1.2.3"
+RECENT_PHASE = "1.3.2"
 
 # if no past phase, put invalid folder
 # add 2.2.1"_pf"
-past_phase = "1.2.2"
+past_phase = "1.3.1"
 global pf_mode
 global as_mode
 # if as: pf_mode = True

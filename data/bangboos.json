@@ -187,5 +187,12 @@
         "id": "54014",
         "name": "Agent Gulliver",
         "availability": "S"
+    },
+    "Brawlerboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole29.png",
+        "desc": "Ten thousand en-nah forward punches as practice per day!",
+        "id": "53015",
+        "name": "Brawlerboo",
+        "availability": "A"
     }
 }
