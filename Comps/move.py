@@ -5,8 +5,8 @@ import shutil
 sys.path.append("../Comps/")
 from comp_rates_config import past_phase
 
-past_phase_pf = past_phase
-past_phase = past_phase.replace("_as",'').replace("_pf",'')
+past_phase_da = past_phase
+past_phase = past_phase.replace("_as", "").replace("_da", "")
 
 source_dirs = [
     "../char_results",
@@ -18,13 +18,13 @@ source_dirs = [
 
 for source_dir in source_dirs:
     if source_dir == "../comp_results/json":
-        target_dir = "../comp_results/" + past_phase_pf + "/json"
+        target_dir = "../comp_results/" + past_phase_da + "/json"
     elif source_dir == "../mihomo":
         target_dir = "../mihomo/results_real"
     elif source_dir == "../mihomo/results_real":
         target_dir = source_dir + "/" + past_phase
     else:
-        target_dir = source_dir + "/" + past_phase_pf
+        target_dir = source_dir + "/" + past_phase_da
 
     file_names = listdir(source_dir)
     if not path.exists(target_dir):

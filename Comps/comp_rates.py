@@ -3,18 +3,43 @@ import time
 import char_usage as cu
 import statistics
 import os
+
 # from scipy.stats import skew, trim_mean
 from itertools import permutations
 from plyer import notification
 from composition import Composition
 from player_phase import PlayerPhase
-from archetypes import (find_archetype, findchars, resetfind)
-from comp_rates_config import (RECENT_PHASE, pf_mode, as_mode, skip_random, skip_self, alt_comps, run_commands, past_phase, whaleOnly, json, char_infographics, CHARACTERS, char_app_rate_threshold, app_rate_threshold, app_rate_threshold_round, json_threshold, archetype, duo_dict_len)
+from archetypes import find_archetype, findchars, resetfind
+from comp_rates_config import (
+    RECENT_PHASE,
+    da_mode,
+    as_mode,
+    skip_random,
+    skip_self,
+    alt_comps,
+    run_commands,
+    past_phase,
+    whaleOnly,
+    json,
+    char_infographics,
+    CHARACTERS,
+    char_app_rate_threshold,
+    app_rate_threshold,
+    app_rate_threshold_round,
+    json_threshold,
+    archetype,
+    duo_dict_len,
+)
+
 
 def main():
     for make_path in [
-        "../comp_results", "../comp_results/json", "../mihomo",
-        "../mihomo/results_real", "../char_results", "../rogue_results"
+        "../comp_results",
+        "../comp_results/json",
+        "../mihomo",
+        "../mihomo/results_real",
+        "../char_results",
+        "../rogue_results",
     ]:
         if not os.path.exists(make_path):
             os.makedirs(make_path)
@@ -24,8 +49,8 @@ def main():
 
     global self_uids
     if os.path.isfile("../../uids.csv"):
-        with open("../../uids.csv", 'r', encoding='UTF8') as f:
-            reader = csv.reader(f, delimiter=',')
+        with open("../../uids.csv", "r", encoding="UTF8") as f:
+            reader = csv.reader(f, delimiter=",")
             self_uids = list(reader)[0]
     else:
         self_uids = []
@@ -33,8 +58,8 @@ def main():
     pf_filename = ""
     if as_mode:
         pf_filename = "_as"
-    elif pf_mode:
-        pf_filename = "_pf"
+    elif da_mode:
+        pf_filename = "_da"
     if os.path.exists("../data/raw_csvs_real/"):
         stats = open("../data/raw_csvs_real/" + RECENT_PHASE + pf_filename + ".csv")
     else:
@@ -44,7 +69,7 @@ def main():
     reader = csv.reader(stats)
     next(reader)
     all_comps = []
-    if pf_mode:
+    if da_mode:
         all_chambers = ["1", "2", "3", "4"]
     else:
         all_chambers = ["1", "2", "3", "4", "5", "6", "7"]
@@ -74,8 +99,9 @@ def main():
             if line[0] in uid_freq_comp:
                 skip_uid = True
                 # print("duplicate UID in comp: " + line[0])
-            elif (not pf_mode and int(''.join(filter(str.isdigit, line[1]))) > 0) or (
-                pf_mode and int(''.join(filter(str.isdigit, line[1]))) > 3):
+            elif (not da_mode and int("".join(filter(str.isdigit, line[1]))) > 0) or (
+                da_mode and int("".join(filter(str.isdigit, line[1]))) > 3
+            ):
                 uid_freq_comp[line[0]] = 1
                 if line[0] in self_uids:
                     self_freq_comp[line[0]] = 1
@@ -95,8 +121,16 @@ def main():
             #     if line[i] != "":
             #         cons_chars_temp.append(line[i])
             if comp_chars_temp:
-                comp = Composition(line[0], comp_chars_temp, RECENT_PHASE, star_num, star_num,
-                                   stage + "-" + str(line[2]), alt_comps, line[7])
+                comp = Composition(
+                    line[0],
+                    comp_chars_temp,
+                    RECENT_PHASE,
+                    star_num,
+                    star_num,
+                    stage + "-" + str(line[2]),
+                    alt_comps,
+                    line[7],
+                )
                 # if int(stage) > 7:
                 #     if line[0] not in dps_freq_comp:
                 #         dps_freq_comp[line[0]] = set()
@@ -129,15 +163,15 @@ def main():
         avg_round_stage[chamber_num] = []
     global valid_duo_dps
     if os.path.exists("../char_results/duo_check.csv"):
-        with open("../char_results/duo_check.csv", 'r') as f:
-            valid_duo_dps = list(csv.reader(f, delimiter=','))
+        with open("../char_results/duo_check.csv", "r") as f:
+            valid_duo_dps = list(csv.reader(f, delimiter=","))
     else:
         valid_duo_dps = []
     # max_weight = 0
     sample_size["all"] = {
         "total": len(uid_freq_comp),
         "self_report": len(self_freq_comp),
-        "random": len(uid_freq_comp) - len(self_freq_comp)
+        "random": len(uid_freq_comp) - len(self_freq_comp),
     }
 
     # global stage_weight
@@ -176,7 +210,9 @@ def main():
                     all_players[RECENT_PHASE][last_uid] = player
                     last_uid = line[0]
                     player = PlayerPhase(last_uid, RECENT_PHASE)
-                player.add_character(line[2], line[3], line[4], line[5], line[6], line[7])
+                player.add_character(
+                    line[2], line[3], line[4], line[5], line[6], line[7]
+                )
     all_players[RECENT_PHASE][last_uid] = player
 
     for comp in all_comps:
@@ -184,7 +220,7 @@ def main():
             all_players[comp.phase][comp.player] = PlayerPhase(comp.player, comp.phase)
         all_players[comp.phase][comp.player].add_comp(comp)
 
-    csv_writer = csv.writer(open("../char_results/uids.csv", 'w', newline=''))
+    csv_writer = csv.writer(open("../char_results/uids.csv", "w", newline=""))
     for uid in uid_freq_comp.keys():
         csv_writer.writerow([uid])
 
@@ -193,7 +229,7 @@ def main():
 
     global usage
     global one_stage
-    if pf_mode:
+    if da_mode:
         three_stages = ["4-1", "4-2"]
         three_double_stages = [["4-1", "4-2"]]
         one_stage = ["4-1", "4-2"]
@@ -204,9 +240,47 @@ def main():
         # three_stages = ["5-1", "5-2", "6-1", "6-2", "7-1", "7-2"]
         # three_double_stages = [["5-1", "5-2"], ["6-1", "6-2"], ["7-1", "7-2"]]
 
-        three_stages = ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2", "5-1", "5-2", "6-1", "6-2", "7-1", "7-2"]
-        three_double_stages = [["1-1", "1-2"], ["2-1", "2-2"], ["3-1", "3-2"], ["4-1", "4-2"], ["5-1", "5-2"], ["6-1", "6-2"], ["7-1", "7-2"]]
-        all_stages = ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2", "5-1", "5-2", "6-1", "6-2", "7-1", "7-2"]
+        three_stages = [
+            "1-1",
+            "1-2",
+            "2-1",
+            "2-2",
+            "3-1",
+            "3-2",
+            "4-1",
+            "4-2",
+            "5-1",
+            "5-2",
+            "6-1",
+            "6-2",
+            "7-1",
+            "7-2",
+        ]
+        three_double_stages = [
+            ["1-1", "1-2"],
+            ["2-1", "2-2"],
+            ["3-1", "3-2"],
+            ["4-1", "4-2"],
+            ["5-1", "5-2"],
+            ["6-1", "6-2"],
+            ["7-1", "7-2"],
+        ]
+        all_stages = [
+            "1-1",
+            "1-2",
+            "2-1",
+            "2-2",
+            "3-1",
+            "3-2",
+            "4-1",
+            "4-2",
+            "5-1",
+            "5-2",
+            "6-1",
+            "6-2",
+            "7-1",
+            "7-2",
+        ]
         # all_double_stages = [["1-1", "1-2"], ["2-1", "2-2"], ["3-1", "3-2"], ["4-1", "4-2"], ["5-1", "5-2"], ["6-1", "6-2"], ["7-1", "7-2"]]
 
     if "Char usages all stages" in run_commands:
@@ -215,13 +289,21 @@ def main():
         print("done char: ", (cur_time - start_time), "s")
 
     if "Duos check" in run_commands:
-        usage = char_usages(all_players, archetype, past_phase, three_stages, filename="all")
-        duo_usages(all_comps, all_players, usage, archetype, three_stages, check_duo=True)
+        usage = char_usages(
+            all_players, archetype, past_phase, three_stages, filename="all"
+        )
+        duo_usages(
+            all_comps, all_players, usage, archetype, three_stages, check_duo=True
+        )
 
     if "Char usages 8 - 10" in run_commands:
-        usage = char_usages(all_players, archetype, past_phase, one_stage, filename="all")
+        usage = char_usages(
+            all_players, archetype, past_phase, one_stage, filename="all"
+        )
         if not whaleOnly:
-            duo_usages(all_comps, all_players, usage, archetype, one_stage, check_duo=False)
+            duo_usages(
+                all_comps, all_players, usage, archetype, one_stage, check_duo=False
+            )
         # appearances = {}
         # rounds = {}
         # for star_num in usage:
@@ -248,30 +330,48 @@ def main():
         print("done char 8 - 10: ", (cur_time - start_time), "s")
 
     if "Char usages for each stage" in run_commands:
-        char_chambers = {
-            "all": {}
-        }
+        char_chambers = {"all": {}}
         for star_num in usage:
             char_chambers["all"][star_num] = usage[star_num].copy()
         # for room in all_stages:
         for room in three_stages:
-            char_chambers[room] = char_usages(all_players, archetype, past_phase, [room], filename=room, offset=2)
+            char_chambers[room] = char_usages(
+                all_players, archetype, past_phase, [room], filename=room, offset=2
+            )
         appearances = {}
         rounds = {}
         for room in char_chambers:
             appearances[room] = {}
             rounds[room] = {}
             for star_num in char_chambers[room]:
-                appearances[room][star_num] = dict(sorted(char_chambers[room][star_num].items(), key=lambda t: t[1]["app"], reverse=True))
-                if pf_mode:
-                    rounds[room][star_num] = dict(sorted(char_chambers[room][star_num].items(), key=lambda t: t[1]["round"], reverse=False))
+                appearances[room][star_num] = dict(
+                    sorted(
+                        char_chambers[room][star_num].items(),
+                        key=lambda t: t[1]["app"],
+                        reverse=True,
+                    )
+                )
+                if da_mode:
+                    rounds[room][star_num] = dict(
+                        sorted(
+                            char_chambers[room][star_num].items(),
+                            key=lambda t: t[1]["round"],
+                            reverse=False,
+                        )
+                    )
                 else:
-                    rounds[room][star_num] = dict(sorted(char_chambers[room][star_num].items(), key=lambda t: t[1]["round"], reverse=True))
+                    rounds[room][star_num] = dict(
+                        sorted(
+                            char_chambers[room][star_num].items(),
+                            key=lambda t: t[1]["round"],
+                            reverse=True,
+                        )
+                    )
                 for char in char_chambers[room][star_num]:
                     appearances[room][star_num][char] = {
                         "app": char_chambers[room][star_num][char]["app"],
                         "rarity": char_chambers[room][star_num][char]["rarity"],
-                        "diff": char_chambers[room][star_num][char]["diff"]
+                        "diff": char_chambers[room][star_num][char]["diff"],
                     }
                     if char_chambers[room][star_num][char]["round"] == 0:
                         continue
@@ -279,41 +379,59 @@ def main():
                         "round": char_chambers[room][star_num][char]["round"],
                         # "prev_round": prev_chambers[room][str(star_num)][char],
                         "rarity": char_chambers[room][star_num][char]["rarity"],
-                        "diff": char_chambers[room][star_num][char]["diff_rounds"]
+                        "diff": char_chambers[room][star_num][char]["diff_rounds"],
                     }
         if not whaleOnly:
             with open("../char_results/appearance.json", "w") as out_file:
-                out_file.write(json.dumps(appearances,indent=2))
+                out_file.write(json.dumps(appearances, indent=2))
             with open("../char_results/rounds.json", "w") as out_file:
-                out_file.write(json.dumps(rounds,indent=2))
+                out_file.write(json.dumps(rounds, indent=2))
         cur_time = time.time()
         print("done char stage: ", (cur_time - start_time), "s")
 
     if "Char usages for each stage (combined)" in run_commands:
-        char_chambers = {
-            "all": {}
-        }
+        char_chambers = {"all": {}}
         for star_num in usage:
             char_chambers["all"][star_num] = usage[star_num].copy()
         # for room in all_double_stages:
         for room in three_double_stages:
-            char_chambers[room[0]] = char_usages(all_players, archetype, past_phase, room, filename=room[0].split('-')[0])
+            char_chambers[room[0]] = char_usages(
+                all_players, archetype, past_phase, room, filename=room[0].split("-")[0]
+            )
         appearances = {}
         rounds = {}
         for room in char_chambers:
             appearances[room] = {}
             rounds[room] = {}
             for star_num in char_chambers[room]:
-                appearances[room][star_num] = dict(sorted(char_chambers[room][star_num].items(), key=lambda t: t[1]["app"], reverse=True))
-                if pf_mode:
-                    rounds[room][star_num] = dict(sorted(char_chambers[room][star_num].items(), key=lambda t: t[1]["round"], reverse=False))
+                appearances[room][star_num] = dict(
+                    sorted(
+                        char_chambers[room][star_num].items(),
+                        key=lambda t: t[1]["app"],
+                        reverse=True,
+                    )
+                )
+                if da_mode:
+                    rounds[room][star_num] = dict(
+                        sorted(
+                            char_chambers[room][star_num].items(),
+                            key=lambda t: t[1]["round"],
+                            reverse=False,
+                        )
+                    )
                 else:
-                    rounds[room][star_num] = dict(sorted(char_chambers[room][star_num].items(), key=lambda t: t[1]["round"], reverse=True))
+                    rounds[room][star_num] = dict(
+                        sorted(
+                            char_chambers[room][star_num].items(),
+                            key=lambda t: t[1]["round"],
+                            reverse=True,
+                        )
+                    )
                 for char in char_chambers[room][star_num]:
                     appearances[room][star_num][char] = {
                         "app": char_chambers[room][star_num][char]["app"],
                         "rarity": char_chambers[room][star_num][char]["rarity"],
-                        "diff": char_chambers[room][star_num][char]["diff"]
+                        "diff": char_chambers[room][star_num][char]["diff"],
                     }
                     if char_chambers[room][star_num][char]["round"] == 0:
                         continue
@@ -321,13 +439,13 @@ def main():
                         "round": char_chambers[room][star_num][char]["round"],
                         # "prev_round": prev_chambers[room][str(star_num)][char],
                         "rarity": char_chambers[room][star_num][char]["rarity"],
-                        "diff": char_chambers[room][star_num][char]["diff_rounds"]
+                        "diff": char_chambers[room][star_num][char]["diff_rounds"],
                     }
         if not whaleOnly:
             with open("../char_results/appearance_combine.json", "w") as out_file:
-                out_file.write(json.dumps(appearances,indent=2))
+                out_file.write(json.dumps(appearances, indent=2))
             with open("../char_results/rounds_combine.json", "w") as out_file:
-                out_file.write(json.dumps(rounds,indent=2))
+                out_file.write(json.dumps(rounds, indent=2))
         cur_time = time.time()
         print("done char stage (combine): ", (cur_time - start_time), "s")
 
@@ -350,36 +468,50 @@ def main():
 
         if not whaleOnly:
             with open("../char_results/demographic.json", "w") as out_file:
-                out_file.write(json.dumps(sample_size,indent=2))
+                out_file.write(json.dumps(sample_size, indent=2))
         cur_time = time.time()
         print("done comp stage: ", (cur_time - start_time), "s")
 
     if "Character specific infographics" in run_commands:
-        comp_usages(all_comps, all_players, one_stage, filename=char_infographics, info_char=True, floor=True)
+        comp_usages(
+            all_comps,
+            all_players,
+            one_stage,
+            filename=char_infographics,
+            info_char=True,
+            floor=True,
+        )
         cur_time = time.time()
         print("done char infographics: ", (cur_time - start_time), "s")
 
-    if "Comp usage 8 - 10" in run_commands and "Comp usages for each stage" in run_commands and not whaleOnly:
+    if (
+        "Comp usage 8 - 10" in run_commands
+        and "Comp usages for each stage" in run_commands
+        and not whaleOnly
+    ):
         with open("../comp_results/json/all_comps.json", "w") as out_file:
-            out_file.write(json.dumps(all_comps_json,indent=2))
+            out_file.write(json.dumps(all_comps_json, indent=2))
 
-    if __name__=="__main__":
+    if __name__ == "__main__" and notification.notify:
         notification.notify(
-            title = "Finished",
+            title="Finished",
             message="Finished executing comp_rates",
             # displaying time
-            timeout=2
+            timeout=2,
         )
         # waiting time
         time.sleep(2)
 
-def comp_usages(comps,
-                players,
-                rooms,
-                filename="comp_usages",
-                offset=1,
-                info_char=False,
-                floor=False):
+
+def comp_usages(
+    comps,
+    players,
+    rooms,
+    filename="comp_usages",
+    offset=1,
+    info_char=False,
+    floor=False,
+):
     global top_comps_app
     top_comps_app = {}
     comps_dict = used_comps(players, comps, rooms, filename)
@@ -387,9 +519,10 @@ def comp_usages(comps,
     comp_usages_write(comps_dict, filename, floor, info_char, True)
     comp_usages_write(comps_dict, filename, floor, info_char, False)
 
+
 def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE):
     # Returns the dictionary of all the comps used and how many times they were used
-    comps_dict = [{},{},{},{},{}]
+    comps_dict = [{}, {}, {}, {}, {}]
     # error_uids = []
     # lessFour = []
     # lessFourComps = {}
@@ -413,21 +546,22 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE):
             if comp.player in self_uids:
                 total_self_comps += 1
             if len(comp_tuple) < 3:
-            #     lessFour.append(comp.player)
+                #     lessFour.append(comp.player)
                 continue
 
             whale_comp = False
             dps_count = 0
-            for char in range (3):
+            for char in range(3):
                 if comp_tuple[char] in players[phase][comp.player].owned:
                     # if players[phase][comp.player].owned[comp_tuple[char]]["level"] > 51:
                     #     whale_comp = True
                     if CHARACTERS[comp_tuple[char]]["availability"] == "Limited S":
-                    # if comp_tuple[char] in players[phase][comp.player].owned and comp_tuple[char] == "Blade":
+                        # if comp_tuple[char] in players[phase][comp.player].owned and comp_tuple[char] == "Blade":
                         if (
-                            players[phase][comp.player].owned[comp_tuple[char]]["cons"] > 0
-                        # ) or (
-                        #     whaleSigWeap and players[phase][comp.player].owned[comp_tuple[char]]["weapon"] in sigWeaps
+                            players[phase][comp.player].owned[comp_tuple[char]]["cons"]
+                            > 0
+                            # ) or (
+                            #     whaleSigWeap and players[phase][comp.player].owned[comp_tuple[char]]["weapon"] in sigWeaps
                         ):
                             whale_comp = True
                     # if comp.char_cons[comp_tuple[char]] > 0:
@@ -464,23 +598,40 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE):
                         "alt_comp_name": comp.alt_comp_name,
                         "dual_comp_name": comp.dual_comp_name,
                         "star_num": comp.star_num,
-                        "round_num": {"1": [], "2": [], "3": [], "4": [], "5": [], "6": [], "7": [], "8": [], "9": [], "10": [], "11": [], "12": []},
+                        "round_num": {
+                            "1": [],
+                            "2": [],
+                            "3": [],
+                            "4": [],
+                            "5": [],
+                            "6": [],
+                            "7": [],
+                            "8": [],
+                            "9": [],
+                            "10": [],
+                            "11": [],
+                            "12": [],
+                        },
                         "whale_count": set(),
                         "players": set(),
                     }
-                    for char in range (3):
+                    for char in range(3):
                         comps_dict[star_threshold][comp_tuple][comp_tuple[char]] = {
-                            "weapon" : {},
-                            "artifacts" : {},
-                            "cons": {}
+                            "weapon": {},
+                            "artifacts": {},
+                            "cons": {},
                         }
-                        for i in range (7):
-                            comps_dict[star_threshold][comp_tuple][comp_tuple[char]]["cons"][str(i)] = 0
+                        for i in range(7):
+                            comps_dict[star_threshold][comp_tuple][comp_tuple[char]][
+                                "cons"
+                            ][str(i)] = 0
                 comps_dict[star_threshold][comp_tuple]["uses"] += 1
                 # comps_dict[star_threshold][comp_tuple]["round_num"][list(str(comp.room).split("-"))[0]].append(comp.round_num)
                 comps_dict[star_threshold][comp_tuple]["players"].add(comp.player)
                 if whale_comp:
-                    comps_dict[star_threshold][comp_tuple]["whale_count"].add(comp.player)
+                    comps_dict[star_threshold][comp_tuple]["whale_count"].add(
+                        comp.player
+                    )
                 if whale_comp == whaleOnly:
                     # for i in range (3):
                     #     if comp_tuple[i] in players[phase][comp.player].owned:
@@ -494,17 +645,24 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE):
                     #             else:
                     #                 comps_dict[star_threshold][comp_tuple][comp_tuple[i]]["artifacts"][players[phase][comp.player].owned[comp_tuple[i]]["artifacts"]] = 1
                     #         comps_dict[star_threshold][comp_tuple][comp_tuple[i]]["cons"][str(players[phase][comp.player].owned[comp_tuple[i]]["cons"])] += 1
-                    comps_dict[star_threshold][comp_tuple]["round_num"][list(str(comp.room).split("-"))[0]].append(comp.round_num)
+                    comps_dict[star_threshold][comp_tuple]["round_num"][
+                        list(str(comp.room).split("-"))[0]
+                    ].append(comp.round_num)
                     if star_threshold == 4 and dps_count == 1:
-                        avg_round_stage[list(str(comp.room).split("-"))[0]].append(comp.round_num)
-                        # if pf_mode:
+                        avg_round_stage[list(str(comp.room).split("-"))[0]].append(
+                            comp.round_num
+                        )
+                        # if da_mode:
                         #     if "buff_" + comp.buff not in sample_size[list(str(comp.room).split("-"))[0]]:
                         #         sample_size[list(str(comp.room).split("-"))[0]]["buff_" + comp.buff] = 0
                         #     sample_size[list(str(comp.room).split("-"))[0]]["buff_" + comp.buff] += 1
 
     for stage in avg_round_stage:
-        sample_size[stage]["avg_round"] = round(statistics.mean(avg_round_stage[stage] if avg_round_stage[stage] else [0]), 2)
-            # "3_star": three_star_sample[stage]
+        sample_size[stage]["avg_round"] = round(
+            statistics.mean(avg_round_stage[stage] if avg_round_stage[stage] else [0]),
+            2,
+        )
+        # "3_star": three_star_sample[stage]
         # if sample_size[stage]["avg_round_stage"] > max_weight:
         #     max_weight = sample_size[stage]["avg_round_stage"]
 
@@ -527,8 +685,9 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE):
     #         print("    Dual DPS: " + str(dual_percent))
     #         print()
     if whaleOnly:
-        print("Whale percentage: " + str(whale_count/total_comps))
+        print("Whale percentage: " + str(whale_count / total_comps))
     return comps_dict
+
 
 def rank_usages(comps_dict, rooms, owns_offset=1):
     # Calculate the usage rate and sort the comps according to it
@@ -539,23 +698,37 @@ def rank_usages(comps_dict, rooms, owns_offset=1):
             avg_round = []
             uses_room = {}
 
-            for room_num in range(1,8):
-                if (comps_dict[star_threshold][comp]["round_num"][str(room_num)]):
-                    uses_room[room_num] = len(comps_dict[star_threshold][comp]["round_num"][str(room_num)])
+            for room_num in range(1, 8):
+                if comps_dict[star_threshold][comp]["round_num"][str(room_num)]:
+                    uses_room[room_num] = len(
+                        comps_dict[star_threshold][comp]["round_num"][str(room_num)]
+                    )
                     if comps_dict[star_threshold][comp]["uses"] > 1:
                         # skewness = skew(comps_dict[star_threshold][comp]["round_num"][str(room_num)], axis=0, bias=True)
                         # if abs(skewness) > 0.8:
                         #     avg_round.append(trim_mean(comps_dict[star_threshold][comp]["round_num"][str(room_num)], 0.25))
                         # else:
-                        avg_round.append(statistics.mean(comps_dict[star_threshold][comp]["round_num"][str(room_num)]))
+                        avg_round.append(
+                            statistics.mean(
+                                comps_dict[star_threshold][comp]["round_num"][
+                                    str(room_num)
+                                ]
+                            )
+                        )
                     else:
-                        avg_round.append(statistics.mean(comps_dict[star_threshold][comp]["round_num"][str(room_num)]))
+                        avg_round.append(
+                            statistics.mean(
+                                comps_dict[star_threshold][comp]["round_num"][
+                                    str(room_num)
+                                ]
+                            )
+                        )
                     # avg_round.append(statistics.mean(comps_dict[star_threshold][comp]["round_num"][str(room_num)]))
                     # avg_round += comps_dict[star_threshold][comp]["round_num"][str(room_num)]
 
             comps_dict[star_threshold][comp]["is_count_round"] = True
             comps_dict[star_threshold][comp]["is_count_round_print"] = True
-            if (rooms == one_stage) or pf_mode and rooms == ["4-1", "4-2"]:
+            if (rooms == one_stage) or da_mode and rooms == ["4-1", "4-2"]:
                 for room_num in uses_room:
                     if whaleOnly:
                         if uses_room[room_num] < 10:
@@ -575,14 +748,23 @@ def rank_usages(comps_dict, rooms, owns_offset=1):
 
             if avg_round:
                 avg_round = round(statistics.mean(avg_round), 2)
-                if pf_mode:
+                if da_mode:
                     avg_round = round(avg_round)
             else:
                 avg_round = 1
-                if pf_mode:
+                if da_mode:
                     avg_round = 0
 
-            app = int(100.0 * comps_dict[star_threshold][comp]["uses"] / (total_comps * owns_offset) * 200 + .5) / 100.0
+            app = (
+                int(
+                    100.0
+                    * comps_dict[star_threshold][comp]["uses"]
+                    / (total_comps * owns_offset)
+                    * 200
+                    + 0.5
+                )
+                / 100.0
+            )
             comps_dict[star_threshold][comp]["app_rate"] = app
             comps_dict[star_threshold][comp]["round"] = avg_round
             # rate = int(100.0 * comps_dict[star_threshold][comp]["uses"] / comps_dict[star_threshold][comp]["owns"] * 100 + .5) / 100.0
@@ -594,7 +776,9 @@ def rank_usages(comps_dict, rooms, owns_offset=1):
         rates.sort(reverse=True)
         # rounds.sort(reverse=True)
         for comp in comps_dict[star_threshold]:
-            comps_dict[star_threshold][comp]["app_rank"] = rates.index(comps_dict[star_threshold][comp]["app_rate"]) + 1
+            comps_dict[star_threshold][comp]["app_rank"] = (
+                rates.index(comps_dict[star_threshold][comp]["app_rate"]) + 1
+            )
             # comps_dict[star_threshold][comp]["round_rank"] = rounds.index(comps_dict[star_threshold][comp]["round"]) + 1
 
     # # To check the list of weapons and artifacts for a comp
@@ -620,15 +804,13 @@ def rank_usages(comps_dict, rooms, owns_offset=1):
     #             print("   " + cons + ": " + str(comps_dict[4][comp_tuple][i]["cons"][cons]))
     #         print()
 
-def duo_usages(comps,
-                players,
-                usage,
-                archetype,
-                rooms,
-                check_duo=False,
-                filename="duo_usages"):
+
+def duo_usages(
+    comps, players, usage, archetype, rooms, check_duo=False, filename="duo_usages"
+):
     duos_dict = used_duos(players, comps, rooms, usage, check_duo)
     duo_write(duos_dict, usage, filename, archetype, check_duo)
+
 
 def used_duos(players, comps, rooms, usage, check_duo, phase=RECENT_PHASE):
     # Returns dictionary of all the duos used and how many times they were used
@@ -665,20 +847,33 @@ def used_duos(players, comps, rooms, usage, check_duo, phase=RECENT_PHASE):
             if duo not in duos_dict:
                 duos_dict[duo] = {
                     "app_flat": 0,
-                    "round_num": {"1": [], "2": [], "3": [], "4": [], "5": [], "6": [], "7": [], "8": [], "9": [], "10": [], "11": [], "12": []},
+                    "round_num": {
+                        "1": [],
+                        "2": [],
+                        "3": [],
+                        "4": [],
+                        "5": [],
+                        "6": [],
+                        "7": [],
+                        "8": [],
+                        "9": [],
+                        "10": [],
+                        "11": [],
+                        "12": [],
+                    },
                 }
             duos_dict[duo]["app_flat"] += 1
 
             if is_triple_dps and check_duo:
                 continue
             if not whale_comp:
-                duos_dict[duo]["round_num"][list(str(comp.room).split("-"))[0]].append(comp.round_num)
+                duos_dict[duo]["round_num"][list(str(comp.room).split("-"))[0]].append(
+                    comp.round_num
+                )
 
-    sorted_duos = (sorted(
-        duos_dict.items(),
-        key = lambda t: t[1]["app_flat"],
-        reverse=True
-    ))
+    sorted_duos = sorted(
+        duos_dict.items(), key=lambda t: t[1]["app_flat"], reverse=True
+    )
     duos_dict = {k: v for k, v in sorted_duos}
 
     sorted_duos = {}
@@ -686,11 +881,13 @@ def used_duos(players, comps, rooms, usage, check_duo, phase=RECENT_PHASE):
         if usage[4][duo[0]]["app_flat"] > 0:
             # Calculate the appearance rate of the duo by dividing the appearance count
             # of the duo with the appearance count of the first character
-            duos_dict[duo]["uses"] = round(duos_dict[duo]["app_flat"] * 100 / usage[4][duo[0]]["app_flat"], 2)
+            duos_dict[duo]["uses"] = round(
+                duos_dict[duo]["app_flat"] * 100 / usage[4][duo[0]]["app_flat"], 2
+            )
             duos_dict[duo]["app_flat"] = 0
             avg_round = []
-            for room_num in range(1,8):
-                if (duos_dict[duo]["round_num"][str(room_num)]):
+            for room_num in range(1, 8):
+                if duos_dict[duo]["round_num"][str(room_num)]:
                     # duos_dict[duo]["app_flat"] += len(duos_dict[duo]["round_num"][str(room_num)])
                     # if len(duos_dict[duo]["round_num"][str(room_num)]) > 1:
                     #     skewness = skew(duos_dict[duo]["round_num"][str(room_num)], axis=0, bias=True)
@@ -704,34 +901,45 @@ def used_duos(players, comps, rooms, usage, check_duo, phase=RECENT_PHASE):
                     avg_round += duos_dict[duo]["round_num"][str(room_num)]
             if avg_round:
                 duos_dict[duo]["round_num"] = round(statistics.mean(avg_round), 2)
-                if pf_mode:
+                if da_mode:
                     duos_dict[duo]["round_num"] = round(duos_dict[duo]["round_num"])
             else:
                 duos_dict[duo]["round_num"] = 1
-                if pf_mode:
+                if da_mode:
                     duos_dict[duo]["round_num"] = 0
             if duo[0] not in sorted_duos:
                 sorted_duos[duo[0]] = []
-            sorted_duos[duo[0]].append([duo[1], duos_dict[duo]["uses"], duos_dict[duo]["round_num"], duos_dict[duo]["app_flat"]])
+            sorted_duos[duo[0]].append(
+                [
+                    duo[1],
+                    duos_dict[duo]["uses"],
+                    duos_dict[duo]["round_num"],
+                    duos_dict[duo]["app_flat"],
+                ]
+            )
 
     return sorted_duos
 
-def char_usages(players,
-                archetype,
-                past_phase,
-                rooms,
-                filename="char_usages",
-                offset=1,
-                info_char=False):
+
+def char_usages(
+    players,
+    archetype,
+    past_phase,
+    rooms,
+    filename="char_usages",
+    offset=1,
+    info_char=False,
+):
     # own = cu.ownership(players)
-    app = cu.appearances(players, chambers = rooms, offset = offset, info_char = info_char)
-    chars_dict = cu.usages(app, past_phase, chambers = rooms, offset = offset)
+    app = cu.appearances(players, chambers=rooms, offset=offset, info_char=info_char)
+    chars_dict = cu.usages(app, past_phase, chambers=rooms, offset=offset)
     # # Print the list of weapons and artifacts used for a character
     # if floor:
     #     print(app[RECENT_PHASE][filename])
-    if (not pf_mode and rooms == one_stage) or (pf_mode and rooms == ["4-1", "4-2"]):
+    if (not da_mode and rooms == one_stage) or (da_mode and rooms == ["4-1", "4-2"]):
         char_usages_write(chars_dict[4], filename, archetype)
     return chars_dict
+
 
 def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
     out_json = []
@@ -748,12 +956,30 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
     # Sort the comps according to their usage rate
     for star_threshold in range(1, 5):
         if sort_app:
-            comps_dict[star_threshold] = dict(sorted(comps_dict[star_threshold].items(), key=lambda t: t[1]["app_rate"], reverse=True))
+            comps_dict[star_threshold] = dict(
+                sorted(
+                    comps_dict[star_threshold].items(),
+                    key=lambda t: t[1]["app_rate"],
+                    reverse=True,
+                )
+            )
         else:
-            if pf_mode:
-                comps_dict[star_threshold] = dict(sorted(comps_dict[star_threshold].items(), key=lambda t: t[1]["round"], reverse=False))
+            if da_mode:
+                comps_dict[star_threshold] = dict(
+                    sorted(
+                        comps_dict[star_threshold].items(),
+                        key=lambda t: t[1]["round"],
+                        reverse=False,
+                    )
+                )
             else:
-                comps_dict[star_threshold] = dict(sorted(comps_dict[star_threshold].items(), key=lambda t: t[1]["round"], reverse=True))
+                comps_dict[star_threshold] = dict(
+                    sorted(
+                        comps_dict[star_threshold].items(),
+                        key=lambda t: t[1]["round"],
+                        reverse=True,
+                    )
+                )
         comp_names = []
         dual_comp_names = []
 
@@ -766,16 +992,34 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
                 alt_comp_name = comps_dict[star_threshold][comp]["alt_comp_name"]
                 # Only one variation of each comp name is included,
                 # unless if it's used for a character's infographic
-                if (((pf_mode and not as_mode) or ("No Support" not in comp_name)) and
-                    comp_name not in comp_names and comp_name not in dual_comp_names and dual_comp_name not in comp_names and alt_comp_name not in comp_names and
-                    comps_dict[star_threshold][comp]["round"] != 1 and comps_dict[star_threshold][comp]["round"] != 0) or comp_name == "-" or info_char:
+                if (
+                    (
+                        ((da_mode and not as_mode) or ("No Support" not in comp_name))
+                        and comp_name not in comp_names
+                        and comp_name not in dual_comp_names
+                        and dual_comp_name not in comp_names
+                        and alt_comp_name not in comp_names
+                        and comps_dict[star_threshold][comp]["round"] != 1
+                        and comps_dict[star_threshold][comp]["round"] != 0
+                    )
+                    or comp_name == "-"
+                    or info_char
+                ):
                     if sort_app:
-                        top_comps_app[comp_name] = comps_dict[star_threshold][comp]["app_rate"]
+                        top_comps_app[comp_name] = comps_dict[star_threshold][comp][
+                            "app_rate"
+                        ]
                     # elif comp_name in top_comps_app:
                     #     if comps_dict[star_threshold][comp]["is_count_round"] and comps_dict[star_threshold][comp]["app_rate"] < top_comps_app[comp_name]/5:
                     #         continue
-                    if comps_dict[star_threshold][comp]["is_count_round"] and (comps_dict[star_threshold][comp]["app_rate"] >= threshold
-                        or (info_char and comps_dict[star_threshold][comp]["app_rate"] > char_app_rate_threshold)):
+                    if comps_dict[star_threshold][comp]["is_count_round"] and (
+                        comps_dict[star_threshold][comp]["app_rate"] >= threshold
+                        or (
+                            info_char
+                            and comps_dict[star_threshold][comp]["app_rate"]
+                            > char_app_rate_threshold
+                        )
+                    ):
                         if alt_comp_name != "-":
                             temp_comp_name = alt_comp_name
                         else:
@@ -786,9 +1030,16 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
                             "char_1": comp[0],
                             "char_2": comp[1],
                             "char_3": comp[2],
-                            "app_rate": str(comps_dict[star_threshold][comp]["app_rate"]) + "%",
+                            "app_rate": str(
+                                comps_dict[star_threshold][comp]["app_rate"]
+                            )
+                            + "%",
                             "avg_round": str(
-                                round(comps_dict[star_threshold][comp]["round"] / 1000, 2) if (pf_mode and not as_mode) else comps_dict[star_threshold][comp]["round"]
+                                round(
+                                    comps_dict[star_threshold][comp]["round"] / 1000, 2
+                                )
+                                if (da_mode and not as_mode)
+                                else comps_dict[star_threshold][comp]["round"]
                             ),
                             # "own_rate": str(comps_dict[star_threshold][comp]["own_rate"]) + "%",
                             # "usage_rate": str(comps_dict[star_threshold][comp]["usage_rate"]) + "%"
@@ -814,9 +1065,15 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
                                 variations[comp_name] += 1
                                 out_comps_append["variation"] = variations[comp_name]
 
-                        out_comps_append["whale_count"] = str(len(comps_dict[star_threshold][comp]["whale_count"]))
-                        out_comps_append["app_flat"] = str(len(comps_dict[star_threshold][comp]["players"]))
-                        out_comps_append["uses"] = str(comps_dict[star_threshold][comp]["uses"])
+                        out_comps_append["whale_count"] = str(
+                            len(comps_dict[star_threshold][comp]["whale_count"])
+                        )
+                        out_comps_append["app_flat"] = str(
+                            len(comps_dict[star_threshold][comp]["players"])
+                        )
+                        out_comps_append["uses"] = str(
+                            comps_dict[star_threshold][comp]["uses"]
+                        )
 
                         if info_char:
                             if comp_name not in comp_names:
@@ -862,12 +1119,17 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
                         # "own_rate": str(comps_dict[star_threshold][comp]["own_rate"]) + "%",
                         # "usage_rate": str(comps_dict[star_threshold][comp]["usage_rate"]) + "%"
                     }
-                    outvar_comps_append["app_rate"] = str(comps_dict[star_threshold][comp]["app_rate"]) + "%"
-                    outvar_comps_append["avg_round"] = str(comps_dict[star_threshold][comp]["round"])
+                    outvar_comps_append["app_rate"] = (
+                        str(comps_dict[star_threshold][comp]["app_rate"]) + "%"
+                    )
+                    outvar_comps_append["avg_round"] = str(
+                        comps_dict[star_threshold][comp]["round"]
+                    )
                     outvar_comps.append(outvar_comps_append)
                 if not info_char and (
-                    # comps_dict[star_threshold][comp]["app_rate"] >= json_threshold or pf_mode or (not pf_mode and filename not in ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2", "5-1", "5-2"])
-                    comps_dict[star_threshold][comp]["is_count_round_print"] and (comps_dict[star_threshold][comp]["app_rate"] >= json_threshold)
+                    # comps_dict[star_threshold][comp]["app_rate"] >= json_threshold or da_mode or (not da_mode and filename not in ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2", "5-1", "5-2"])
+                    comps_dict[star_threshold][comp]["is_count_round_print"]
+                    and (comps_dict[star_threshold][comp]["app_rate"] >= json_threshold)
                 ):
                     out = name_filter(comp, mode="out")
                     out_json_dict = {
@@ -875,9 +1137,13 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
                         "char_two": out[1],
                         "char_three": out[2],
                     }
-                    out_json_dict["app_rate"] = comps_dict[star_threshold][comp]["app_rate"]
+                    out_json_dict["app_rate"] = comps_dict[star_threshold][comp][
+                        "app_rate"
+                    ]
                     out_json_dict["rank"] = comps_dict[star_threshold][comp]["app_rank"]
-                    out_json_dict["avg_round"] = comps_dict[star_threshold][comp]["round"]
+                    out_json_dict["avg_round"] = comps_dict[star_threshold][comp][
+                        "round"
+                    ]
                     out_json_dict["star_num"] = str(star_threshold)
                     # out_json_dict["rank"] = comps_dict[star_threshold][comp]["round_rank"]
                     out_json.append(out_json_dict)
@@ -888,7 +1154,7 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
     if archetype != "all":
         filename = filename + "_" + archetype
 
-    if not(sort_app):
+    if not (sort_app):
         filename = filename + "_rounds"
 
     if whaleOnly:
@@ -902,7 +1168,9 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
     #         out_file.write(json.dumps(outvar_comps,indent=2))
 
     if floor:
-        csv_writer = csv.writer(open("../comp_results/comps_usage_" + filename + ".csv", 'w', newline=''))
+        csv_writer = csv.writer(
+            open("../comp_results/comps_usage_" + filename + ".csv", "w", newline="")
+        )
         for comps in out_comps:
             csv_writer.writerow(comps.values())
         # with open("../comp_results/exc_" + filename + ".json", "w") as out_file:
@@ -919,7 +1187,8 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
 
         all_comps_json[filename] = out_json.copy()
         with open("../comp_results/json/" + filename + ".json", "w") as out_file:
-            out_file.write(json.dumps(out_json,indent=2))
+            out_file.write(json.dumps(out_json, indent=2))
+
 
 def duo_write(duos_dict, usage, filename, archetype, check_duo):
     out_duos = []
@@ -932,7 +1201,9 @@ def duo_write(duos_dict, usage, filename, archetype, check_duo):
             for i in range(duo_dict_len):
                 if i < len(duos_dict[char]):
                     out_duos_append["char_" + str(i + 1)] = duos_dict[char][i][0]
-                    out_duos_append["app_rate_" + str(i + 1)] = str(duos_dict[char][i][1]) + "%"
+                    out_duos_append["app_rate_" + str(i + 1)] = (
+                        str(duos_dict[char][i][1]) + "%"
+                    )
                     out_duos_append["avg_round_" + str(i + 1)] = duos_dict[char][i][2]
                     out_duos_append["app_flat_" + str(i + 1)] = duos_dict[char][i][3]
                 else:
@@ -941,14 +1212,16 @@ def duo_write(duos_dict, usage, filename, archetype, check_duo):
                     out_duos_append["avg_round_" + str(i + 1)] = 0.00
                     out_duos_append["app_flat_" + str(i + 1)] = 0
             out_duos.append(out_duos_append)
-    if pf_mode:
-        out_duos = sorted(out_duos, key=lambda t: t["round"], reverse = True)
+    if da_mode:
+        out_duos = sorted(out_duos, key=lambda t: t["round"], reverse=True)
     else:
-        out_duos = sorted(out_duos, key=lambda t: t["round"], reverse = False)
+        out_duos = sorted(out_duos, key=lambda t: t["round"], reverse=False)
 
     if archetype != "all":
         filename = filename + "_" + archetype
-    csv_writer = csv.writer(open("../char_results/" + filename + ".csv", 'w', newline=''))
+    csv_writer = csv.writer(
+        open("../char_results/" + filename + ".csv", "w", newline="")
+    )
     count = 0
     out_duos_check = {}
     out_duos_exclu = {}
@@ -959,22 +1232,48 @@ def duo_write(duos_dict, usage, filename, archetype, check_duo):
             # csv_writer.writerow(duos.keys())
             temp_duos = ["char", "round"]
             for i in range(10):
-                temp_duos += ["char_" + str(i + 1), "app_rate_" + str(i + 1), "avg_round_" + str(i + 1)]
+                temp_duos += [
+                    "char_" + str(i + 1),
+                    "app_rate_" + str(i + 1),
+                    "avg_round_" + str(i + 1),
+                ]
             csv_writer.writerow(temp_duos)
             count += 1
         # csv_writer.writerow(duos.values())
-        temp_duos = [duos["char"], round(duos["round"] / 1000, 2) if (pf_mode and not as_mode) else duos["round"]]
+        temp_duos = [
+            duos["char"],
+            round(duos["round"] / 1000, 2)
+            if (da_mode and not as_mode)
+            else duos["round"],
+        ]
         for i in range(10):
-            temp_duos += [duos["char_" + str(i + 1)], duos["app_rate_" + str(i + 1)], round(duos["avg_round_" + str(i + 1)] / 1000, 2) if (pf_mode and not as_mode) else duos["avg_round_" + str(i + 1)]]
+            temp_duos += [
+                duos["char_" + str(i + 1)],
+                duos["app_rate_" + str(i + 1)],
+                round(duos["avg_round_" + str(i + 1)] / 1000, 2)
+                if (da_mode and not as_mode)
+                else duos["avg_round_" + str(i + 1)],
+            ]
         csv_writer.writerow(temp_duos)
         # duos.pop("round")
         for i in range(duo_dict_len):
             duos["app_rate_" + str(i + 1)] = float(duos["app_rate_" + str(i + 1)][:-1])
-            if (duos["app_rate_" + str(i + 1)] >= 1 and duos["app_flat_" + str(i + 1)] >= 10 and (
-                (duos["avg_round_" + str(i + 1)] < usage[4][duos["char_" + str(i + 1)]]["round"]) or
-                (duos["avg_round_" + str(i + 1)] < usage[4][duos["char"]]["round"]))
+            if (
+                duos["app_rate_" + str(i + 1)] >= 1
+                and duos["app_flat_" + str(i + 1)] >= 10
+                and (
+                    (
+                        duos["avg_round_" + str(i + 1)]
+                        < usage[4][duos["char_" + str(i + 1)]]["round"]
+                    )
+                    or (
+                        duos["avg_round_" + str(i + 1)]
+                        < usage[4][duos["char"]]["round"]
+                    )
+                )
                 and usage[4][duos["char_" + str(i + 1)]]["round"] != 1
-                and usage[4][duos["char_" + str(i + 1)]]["round"] != 0):
+                and usage[4][duos["char_" + str(i + 1)]]["round"] != 0
+            ):
                 # out_duos_exclu[duos["char"]][duos["char_" + str(i + 1)]] = {
                 #     "app": duos["app_rate_" + str(i + 1)],
                 #     "avg_round": duos["avg_round_" + str(i + 1)]
@@ -985,17 +1284,31 @@ def duo_write(duos_dict, usage, filename, archetype, check_duo):
                 # continue
                 out_duos_check[duos["char"]][duos["char_" + str(i + 1)]] = {
                     "app": duos["app_rate_" + str(i + 1)],
-                    "avg_round": duos["avg_round_" + str(i + 1)]
+                    "avg_round": duos["avg_round_" + str(i + 1)],
                 }
     if check_duo:
         char_names = list(CHARACTERS.keys())
         out_dd = {}
         out_dd_list = []
-        csv_writer = csv.writer(open("../char_results/duo_check.csv", 'w', newline=''))
+        csv_writer = csv.writer(open("../char_results/duo_check.csv", "w", newline=""))
         for char_i in char_names:
             for char_j in char_names:
-                is_char_i_dps = CHARACTERS[char_i]["role"] == "Damage Dealer" or char_i in ["Sampo", "Black Swan", "Luka", "Guinaifen"]
-                is_char_j_dps = CHARACTERS[char_j]["role"] == "Damage Dealer" or char_j in ["Sampo", "Black Swan", "Luka", "Guinaifen"]
+                is_char_i_dps = CHARACTERS[char_i][
+                    "role"
+                ] == "Damage Dealer" or char_i in [
+                    "Sampo",
+                    "Black Swan",
+                    "Luka",
+                    "Guinaifen",
+                ]
+                is_char_j_dps = CHARACTERS[char_j][
+                    "role"
+                ] == "Damage Dealer" or char_j in [
+                    "Sampo",
+                    "Black Swan",
+                    "Luka",
+                    "Guinaifen",
+                ]
                 if is_char_i_dps and is_char_j_dps:
                     if char_j not in out_duos_check:
                         continue
@@ -1006,54 +1319,79 @@ def duo_write(duos_dict, usage, filename, archetype, check_duo):
                         if char_j in out_duos_check[char_i]:
                             out_dd[frozenset([char_i, char_j])] = {
                                 "char_i": char_i,
-                                "char_i_app": str(out_duos_check[char_i][char_j]["app"]),
+                                "char_i_app": str(
+                                    out_duos_check[char_i][char_j]["app"]
+                                ),
                                 "char_j": char_j,
-                                "char_j_app": str(out_duos_check[char_j][char_i]["app"]),
-                                "avg_round": str(out_duos_check[char_i][char_j]["avg_round"])
+                                "char_j_app": str(
+                                    out_duos_check[char_j][char_i]["app"]
+                                ),
+                                "avg_round": str(
+                                    out_duos_check[char_i][char_j]["avg_round"]
+                                ),
                             }
                         elif char_j in out_duos_exclu[char_i]:
                             out_dd[frozenset([char_i, char_j])] = {
                                 "char_i": char_i,
-                                "char_i_app": str(out_duos_exclu[char_i][char_j]["app"]),
+                                "char_i_app": str(
+                                    out_duos_exclu[char_i][char_j]["app"]
+                                ),
                                 "char_j": char_j,
-                                "char_j_app": str(out_duos_check[char_j][char_i]["app"]),
-                                "avg_round": str(out_duos_exclu[char_i][char_j]["avg_round"])
+                                "char_j_app": str(
+                                    out_duos_check[char_j][char_i]["app"]
+                                ),
+                                "avg_round": str(
+                                    out_duos_exclu[char_i][char_j]["avg_round"]
+                                ),
                             }
 
-        sorted_out_dd = (sorted(
-            out_dd.items(),
-            key = lambda t: t[1]["char_i"],
-            reverse=True
-        ))
+        sorted_out_dd = sorted(
+            out_dd.items(), key=lambda t: t[1]["char_i"], reverse=True
+        )
         out_dd = {k: v for k, v in sorted_out_dd}
 
         for out_dd_print in out_dd_list:
             csv_writer.writerow(out_dd_print)
             # print(out_dd_print)
         for out_dd_print in out_dd:
-            print(out_dd[out_dd_print]["char_i"] + ", " + out_dd[out_dd_print]["char_i_app"] + ", " + out_dd[out_dd_print]["char_j"] + ", " + out_dd[out_dd_print]["char_j_app"] + ", " + out_dd[out_dd_print]["avg_round"])
-        if __name__=="__main__":
+            print(
+                out_dd[out_dd_print]["char_i"]
+                + ", "
+                + out_dd[out_dd_print]["char_i_app"]
+                + ", "
+                + out_dd[out_dd_print]["char_j"]
+                + ", "
+                + out_dd[out_dd_print]["char_j_app"]
+                + ", "
+                + out_dd[out_dd_print]["avg_round"]
+            )
+        if __name__ == "__main__" and notification.notify:
             notification.notify(
-                title = "Finished",
+                title="Finished",
                 message="Finished executing comp_rates",
                 # displaying time
-                timeout=2
+                timeout=2,
             )
             # waiting time
             time.sleep(1)
         exit()
     with open("../char_results/" + filename + ".json", "w") as out_file:
-        out_file.write(json.dumps(out_duos,indent=2))
+        out_file.write(json.dumps(out_duos, indent=2))
+
 
 def char_usages_write(chars_dict, filename, archetype):
     out_chars = []
     out_chars_csv = []
     weap_len = 10
     arti_len = 10
-    if pf_mode:
-        chars_dict = dict(sorted(chars_dict.items(), key=lambda t: t[1]["round"], reverse=False))
+    if da_mode:
+        chars_dict = dict(
+            sorted(chars_dict.items(), key=lambda t: t[1]["round"], reverse=False)
+        )
     else:
-        chars_dict = dict(sorted(chars_dict.items(), key=lambda t: t[1]["round"], reverse=True))
+        chars_dict = dict(
+            sorted(chars_dict.items(), key=lambda t: t[1]["round"], reverse=True)
+        )
     for char in chars_dict:
         out_chars_append = {
             "char": char,
@@ -1066,22 +1404,29 @@ def char_usages_write(chars_dict, filename, archetype):
             "role": chars_dict[char]["role"],
             "rarity": chars_dict[char]["rarity"],
             "diff": str(chars_dict[char]["diff"]) + "%",
-            "diff_rounds": str(chars_dict[char]["diff_rounds"])
+            "diff_rounds": str(chars_dict[char]["diff_rounds"]),
         }
-        for i in ["app_rate","diff","diff_rounds"]:
+        for i in ["app_rate", "diff", "diff_rounds"]:
             if out_chars_append[i] == "-%":
                 out_chars_append[i] = "-"
-        if (list(chars_dict[char]["weapons"])):
+        if list(chars_dict[char]["weapons"]):
             for i in range(weap_len):
                 if i < len(list(chars_dict[char]["weapons"])):
-                    out_chars_append["weapon_" + str(i + 1)] = list(chars_dict[char]["weapons"])[i]
-                    out_chars_append["weapon_" + str(i + 1) + "_app"] = str(list(chars_dict[char]["weapons"].values())[i]["percent"]) + "%"
-                    out_chars_append["weapon_" + str(i + 1) + "_round"] = str(list(chars_dict[char]["weapons"].values())[i]["avg_round"])
+                    out_chars_append["weapon_" + str(i + 1)] = list(
+                        chars_dict[char]["weapons"]
+                    )[i]
+                    out_chars_append["weapon_" + str(i + 1) + "_app"] = (
+                        str(list(chars_dict[char]["weapons"].values())[i]["percent"])
+                        + "%"
+                    )
+                    out_chars_append["weapon_" + str(i + 1) + "_round"] = str(
+                        list(chars_dict[char]["weapons"].values())[i]["avg_round"]
+                    )
                 else:
                     out_chars_append["weapon_" + str(i + 1)] = ""
                     out_chars_append["weapon_" + str(i + 1) + "_app"] = "0.0"
                     out_chars_append["weapon_" + str(i + 1) + "_round"] = "1"
-                    if pf_mode:
+                    if da_mode:
                         out_chars_append["weapon_" + str(i + 1) + "_round"] = "0.0"
             for i in range(arti_len):
                 if i < len(list(chars_dict[char]["artifacts"])):
@@ -1092,13 +1437,20 @@ def char_usages_write(chars_dict, filename, archetype):
                     if len(arti_name) > 1:
                         out_chars_append["artifact_" + str(i + 1) + "_2"] = arti_name[1]
                         if len(arti_name) > 2:
-                            out_chars_append["artifact_" + str(i + 1) + "_3"] = arti_name[2]
+                            out_chars_append["artifact_" + str(i + 1) + "_3"] = (
+                                arti_name[2]
+                            )
                         else:
                             out_chars_append["artifact_" + str(i + 1) + "_3"] = ""
                     else:
                         out_chars_append["artifact_" + str(i + 1) + "_2"] = ""
-                    out_chars_append["artifact_" + str(i + 1) + "_app"] = str(list(chars_dict[char]["artifacts"].values())[i]["percent"]) + "%"
-                    out_chars_append["artifact_" + str(i + 1) + "_round"] = str(list(chars_dict[char]["artifacts"].values())[i]["avg_round"])
+                    out_chars_append["artifact_" + str(i + 1) + "_app"] = (
+                        str(list(chars_dict[char]["artifacts"].values())[i]["percent"])
+                        + "%"
+                    )
+                    out_chars_append["artifact_" + str(i + 1) + "_round"] = str(
+                        list(chars_dict[char]["artifacts"].values())[i]["avg_round"]
+                    )
                 else:
                     out_chars_append["artifact_" + str(i + 1)] = ""
                     out_chars_append["artifact_" + str(i + 1) + "_1"] = ""
@@ -1106,7 +1458,7 @@ def char_usages_write(chars_dict, filename, archetype):
                     out_chars_append["artifact_" + str(i + 1) + "_3"] = ""
                     out_chars_append["artifact_" + str(i + 1) + "_app"] = "0.0"
                     out_chars_append["artifact_" + str(i + 1) + "_round"] = "1"
-                    if pf_mode:
+                    if da_mode:
                         out_chars_append["artifact_" + str(i + 1) + "_round"] = "0.0"
             # for i in range(7):
             #     out_chars_append["use_" + str(i)] = str(list(list(chars_dict[char]["cons_usage"].values())[i].values())[2]) + "%"
@@ -1116,8 +1468,17 @@ def char_usages_write(chars_dict, filename, archetype):
             #     if out_chars_append["own_" + str(i)] == "-%":
             #         out_chars_append["own_" + str(i)] = "-"
             for i in range(7):
-                out_chars_append["app_" + str(i)] = str(list(list(chars_dict[char]["cons_usage"].values())[i].values())[0]) + "%"
-                out_chars_append["round_" + str(i)] = str(list(list(chars_dict[char]["cons_usage"].values())[i].values())[3])
+                out_chars_append["app_" + str(i)] = (
+                    str(
+                        list(list(chars_dict[char]["cons_usage"].values())[i].values())[
+                            0
+                        ]
+                    )
+                    + "%"
+                )
+                out_chars_append["round_" + str(i)] = str(
+                    list(list(chars_dict[char]["cons_usage"].values())[i].values())[3]
+                )
                 if out_chars_append["app_" + str(i)] == "-%":
                     out_chars_append["app_" + str(i)] = "-"
             out_chars_append["cons_avg"] = chars_dict[char]["cons_avg"]
@@ -1128,7 +1489,7 @@ def char_usages_write(chars_dict, filename, archetype):
                 out_chars_append["weapon_" + str(i + 1)] = ""
                 out_chars_append["weapon_" + str(i + 1) + "_app"] = "0.0"
                 out_chars_append["weapon_" + str(i + 1) + "_round"] = "1"
-                if pf_mode:
+                if da_mode:
                     out_chars_append["weapon_" + str(i + 1) + "_round"] = "0.0"
             for i in range(arti_len):
                 out_chars_append["artifact_" + str(i + 1)] = ""
@@ -1137,7 +1498,7 @@ def char_usages_write(chars_dict, filename, archetype):
                 out_chars_append["artifact_" + str(i + 1) + "_3"] = ""
                 out_chars_append["artifact_" + str(i + 1) + "_app"] = "0.0"
                 out_chars_append["artifact_" + str(i + 1) + "_round"] = "1"
-                if pf_mode:
+                if da_mode:
                     out_chars_append["artifact_" + str(i + 1) + "_round"] = "0.0"
             # for i in range(7):
             #     out_chars_append["use_" + str(i)] = str(list(list(chars_dict[char]["cons_usage"].values())[i].values())[2]) + "%"
@@ -1149,7 +1510,7 @@ def char_usages_write(chars_dict, filename, archetype):
             for i in range(7):
                 out_chars_append["app_" + str(i)] = "0.0%"
                 out_chars_append["round_" + str(i)] = "1"
-                if pf_mode:
+                if da_mode:
                     out_chars_append["round_" + str(i)] = "0.0"
             out_chars_append["cons_avg"] = chars_dict[char]["cons_avg"]
             out_chars_append["sample"] = chars_dict[char]["sample"]
@@ -1185,25 +1546,41 @@ def char_usages_write(chars_dict, filename, archetype):
                 out_chars[i][value] = 0.00
         for value in iterate_value_round:
             if out_chars[i][value].replace(".", "").replace("-", "").isnumeric():
-                out_chars[i][value] = round(float(out_chars[i][value])) if pf_mode else float(out_chars[i][value])
-                chars_csv_value = float(out_chars_csv[i][value]) / 1000 if pf_mode else float(out_chars_csv[i][value])
-                out_chars_csv[i][value] = str(round(chars_csv_value, 2)) if not as_mode else out_chars_csv[i][value]
+                out_chars[i][value] = (
+                    round(float(out_chars[i][value]))
+                    if da_mode
+                    else float(out_chars[i][value])
+                )
+                chars_csv_value = (
+                    float(out_chars_csv[i][value]) / 1000
+                    if da_mode
+                    else float(out_chars_csv[i][value])
+                )
+                out_chars_csv[i][value] = (
+                    str(round(chars_csv_value, 2))
+                    if not as_mode
+                    else out_chars_csv[i][value]
+                )
             else:
                 out_chars[i][value] = 1
-                if pf_mode:
+                if da_mode:
                     out_chars[i][value] = 0
         for value in iterate_name_arti:
             if out_chars[i][value]:
-                out_chars[i][value] = out_chars[i][value].replace(".", "").replace("-", "")
+                out_chars[i][value] = (
+                    out_chars[i][value].replace(".", "").replace("-", "")
+                )
             else:
                 out_chars[i][value] = 1
-                if pf_mode:
+                if da_mode:
                     out_chars[i][value] = 0
     if not whaleOnly:
         with open("../char_results/" + filename + ".json", "w") as out_file:
-            out_file.write(json.dumps(out_chars,indent=2))
+            out_file.write(json.dumps(out_chars, indent=2))
 
-    csv_writer = csv.writer(open("../char_results/" + filename + ".csv", 'w', newline=''))
+    csv_writer = csv.writer(
+        open("../char_results/" + filename + ".csv", "w", newline="")
+    )
     count = 0
     for chars in out_chars_csv:
         if count == 0:
@@ -1211,6 +1588,7 @@ def char_usages_write(chars_dict, filename, archetype):
             csv_writer.writerow(header)
             count += 1
         csv_writer.writerow(chars.values())
+
 
 def name_filter(comp, mode="out"):
     filtered = []
@@ -1221,5 +1599,6 @@ def name_filter(comp, mode="out"):
             # else:
             filtered.append(char)
     return filtered
+
 
 main()

@@ -80,9 +80,17 @@ class Composition:
                 "Anton",
                 "Soldier 11",
                 "Ellen",
+                "Harumasa",
             ]:
                 self.dps.insert(0, character)
-            elif character in ["Grace", "Piper", "Jane", "Burnice", "Yanagi"]:
+            elif character in [
+                "Grace",
+                "Piper",
+                "Jane",
+                "Burnice",
+                "Yanagi",
+                "Miyabi",
+            ]:
                 self.subdps.insert(0, character)
                 self.anomaly.append(character)
             elif character in ["Anby", "Lycaon", "Koleda", "Qingyi", "Lighter"]:
