@@ -55,22 +55,22 @@ def main():
     else:
         self_uids = []
 
-    pf_filename = ""
+    da_filename = ""
     if as_mode:
-        pf_filename = "_as"
+        da_filename = "_as"
     elif da_mode:
-        pf_filename = "_da"
+        da_filename = "_da"
     if os.path.exists("../data/raw_csvs_real/"):
-        stats = open("../data/raw_csvs_real/" + RECENT_PHASE + pf_filename + ".csv")
+        stats = open("../data/raw_csvs_real/" + RECENT_PHASE + da_filename + ".csv")
     else:
-        stats = open("../data/raw_csvs/" + RECENT_PHASE + pf_filename + ".csv")
+        stats = open("../data/raw_csvs/" + RECENT_PHASE + da_filename + ".csv")
 
     # uid_freq_comp will help detect duplicate UIDs
     reader = csv.reader(stats)
     next(reader)
     all_comps = []
     if da_mode:
-        all_chambers = ["1", "2", "3", "4"]
+        all_chambers = ["1"]
     else:
         all_chambers = ["1", "2", "3", "4", "5", "6", "7"]
     three_star_sample = {}
@@ -100,7 +100,7 @@ def main():
                 skip_uid = True
                 # print("duplicate UID in comp: " + line[0])
             elif (not da_mode and int("".join(filter(str.isdigit, line[1]))) > 0) or (
-                da_mode and int("".join(filter(str.isdigit, line[1]))) > 3
+                da_mode and int("".join(filter(str.isdigit, line[1]))) > 0
             ):
                 uid_freq_comp[line[0]] = 1
                 if line[0] in self_uids:
@@ -113,14 +113,31 @@ def main():
         if not skip_uid:
             stage = str(line[1])
             comp_chars_temp = []
-            for i in range(4, 7):
-                if line[i] != "":
+            cons_chars_temp = []
+            if da_mode:
+                for i in [6, 8, 10]:
+                    if line[i] != "" and line[i] in CHARACTERS:
                     comp_chars_temp.append(line[i])
-            # cons_chars_temp = []
-            # for i in range(9, 13):
-            #     if line[i] != "":
-            #         cons_chars_temp.append(line[i])
+                        cons_chars_temp.append(line[i + 1])
+            else:
+                for i in [4, 6, 8]:
+                    if line[i] != "" and line[i] in CHARACTERS:
+                        comp_chars_temp.append(line[i])
+                        cons_chars_temp.append(line[i + 1])
             if comp_chars_temp:
+                if da_mode:
+                    comp = Composition(
+                        line[0],
+                        comp_chars_temp,
+                        RECENT_PHASE,
+                        line[3],
+                        line[2],
+                        "1-" + stage,
+                        alt_comps,
+                        line[12],
+                        cons_chars_temp,
+                    )
+                else:
                 comp = Composition(
                     line[0],
                     comp_chars_temp,
@@ -230,11 +247,11 @@ def main():
     global usage
     global one_stage
     if da_mode:
-        three_stages = ["4-1", "4-2"]
-        three_double_stages = [["4-1", "4-2"]]
-        one_stage = ["4-1", "4-2"]
-        all_stages = ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2"]
-        # all_double_stages = [["1-1", "1-2"], ["2-1", "2-2"], ["3-1", "3-2"], ["4-1", "4-2"]]
+        three_stages = ["1-1", "1-2", "1-3"]
+        three_double_stages = [["1-1", "1-2", "1-3"]]
+        one_stage = ["1-1", "1-2", "1-3"]
+        all_stages = ["1-1", "1-2", "1-3"]
+        # all_double_stages = [["1"], ["2"], ["3"], ["4"]]
     else:
         one_stage = ["7-1", "7-2"]
         # three_stages = ["5-1", "5-2", "6-1", "6-2", "7-1", "7-2"]
@@ -336,7 +353,12 @@ def main():
         # for room in all_stages:
         for room in three_stages:
             char_chambers[room] = char_usages(
-                all_players, archetype, past_phase, [room], filename=room, offset=2
+                all_players,
+                archetype,
+                past_phase,
+                [room],
+                filename=room,
+                offset=(3 if da_mode else 2),
             )
         appearances = {}
         rounds = {}
@@ -356,7 +378,7 @@ def main():
                         sorted(
                             char_chambers[room][star_num].items(),
                             key=lambda t: t[1]["round"],
-                            reverse=False,
+                            reverse=True,
                         )
                     )
                 else:
@@ -416,7 +438,7 @@ def main():
                         sorted(
                             char_chambers[room][star_num].items(),
                             key=lambda t: t[1]["round"],
-                            reverse=False,
+                            reverse=True,
                         )
                     )
                 else:
@@ -464,7 +486,13 @@ def main():
     if "Comp usages for each stage" in run_commands:
         # for room in all_stages:
         for room in three_stages:
-            comp_usages(all_comps, all_players, [room], filename=room, offset=2)
+            comp_usages(
+                all_comps,
+                all_players,
+                [room],
+                filename=room,
+                offset=(3 if da_mode else 2),
+            )
 
         if not whaleOnly:
             with open("../char_results/demographic.json", "w") as out_file:
@@ -556,16 +584,17 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE):
                     # if players[phase][comp.player].owned[comp_tuple[char]]["level"] > 51:
                     #     whale_comp = True
                     if CHARACTERS[comp_tuple[char]]["availability"] == "Limited S":
+                        if comp.char_cons:
+                            if comp.char_cons[comp_tuple[char]] > 0:
+                                whale_comp = True
                         # if comp_tuple[char] in players[phase][comp.player].owned and comp_tuple[char] == "Blade":
-                        if (
+                        elif (
                             players[phase][comp.player].owned[comp_tuple[char]]["cons"]
                             > 0
                             # ) or (
                             #     whaleSigWeap and players[phase][comp.player].owned[comp_tuple[char]]["weapon"] in sigWeaps
                         ):
                             whale_comp = True
-                    # if comp.char_cons[comp_tuple[char]] > 0:
-                    #     whale_comp = True
                 # if comp_tuple[char] not in total_char_comps:
                 #     total_char_comps[comp_tuple[char]] = 0
                 # total_char_comps[comp_tuple[char]] += 1
@@ -728,7 +757,7 @@ def rank_usages(comps_dict, rooms, owns_offset=1):
 
             comps_dict[star_threshold][comp]["is_count_round"] = True
             comps_dict[star_threshold][comp]["is_count_round_print"] = True
-            if (rooms == one_stage) or da_mode and rooms == ["4-1", "4-2"]:
+            if (rooms == one_stage) or da_mode and rooms == ["1-1", "1-2", "1-3"]:
                 for room_num in uses_room:
                     if whaleOnly:
                         if uses_room[room_num] < 10:
@@ -825,11 +854,12 @@ def used_duos(players, comps, rooms, usage, check_duo, phase=RECENT_PHASE):
         for char in comp.characters:
             findchars(char, foundchar)
             if CHARACTERS[char]["availability"] == "Limited S":
-                if char in players[phase][comp.player].owned:
+                if comp.char_cons:
+                    if comp.char_cons[char] > 0:
+                        whale_comp = True
+                elif char in players[phase][comp.player].owned:
                     if players[phase][comp.player].owned[char]["cons"] > 0:
                         whale_comp = True
-                # if comp.char_cons[char] > 0:
-                #     whale_comp = True
         if not find_archetype(foundchar):
             continue
 
@@ -936,7 +966,7 @@ def char_usages(
     # # Print the list of weapons and artifacts used for a character
     # if floor:
     #     print(app[RECENT_PHASE][filename])
-    if (not da_mode and rooms == one_stage) or (da_mode and rooms == ["4-1", "4-2"]):
+    if (not da_mode and rooms == one_stage) or da_mode:
         char_usages_write(chars_dict[4], filename, archetype)
     return chars_dict
 
@@ -969,7 +999,7 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
                     sorted(
                         comps_dict[star_threshold].items(),
                         key=lambda t: t[1]["round"],
-                        reverse=False,
+                        reverse=True,
                     )
                 )
             else:
@@ -994,8 +1024,7 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
                 # unless if it's used for a character's infographic
                 if (
                     (
-                        ((da_mode and not as_mode) or ("No Support" not in comp_name))
-                        and comp_name not in comp_names
+                        comp_name not in comp_names
                         and comp_name not in dual_comp_names
                         and dual_comp_name not in comp_names
                         and alt_comp_name not in comp_names
@@ -1242,17 +1271,13 @@ def duo_write(duos_dict, usage, filename, archetype, check_duo):
         # csv_writer.writerow(duos.values())
         temp_duos = [
             duos["char"],
-            round(duos["round"] / 1000, 2)
-            if (da_mode and not as_mode)
-            else duos["round"],
+            duos["round"],
         ]
         for i in range(10):
             temp_duos += [
                 duos["char_" + str(i + 1)],
                 duos["app_rate_" + str(i + 1)],
-                round(duos["avg_round_" + str(i + 1)] / 1000, 2)
-                if (da_mode and not as_mode)
-                else duos["avg_round_" + str(i + 1)],
+                duos["avg_round_" + str(i + 1)],
             ]
         csv_writer.writerow(temp_duos)
         # duos.pop("round")
@@ -1386,7 +1411,7 @@ def char_usages_write(chars_dict, filename, archetype):
     arti_len = 10
     if da_mode:
         chars_dict = dict(
-            sorted(chars_dict.items(), key=lambda t: t[1]["round"], reverse=False)
+            sorted(chars_dict.items(), key=lambda t: t[1]["round"], reverse=True)
         )
     else:
         chars_dict = dict(
@@ -1558,7 +1583,7 @@ def char_usages_write(chars_dict, filename, archetype):
                 )
                 out_chars_csv[i][value] = (
                     str(round(chars_csv_value, 2))
-                    if not as_mode
+                    if not da_mode
                     else out_chars_csv[i][value]
                 )
             else:

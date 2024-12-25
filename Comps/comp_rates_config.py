@@ -24,7 +24,7 @@ RECENT_PHASE = "1.3.3"
 
 # if no past phase, put invalid folder
 # add 2.2.1"_da"
-past_phase = "1.3.2"
+past_phase = "null"
 global da_mode
 global as_mode
 # if as: da_mode = True

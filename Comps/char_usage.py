@@ -8,13 +8,14 @@ import statistics
 # import matplotlib
 # import matplotlib.pyplot as plt
 import warnings
+
 # from scipy.stats import skew, trim_mean
 from archetypes import find_archetype, findchars, resetfind
-from comp_rates_config import RECENT_PHASE, pf_mode, whaleOnly
+from comp_rates_config import RECENT_PHASE, da_mode, whaleOnly
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
-if pf_mode:
-    ROOMS = ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2"]
+if da_mode:
+    ROOMS = ["1-1", "1-2", "1-3"]
 else:
     ROOMS = [
         "1-1",
@@ -200,7 +201,7 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                     for char in player.chambers[chamber].characters:
                         # to print the amount of players using a character, for char infographics
                         if chambers == ["7-1", "7-2"] or (
-                            pf_mode and chambers == ["4-1", "4-2"]
+                            da_mode and chambers == ["1-1", "1-2", "1-3"]
                         ):
                         # if chambers == ROOMS:
                             players_chars[star_num][char].add(player.player)
@@ -221,8 +222,8 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                                 list(str(chamber).split("-"))[0]
                             ].append(player.chambers[chamber].round_num)
                         # In case of character in comp data missing from character data
-                        if pf_mode:
-                            if chambers != ["4-1", "4-2"]:
+                        if da_mode:
+                            if chambers != ["1-1", "1-2", "1-3"]:
                                 continue
                         elif chambers != ["7-1", "7-2"]:
                             continue
@@ -333,6 +334,11 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
 
         total = total_battle * offset / 200.0
         all_rounds = {}
+        # print()
+        # print(chambers)
+        # print("uids: " + str(len(uids)))
+        # print("total_battle: " + str(total_battle))
+        # print("total: " + str(total))
         for char in appears[star_num]:
             all_rounds[char] = {}
             # # to print the amount of players using a character
@@ -341,6 +347,11 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                 appears[star_num][char]["percent"] = round(
                     appears[star_num][char]["flat"] / total, 2
                 )
+                # if appears[star_num][char]["flat"] > 0 and star_num == 3:
+                #     print(char)
+                #     print("app_flat: " + str(appears[star_num][char]["flat"]))
+                #     print(appears[star_num][char]["percent"])
+                #     input()
             else:
                 appears[star_num][char]["percent"] = 0.00
             if appears[star_num][char]["flat"] >= 8:
@@ -419,7 +430,7 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                     appears[star_num][char]["std_dev_round"] = round(
                         statistics.mean(std_dev_round), 2
                     )
-                    if pf_mode:
+                    if da_mode:
                         appears[star_num][char]["avg_round"] = round(
                             appears[star_num][char]["avg_round"]
                         )
@@ -428,18 +439,18 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                         )
                 else:
                     appears[star_num][char]["avg_round"] = 1
-                    if pf_mode:
+                    if da_mode:
                         appears[star_num][char]["avg_round"] = 0
             else:
                 appears[star_num][char]["avg_round"] = 1
-                if pf_mode:
+                if da_mode:
                     appears[star_num][char]["avg_round"] = 0
 
             # if (chambers == ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2", "5-1", "5-2", "6-1", "6-2", "7-1", "7-2"]):
             appears[star_num][char]["sample"] = len(players_chars[star_num][char])
 
-            if pf_mode:
-                if chambers != ["4-1", "4-2"]:
+            if da_mode:
+                if chambers != ["1-1", "1-2", "1-3"]:
                     continue
             elif chambers != ["7-1", "7-2"]:
                 continue
@@ -505,7 +516,7 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                         appears[star_num][char]["cons_freq"][cons]["avg_round"] = round(
                             statistics.mean(avg_round), 2
                         )
-                        if pf_mode:
+                        if da_mode:
                             appears[star_num][char]["cons_freq"][cons]["avg_round"] = (
                                 round(
                                     appears[star_num][char]["cons_freq"][cons][
@@ -515,12 +526,12 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                             )
                     else:
                         appears[star_num][char]["cons_freq"][cons]["avg_round"] = 1
-                        if pf_mode:
+                        if da_mode:
                             appears[star_num][char]["cons_freq"][cons]["avg_round"] = 0
                 else:
                     appears[star_num][char]["cons_freq"][cons]["percent"] = 0.00
                     appears[star_num][char]["cons_freq"][cons]["avg_round"] = 1
-                    if pf_mode:
+                    if da_mode:
                         appears[star_num][char]["cons_freq"][cons]["avg_round"] = 0
 
             # Calculate weapons
@@ -566,7 +577,7 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                         appears[star_num][char]["weap_freq"][weapon]["avg_round"] = (
                             round(statistics.mean(avg_round), 2)
                         )
-                        if pf_mode:
+                        if da_mode:
                             appears[star_num][char]["weap_freq"][weapon][
                                 "avg_round"
                             ] = round(
@@ -576,14 +587,14 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                             )
                     else:
                         appears[star_num][char]["weap_freq"][weapon]["avg_round"] = 1
-                        if pf_mode:
+                        if da_mode:
                             appears[star_num][char]["weap_freq"][weapon][
                                 "avg_round"
                             ] = 0
                 else:
                     appears[star_num][char]["weap_freq"][weapon]["percent"] = 0
                     appears[star_num][char]["weap_freq"][weapon]["avg_round"] = 1
-                    if pf_mode:
+                    if da_mode:
                         appears[star_num][char]["weap_freq"][weapon]["avg_round"] = 0
 
             # Remove flex artifacts
@@ -629,7 +640,7 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                         appears[star_num][char]["arti_freq"][arti]["avg_round"] = round(
                             statistics.mean(avg_round), 2
                         )
-                        if pf_mode:
+                        if da_mode:
                             appears[star_num][char]["arti_freq"][arti]["avg_round"] = (
                                 round(
                                     appears[star_num][char]["arti_freq"][arti][
@@ -639,12 +650,12 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                             )
                     else:
                         appears[star_num][char]["arti_freq"][arti]["avg_round"] = 1
-                        if pf_mode:
+                        if da_mode:
                             appears[star_num][char]["arti_freq"][arti]["avg_round"] = 0
                 else:
                     appears[star_num][char]["arti_freq"][arti]["percent"] = 0
                     appears[star_num][char]["arti_freq"][arti]["avg_round"] = 1
-                    if pf_mode:
+                    if da_mode:
                         appears[star_num][char]["arti_freq"][arti]["avg_round"] = 0
 
         if chambers == ["7-1", "7-2"] and star_num == 4:
@@ -708,7 +719,9 @@ def usages(appears, past_phase, chambers=ROOMS, offset=1):
             # rate = round(appears[star_num][char]["flat"] / (owns[star_num][char]["flat"] * offset / 100.0), 2)
             rates.append(uses[star_num][char]["app"])
 
-            if chambers == ["7-1", "7-2"] or (pf_mode and chambers == ["4-1", "4-2"]):
+            if chambers == ["7-1", "7-2"] or (
+                da_mode and chambers == ["1-1", "1-2", "1-3"]
+            ):
             # if chambers == ROOMS:
                 stage = "all"
             else:
@@ -739,8 +752,8 @@ def usages(appears, past_phase, chambers=ROOMS, offset=1):
                     "usage": "-",
                 }
 
-            if pf_mode:
-                if chambers != ["4-1", "4-2"]:
+            if da_mode:
+                if chambers != ["1-1", "1-2", "1-3"]:
                     continue
             elif chambers != ["7-1", "7-2"]:
                 continue

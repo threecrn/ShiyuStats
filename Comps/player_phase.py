@@ -1,4 +1,5 @@
 import json
+from comp_rates_config import da_mode
 
 # Set class constants in initialization
 # Load the list of characters from their file
@@ -113,32 +114,39 @@ class PlayerPhase:
         """
         if not self.chars_owned(characters):
             return None
-        chambers = {
-            "1-1": [],
-            "1-2": [],
-            "2-1": [],
-            "2-2": [],
-            "3-1": [],
-            "3-2": [],
-            "4-1": [],
-            "4-2": [],
-            "5-1": [],
-            "5-2": [],
-            "6-1": [],
-            "6-2": [],
-            "7-1": [],
-            "7-2": [],
-            "8-1": [],
-            "8-2": [],
-            "9-1": [],
-            "9-2": [],
-            "10-1": [],
-            "10-2": [],
-            "11-1": [],
-            "11-2": [],
-            "12-1": [],
-            "12-2": [],
-        }
+        if da_mode:
+            chambers = {
+                "1-1": [],
+                "1-2": [],
+                "1-3": [],
+            }
+        else:
+            chambers = {
+                "1-1": [],
+                "1-2": [],
+                "2-1": [],
+                "2-2": [],
+                "3-1": [],
+                "3-2": [],
+                "4-1": [],
+                "4-2": [],
+                "5-1": [],
+                "5-2": [],
+                "6-1": [],
+                "6-2": [],
+                "7-1": [],
+                "7-2": [],
+                "8-1": [],
+                "8-2": [],
+                "9-1": [],
+                "9-2": [],
+                "10-1": [],
+                "10-2": [],
+                "11-1": [],
+                "11-2": [],
+                "12-1": [],
+                "12-2": [],
+            }
         for char in characters:
             for chamber in chambers:
                 if self.chambers[chamber].char_presence[char]:

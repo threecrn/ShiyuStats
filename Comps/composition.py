@@ -27,7 +27,16 @@ class Composition:
     """
 
     def __init__(
-        self, uid, comp_chars, phase, round_num, star_num, room, info_char, bangboo
+        self,
+        uid,
+        comp_chars,
+        phase,
+        round_num,
+        star_num,
+        room,
+        info_char,
+        bangboo,
+        comp_chars_cons,
     ):
         """Composition constructor. Takes in:
         A player, as a UID string
@@ -40,17 +49,17 @@ class Composition:
         self.room = room
         self.round_num = int(round_num)
         self.star_num = int(star_num)
-        self.char_structs(comp_chars, info_char)
+        self.char_structs(comp_chars, info_char, comp_chars_cons)
         self.bangboo = bangboo
         # self.comp_elements()
 
-    def char_structs(self, comp_chars, info_char):
+    def char_structs(self, comp_chars, info_char, comp_chars_cons):
         """Character structure creator.
         Makes a presence dict that maps character names to bools, and
         a list (alphabetically ordered) of the character names.
         """
         self.char_presence = {}
-        # self.char_cons = {}
+        self.char_cons = {}
         fives = []
         self.dps = []
         self.subdps = []
@@ -64,8 +73,9 @@ class Composition:
             "Electric": 0,
             "Physical": 0,
         }
-        # for char_iter in range(len(comp_chars)):
-        #     self.char_cons[comp_chars[char_iter]] = int(comp_chars_cons[char_iter])
+        if comp_chars_cons:
+            for char_iter in range(len(comp_chars)):
+                self.char_cons[comp_chars[char_iter]] = int(comp_chars_cons[char_iter])
         comp_chars.sort()
         for character in comp_chars:
             self.char_presence[character] = True
