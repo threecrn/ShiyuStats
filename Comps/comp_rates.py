@@ -117,7 +117,7 @@ def main():
             if da_mode:
                 for i in [6, 8, 10]:
                     if line[i] != "" and line[i] in CHARACTERS:
-                    comp_chars_temp.append(line[i])
+                        comp_chars_temp.append(line[i])
                         cons_chars_temp.append(line[i + 1])
             else:
                 for i in [4, 6, 8]:
@@ -138,16 +138,17 @@ def main():
                         cons_chars_temp,
                     )
                 else:
-                comp = Composition(
-                    line[0],
-                    comp_chars_temp,
-                    RECENT_PHASE,
-                    star_num,
-                    star_num,
-                    stage + "-" + str(line[2]),
-                    alt_comps,
-                    line[7],
-                )
+                    comp = Composition(
+                        line[0],
+                        comp_chars_temp,
+                        RECENT_PHASE,
+                        star_num,
+                        star_num,
+                        stage + "-" + str(line[2]),
+                        alt_comps,
+                        line[9],
+                        cons_chars_temp,
+                    )
                 # if int(stage) > 7:
                 #     if line[0] not in dps_freq_comp:
                 #         dps_freq_comp[line[0]] = set()
@@ -556,7 +557,10 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE):
     # lessFourComps = {}
     global total_comps
     total_comps = 0
+    global all_comp_uids
+    all_comp_uids = set()
     total_self_comps = 0
+    all_comp_self_uids = set()
     whale_count = 0
     # dual_dps = {}
     # total_char_comps = {}
@@ -571,8 +575,10 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE):
             findchars(char, foundchar)
         if find_archetype(foundchar):
             total_comps += 1
+            all_comp_uids.add(comp.player)
             if comp.player in self_uids:
                 total_self_comps += 1
+                all_comp_self_uids.add(comp.player)
             if len(comp_tuple) < 3:
                 #     lessFour.append(comp.player)
                 continue
@@ -700,9 +706,11 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE):
         # if total_comps == 0:
         #     del sample_size[chamber_num[0]]
         if chamber_num[1] == "1":
-            sample_size[chamber_num[0]]["total"] = total_comps
-            sample_size[chamber_num[0]]["self_report"] = total_self_comps
-            sample_size[chamber_num[0]]["random"] = total_comps - total_self_comps
+            sample_size[chamber_num[0]]["total"] = len(all_comp_uids)
+            sample_size[chamber_num[0]]["self_report"] = len(all_comp_self_uids)
+            sample_size[chamber_num[0]]["random"] = len(all_comp_uids) - len(
+                all_comp_self_uids
+            )
     # print(error_uids)
     # print("Less than four: " + str(lessFour))
     # print("Less than four: " + str(len(lessFour)/total_comps))
@@ -714,12 +722,18 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE):
     #         print("    Dual DPS: " + str(dual_percent))
     #         print()
     if whaleOnly:
-        print("Whale percentage: " + str(whale_count / total_comps))
+        print("Whale percentage: " + str(whale_count / len(all_comp_uids)))
     return comps_dict
 
 
 def rank_usages(comps_dict, rooms, owns_offset=1):
     # Calculate the usage rate and sort the comps according to it
+    total = len(all_comp_uids) / 100.0
+    # print()
+    # print(rooms)
+    # print("uids: " + str(len(all_comp_uids)))
+    # print("total_battle: " + str(total_comps))
+    # print("total: " + str(total))
     for star_threshold in range(1, 5):
         rates = []
         # rounds = []
@@ -784,16 +798,12 @@ def rank_usages(comps_dict, rooms, owns_offset=1):
                 if da_mode:
                     avg_round = 0
 
-            app = (
-                int(
-                    100.0
-                    * comps_dict[star_threshold][comp]["uses"]
-                    / (total_comps * owns_offset)
-                    * 200
-                    + 0.5
-                )
-                / 100.0
-            )
+            app = round(comps_dict[star_threshold][comp]["uses"] / total, 2)
+            # if comps_dict[star_threshold][comp]["uses"] > 0:
+            #     print(comp)
+            #     print("app_flat: " + str(comps_dict[star_threshold][comp]["uses"]))
+            #     print(app)
+            #     input()
             comps_dict[star_threshold][comp]["app_rate"] = app
             comps_dict[star_threshold][comp]["round"] = avg_round
             # rate = int(100.0 * comps_dict[star_threshold][comp]["uses"] / comps_dict[star_threshold][comp]["owns"] * 100 + .5) / 100.0
@@ -1063,13 +1073,7 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
                                 comps_dict[star_threshold][comp]["app_rate"]
                             )
                             + "%",
-                            "avg_round": str(
-                                round(
-                                    comps_dict[star_threshold][comp]["round"] / 1000, 2
-                                )
-                                if (da_mode and not as_mode)
-                                else comps_dict[star_threshold][comp]["round"]
-                            ),
+                            "avg_round": str(comps_dict[star_threshold][comp]["round"]),
                             # "own_rate": str(comps_dict[star_threshold][comp]["own_rate"]) + "%",
                             # "usage_rate": str(comps_dict[star_threshold][comp]["usage_rate"]) + "%"
                         }

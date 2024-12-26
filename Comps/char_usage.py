@@ -116,6 +116,7 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
 
     for star_num in range(0, 5):
         total_battle = 0
+        all_uids = set()
         appears[star_num] = {}
         players_chars[star_num] = {}
         # comp_error = False
@@ -169,6 +170,7 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                 if star_num != 4 and player.chambers[chamber].star_num != star_num:
                     continue
                 total_battle += 1
+                all_uids.add(player.player)
                 # foundchar = resetfind()
                 whale_comp = False
                 dps_count = 0
@@ -203,7 +205,7 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                         if chambers == ["7-1", "7-2"] or (
                             da_mode and chambers == ["1-1", "1-2", "1-3"]
                         ):
-                        # if chambers == ROOMS:
+                            # if chambers == ROOMS:
                             players_chars[star_num][char].add(player.player)
 
                         char_name = char
@@ -332,7 +334,7 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
         #     df_spiral.to_csv("compositions.csv", index=False)
         #     raise ValueError("There are missing comps from character data.")
 
-        total = total_battle * offset / 200.0
+        total = len(all_uids) / 100.0
         all_rounds = {}
         # print()
         # print(chambers)
@@ -364,7 +366,7 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                         for i in range(41):
                             all_rounds[char][room_num][i] = 0
                     if appears[star_num][char]["round"][str(room_num)]:
-                        if room_num >= 0:
+                        if room_num >= 0 and not da_mode:
                             for round_num_iter in appears[star_num][char]["round"][
                                 str(room_num)
                             ]:
@@ -409,13 +411,15 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                 is_count_cycles = True
                 if not uses_room:
                     is_count_cycles = False
-                elif chambers == ["7-1", "7-2"] or (pf_mode and chambers == ["4-1", "4-2"]):
-                # elif chambers == ROOMS or (pf_mode and chambers == ["4-1", "4-2"]):
-                    if len(uses_room) != len(chambers) / 2:
+                elif chambers == ["7-1", "7-2"] or (
+                    da_mode and chambers == ["1-1", "1-2", "1-3"]
+                ):
+                    # elif chambers == ROOMS or (da_mode and chambers == ["1-1", "1-2", "1-3"]):
+                    if len(uses_room) != len(chambers) / 2 and not da_mode:
                         is_count_cycles = False
                     else:
                         appears[star_num][char]["sample_app_flat"] = uses_room[
-                            4 if pf_mode else 7
+                            1 if da_mode else 7
                         ]
                 for room_num in uses_room:
                     if uses_room[room_num] < 10:
@@ -659,7 +663,7 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                         appears[star_num][char]["arti_freq"][arti]["avg_round"] = 0
 
         if chambers == ["7-1", "7-2"] and star_num == 4:
-        # if chambers == ROOMS and star_num == 4:
+            # if chambers == ROOMS and star_num == 4:
             csv_writer = csv.writer(
                 open("../char_results/all_rounds.csv", "w", newline="")
             )
@@ -722,7 +726,7 @@ def usages(appears, past_phase, chambers=ROOMS, offset=1):
             if chambers == ["7-1", "7-2"] or (
                 da_mode and chambers == ["1-1", "1-2", "1-3"]
             ):
-            # if chambers == ROOMS:
+                # if chambers == ROOMS:
                 stage = "all"
             else:
                 stage = chambers[0]
