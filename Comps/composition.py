@@ -105,9 +105,17 @@ class Composition:
                 self.anomaly.append(character)
             elif character in ["Anby", "Lycaon", "Koleda", "Qingyi", "Lighter"]:
                 self.stun.insert(0, character)
-            elif character in ["Ben"]:
+            elif character in []:
                 self.stun.append(character)
-            elif character in ["Soukaku", "Nicole", "Rina", "Lucy", "Seth", "Caesar"]:
+            elif character in [
+                "Soukaku",
+                "Nicole",
+                "Rina",
+                "Lucy",
+                "Seth",
+                "Caesar",
+                "Ben",
+            ]:
                 self.support.insert(0, character)
 
             if CHARACTERS[character]["element"] == "Ice":
