@@ -776,7 +776,7 @@ def rank_usages(comps_dict, rooms, owns_offset=1):
                     if whaleOnly:
                         if uses_room[room_num] < 10:
                             comps_dict[star_threshold][comp]["is_count_round"] = False
-                    elif uses_room[room_num] < 5:
+                    elif uses_room[room_num] < 10:
                         comps_dict[star_threshold][comp]["is_count_round"] = False
                     if uses_room[room_num] < 2:
                         comps_dict[star_threshold][comp]["is_count_round_print"] = False

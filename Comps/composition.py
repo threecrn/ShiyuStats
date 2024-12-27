@@ -83,17 +83,47 @@ class Composition:
                 fives.append(character)
 
             if character in [
+                "Miyabi",
+                "Zhu Yuan",
+                "Ellen",
+                "Soldier 11",
+            ]:
+                self.dps.insert(0, character)
+            if character in [
                 "Corin",
                 "Billy",
                 "Nekomata",
-                "Zhu Yuan",
                 "Anton",
-                "Soldier 11",
-                "Ellen",
                 "Harumasa",
             ]:
-                self.dps.insert(0, character)
+                self.dps.append(character)
             elif character in [
+                "Piper",
+                "Jane",
+                "Yanagi",
+            ]:
+                self.subdps.insert(0, character)
+            elif character in [
+                "Grace",
+                "Burnice",
+            ]:
+                self.subdps.append(character)
+            elif character in ["Anby", "Lycaon", "Koleda", "Qingyi", "Lighter"]:
+                self.stun.insert(0, character)
+            elif character in [
+                "Soukaku",
+                "Nicole",
+                "Rina",
+                "Lucy",
+                "Seth",
+            ]:
+                self.support.insert(0, character)
+            elif character in [
+                "Caesar",
+                "Ben",
+            ]:
+                self.support.append(character)
+            if character in [
                 "Grace",
                 "Piper",
                 "Jane",
@@ -101,22 +131,7 @@ class Composition:
                 "Yanagi",
                 "Miyabi",
             ]:
-                self.subdps.insert(0, character)
                 self.anomaly.append(character)
-            elif character in ["Anby", "Lycaon", "Koleda", "Qingyi", "Lighter"]:
-                self.stun.insert(0, character)
-            elif character in []:
-                self.stun.append(character)
-            elif character in [
-                "Soukaku",
-                "Nicole",
-                "Rina",
-                "Lucy",
-                "Seth",
-                "Caesar",
-                "Ben",
-            ]:
-                self.support.insert(0, character)
 
             if CHARACTERS[character]["element"] == "Ice":
                 len_element["Ice"] += 1

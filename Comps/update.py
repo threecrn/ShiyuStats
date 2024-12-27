@@ -161,7 +161,7 @@ for char in chars2:
                 case "4":
                     chars1[char_name]["role"] = "Support"
                 case "5":
-                    chars1[char_name]["role"] = "Stun"
+                    chars1[char_name]["role"] = "Support"
 
             match str(chars1[char_name]["element"]):
                 case "200":
