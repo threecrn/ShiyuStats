@@ -117,6 +117,7 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
     for star_num in range(0, 5):
         total_battle = 0
         all_uids = set()
+        cheated_uids = set()
         appears[star_num] = {}
         players_chars[star_num] = {}
         # comp_error = False
@@ -169,9 +170,6 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                     continue
                 if star_num != 4 and player.chambers[chamber].star_num != star_num:
                     continue
-                total_battle += 1
-                all_uids.add(player.player)
-                # foundchar = resetfind()
                 whale_comp = False
                 dps_count = 0
                 found_duo = []
@@ -194,7 +192,12 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                 dps_count = 1
                 if whaleOnly and not whale_comp:
                     continue
+                if not da_mode and player.chambers[chamber].round_num < 30:
+                    cheated_uids.add(player.player)
+                    continue
 
+                total_battle += 1
+                all_uids.add(player.player)
                 foundchar = resetfind()
                 for char in player.chambers[chamber].characters:
                     findchars(char, foundchar)
@@ -335,14 +338,15 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
         #     raise ValueError("There are missing comps from character data.")
 
         total = len(all_uids) / 100.0
-        all_rounds = {}
         # print()
         # print(chambers)
         # print("uids: " + str(len(uids)))
         # print("total_battle: " + str(total_battle))
-        # print("total: " + str(total))
+        # if (len(all_uids)) > 1000:
+        #     print("total: " + str(len(all_uids)))
+        #     print("cheat: " + str(len(cheated_uids)))
+        #     exit()
         for char in appears[star_num]:
-            all_rounds[char] = {}
             # # to print the amount of players using a character
             # print(str(char) + ": " + str(len(players_chars[star_num][char])))
             if total > 0:
@@ -356,21 +360,12 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                 #     input()
             else:
                 appears[star_num][char]["percent"] = 0.00
-            if appears[star_num][char]["flat"] >= 8:
+            if appears[star_num][char]["flat"] >= 20:
                 avg_round = []
                 std_dev_round = []
                 uses_room = {}
                 for room_num in range(1, 8):
-                    if room_num >= 0:
-                        all_rounds[char][room_num] = {}
-                        for i in range(41):
-                            all_rounds[char][room_num][i] = 0
                     if appears[star_num][char]["round"][str(room_num)]:
-                        if room_num >= 0 and not da_mode:
-                            for round_num_iter in appears[star_num][char]["round"][
-                                str(room_num)
-                            ]:
-                                all_rounds[char][room_num][round_num_iter] += 1
                         uses_room[room_num] = len(
                             appears[star_num][char]["round"][str(room_num)]
                         )
@@ -429,24 +424,17 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                 # if avg_round:
                 if is_count_cycles:
                     appears[star_num][char]["avg_round"] = round(
-                        statistics.mean(avg_round), 2
+                        statistics.mean(avg_round)
                     )
                     appears[star_num][char]["std_dev_round"] = round(
-                        statistics.mean(std_dev_round), 2
+                        statistics.mean(std_dev_round)
                     )
-                    if da_mode:
-                        appears[star_num][char]["avg_round"] = round(
-                            appears[star_num][char]["avg_round"]
-                        )
-                        appears[star_num][char]["std_dev_round"] = round(
-                            appears[star_num][char]["std_dev_round"]
-                        )
                 else:
-                    appears[star_num][char]["avg_round"] = 1
+                    appears[star_num][char]["avg_round"] = 600
                     if da_mode:
                         appears[star_num][char]["avg_round"] = 0
             else:
-                appears[star_num][char]["avg_round"] = 1
+                appears[star_num][char]["avg_round"] = 600
                 if da_mode:
                     appears[star_num][char]["avg_round"] = 0
 
@@ -518,23 +506,15 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                             # avg_round.append(statistics.mean(appears[star_num][char]["cons_freq"][cons]["round"][str(room_num)]))
                     if avg_round:
                         appears[star_num][char]["cons_freq"][cons]["avg_round"] = round(
-                            statistics.mean(avg_round), 2
+                            statistics.mean(avg_round)
                         )
-                        if da_mode:
-                            appears[star_num][char]["cons_freq"][cons]["avg_round"] = (
-                                round(
-                                    appears[star_num][char]["cons_freq"][cons][
-                                        "avg_round"
-                                    ]
-                                )
-                            )
                     else:
-                        appears[star_num][char]["cons_freq"][cons]["avg_round"] = 1
+                        appears[star_num][char]["cons_freq"][cons]["avg_round"] = 600
                         if da_mode:
                             appears[star_num][char]["cons_freq"][cons]["avg_round"] = 0
                 else:
                     appears[star_num][char]["cons_freq"][cons]["percent"] = 0.00
-                    appears[star_num][char]["cons_freq"][cons]["avg_round"] = 1
+                    appears[star_num][char]["cons_freq"][cons]["avg_round"] = 600
                     if da_mode:
                         appears[star_num][char]["cons_freq"][cons]["avg_round"] = 0
 
@@ -579,25 +559,17 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                             # avg_round.append(statistics.mean(appears[star_num][char]["weap_freq"][weapon]["round"][str(room_num)]))
                     if avg_round:
                         appears[star_num][char]["weap_freq"][weapon]["avg_round"] = (
-                            round(statistics.mean(avg_round), 2)
+                            round(statistics.mean(avg_round))
                         )
-                        if da_mode:
-                            appears[star_num][char]["weap_freq"][weapon][
-                                "avg_round"
-                            ] = round(
-                                appears[star_num][char]["weap_freq"][weapon][
-                                    "avg_round"
-                                ]
-                            )
                     else:
-                        appears[star_num][char]["weap_freq"][weapon]["avg_round"] = 1
+                        appears[star_num][char]["weap_freq"][weapon]["avg_round"] = 600
                         if da_mode:
                             appears[star_num][char]["weap_freq"][weapon][
                                 "avg_round"
                             ] = 0
                 else:
                     appears[star_num][char]["weap_freq"][weapon]["percent"] = 0
-                    appears[star_num][char]["weap_freq"][weapon]["avg_round"] = 1
+                    appears[star_num][char]["weap_freq"][weapon]["avg_round"] = 600
                     if da_mode:
                         appears[star_num][char]["weap_freq"][weapon]["avg_round"] = 0
 
@@ -642,44 +614,17 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                             # avg_round.append(statistics.mean(appears[star_num][char]["arti_freq"][arti]["round"][str(room_num)]))
                     if avg_round:
                         appears[star_num][char]["arti_freq"][arti]["avg_round"] = round(
-                            statistics.mean(avg_round), 2
+                            statistics.mean(avg_round)
                         )
-                        if da_mode:
-                            appears[star_num][char]["arti_freq"][arti]["avg_round"] = (
-                                round(
-                                    appears[star_num][char]["arti_freq"][arti][
-                                        "avg_round"
-                                    ]
-                                )
-                            )
                     else:
-                        appears[star_num][char]["arti_freq"][arti]["avg_round"] = 1
+                        appears[star_num][char]["arti_freq"][arti]["avg_round"] = 600
                         if da_mode:
                             appears[star_num][char]["arti_freq"][arti]["avg_round"] = 0
                 else:
                     appears[star_num][char]["arti_freq"][arti]["percent"] = 0
-                    appears[star_num][char]["arti_freq"][arti]["avg_round"] = 1
+                    appears[star_num][char]["arti_freq"][arti]["avg_round"] = 600
                     if da_mode:
                         appears[star_num][char]["arti_freq"][arti]["avg_round"] = 0
-
-        if chambers == ["7-1", "7-2"] and star_num == 4:
-            # if chambers == ROOMS and star_num == 4:
-            csv_writer = csv.writer(
-                open("../char_results/all_rounds.csv", "w", newline="")
-            )
-            for char in all_rounds:
-                for room_num in all_rounds[char]:
-                    for round_num_iter in all_rounds[char][room_num]:
-                        csv_writer.writerow(
-                            [
-                                "2/21/2024",
-                                char,
-                                room_num,
-                                round_num_iter,
-                                all_rounds[char][room_num][round_num_iter],
-                            ]
-                        )
-            # exit()
     return appears
 
 
