@@ -192,9 +192,19 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                 dps_count = 1
                 if whaleOnly and not whale_comp:
                     continue
-                if not da_mode and player.chambers[chamber].round_num < 30:
-                    cheated_uids.add(player.player)
-                    continue
+                if da_mode:
+                    if not whale_comp and player.chambers[chamber].round_num > 50000:
+                        cheated_uids.add(player.player)
+                        continue
+                else:
+                    if whale_comp:
+                        if player.chambers[chamber].round_num < 10:
+                            cheated_uids.add(player.player)
+                            continue
+                    else:
+                        if player.chambers[chamber].round_num < 20:
+                            cheated_uids.add(player.player)
+                            continue
 
                 total_battle += 1
                 all_uids.add(player.player)
@@ -202,7 +212,6 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                 for char in player.chambers[chamber].characters:
                     findchars(char, foundchar)
                 if find_archetype(foundchar):
-                    # if player.chambers[chamber].characters == ['Kafka', 'Sampo', 'Silver Wolf', 'Bailu']:
                     for char in player.chambers[chamber].characters:
                         # to print the amount of players using a character, for char infographics
                         if chambers == ["7-1", "7-2"] or (
@@ -342,10 +351,9 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
         # print(chambers)
         # print("uids: " + str(len(uids)))
         # print("total_battle: " + str(total_battle))
-        # if (len(all_uids)) > 1000:
-        #     print("total: " + str(len(all_uids)))
-        #     print("cheat: " + str(len(cheated_uids)))
-        #     exit()
+        # if (len(cheated_uids)) > 0 and star_num == 4:
+        #     print()
+        #     print("cheat: " + str(cheated_uids))
         for char in appears[star_num]:
             # # to print the amount of players using a character
             # print(str(char) + ": " + str(len(players_chars[star_num][char])))
