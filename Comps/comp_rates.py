@@ -773,18 +773,12 @@ def rank_usages(comps_dict, rooms, owns_offset=1):
             comps_dict[star_threshold][comp]["is_count_round_print"] = True
             if (rooms == one_stage) or da_mode and rooms == ["1-1", "1-2", "1-3"]:
                 for room_num in uses_room:
-                    if whaleOnly:
-                        if uses_room[room_num] < 10:
-                            comps_dict[star_threshold][comp]["is_count_round"] = False
-                    elif uses_room[room_num] < 20:
+                    if uses_room[room_num] < 20:
                         comps_dict[star_threshold][comp]["is_count_round"] = False
                     if uses_room[room_num] < 2:
                         comps_dict[star_threshold][comp]["is_count_round_print"] = False
             elif len(rooms) == 1:
-                if whaleOnly:
-                    if comps_dict[star_threshold][comp]["uses"] < 10:
-                        comps_dict[star_threshold][comp]["is_count_round"] = False
-                elif comps_dict[star_threshold][comp]["uses"] < 20:
+                if comps_dict[star_threshold][comp]["uses"] < 20:
                     comps_dict[star_threshold][comp]["is_count_round"] = False
                 if comps_dict[star_threshold][comp]["uses"] < 2:
                     comps_dict[star_threshold][comp]["is_count_round_print"] = False

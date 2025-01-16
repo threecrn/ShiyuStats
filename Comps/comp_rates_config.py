@@ -20,15 +20,15 @@ with open(str(os.getenv("REPO_PATH")) + "/data/w-engine.json") as char_file:
     LIGHT_CONES = json.load(char_file)
 
 # no need to add 2.2.1"_da"
-RECENT_PHASE = "1.4.1"
+RECENT_PHASE = "1.4.3"
 
 # if no past phase, past_phase = "null"
 # add 2.2.1"_da"
-past_phase = "null"
+past_phase = "1.3.3_da"
 global da_mode
 global as_mode
 # if as: da_mode = True
-da_mode = False
+da_mode = True
 as_mode = False
 char_infographics = ["Zhu Yuan", "Ben", "Nicole"]
 char_infographics = char_infographics[0]
