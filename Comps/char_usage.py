@@ -11,7 +11,7 @@ import warnings
 
 # from scipy.stats import skew, trim_mean
 from archetypes import find_archetype, findchars, resetfind
-from comp_rates_config import RECENT_PHASE, da_mode, whaleOnly
+from comp_rates_config import RECENT_PHASE, da_mode, whaleOnly, f2pOnly, sigWeaps
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 if da_mode:
@@ -115,7 +115,6 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
         valid_duo_dps = []
 
     for star_num in range(0, 5):
-        total_battle = 0
         all_uids = set()
         cheated_uids = set()
         appears[star_num] = {}
@@ -171,6 +170,7 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                 if star_num != 4 and player.chambers[chamber].star_num != star_num:
                     continue
                 whale_comp = False
+                f2p_comp = True
                 dps_count = 0
                 found_duo = []
                 for duo_dps in valid_duo_dps:
@@ -179,19 +179,20 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                         break
 
                 for char in player.chambers[chamber].characters:
-                    if char in player.owned:
-                        # if player.owned[char]["level"] > 51:
-                        #     whale_comp = True
-                        if CHARACTERS[char]["availability"] == "Limited S":
+                    if CHARACTERS[char]["availability"] == "Limited S":
+                        if player.chambers[chamber].char_cons:
+                            if player.chambers[chamber].char_cons[char] > 0:
+                                whale_comp = True
+                        if char in player.owned:
                             if player.owned[char]["cons"] > 0:
                                 whale_comp = True
+                            if player.owned[char]["weapon"] in sigWeaps:
+                                f2p_comp = False
                         # if player.chambers[chamber].char_cons[char] > 0:
                         #     whale_comp = True
                     if CHARACTERS[char]["role"] == "Damage Dealer":
                         dps_count += 1
                 dps_count = 1
-                if whaleOnly and not whale_comp:
-                    continue
                 if da_mode:
                     if not whale_comp and player.chambers[chamber].round_num > 50000:
                         cheated_uids.add(player.player)
@@ -206,8 +207,11 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                             cheated_uids.add(player.player)
                             continue
 
-                total_battle += 1
                 all_uids.add(player.player)
+                if (whaleOnly and not whale_comp) or (
+                    f2pOnly and (not f2p_comp or whale_comp)
+                ):
+                    continue
                 foundchar = resetfind()
                 for char in player.chambers[chamber].characters:
                     findchars(char, foundchar)
@@ -227,7 +231,11 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                                 dps_count = 1
 
                         appears[star_num][char_name]["flat"] += 1
-                        if whale_comp == whaleOnly and dps_count == 1:
+                        if (
+                            whale_comp == whaleOnly
+                            and (not f2pOnly or f2p_comp)
+                            and dps_count == 1
+                        ):
                             if CHARACTERS[char]["availability"] == "Limited S":
                                 appears[star_num][char_name]["cons_freq"][0]["round"][
                                     list(str(chamber).split("-"))[0]
@@ -350,7 +358,6 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
         # print()
         # print(chambers)
         # print("uids: " + str(len(uids)))
-        # print("total_battle: " + str(total_battle))
         # if (len(cheated_uids)) > 0 and star_num == 4:
         #     print()
         #     print("cheat: " + str(cheated_uids))

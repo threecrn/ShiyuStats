@@ -10,6 +10,7 @@ parser.add_argument("-a", "--all", action="store_true")
 parser.add_argument("-d", "--duos", action="store_true")
 parser.add_argument("-t", "--top", action="store_true")
 parser.add_argument("-w", "--whale", action="store_true")
+parser.add_argument("-f", "--f2p", action="store_true")
 
 args = parser.parse_args()
 
@@ -17,7 +18,7 @@ with open(str(os.getenv("REPO_PATH")) + "/data/characters.json") as char_file:
     CHARACTERS = json.load(char_file)
 
 with open(str(os.getenv("REPO_PATH")) + "/data/w-engine.json") as char_file:
-    LIGHT_CONES = json.load(char_file)
+    WENGINE = json.load(char_file)
 
 # no need to add 2.2.1"_da"
 RECENT_PHASE = "1.4.3"
@@ -53,7 +54,7 @@ skip_self = False
 skip_random = False
 archetype = "all"
 whaleOnly = args.whale
-whaleSigWeap = False
+f2pOnly = args.f2p
 
 # Char infographics should be separated from overall comp rankings
 run_commands = [
@@ -68,7 +69,7 @@ run_commands = [
     # "Comp usage all stages",
 ]
 
-if args.whale or args.top:
+if args.whale or args.top or args.f2p:
     run_commands = [
         "Char usages 8 - 10",
         "Comp usage 8 - 10",
@@ -87,6 +88,11 @@ elif args.duos:
     run_commands = [
         "Duos check",
     ]
+
+sigWeaps = []
+for wengine in WENGINE:
+    if WENGINE[wengine]["availability"] == "Limited S":
+        sigWeaps += [WENGINE[wengine]["name"]]
 
 alt_comps = "Character specific infographics" in run_commands
 if alt_comps and char_app_rate_threshold > app_rate_threshold:
