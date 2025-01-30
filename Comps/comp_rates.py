@@ -105,8 +105,8 @@ def main():
             if line[0] in uid_freq_comp:
                 skip_uid = True
                 # print("duplicate UID in comp: " + line[0])
-            elif (not da_mode and int("".join(filter(str.isdigit, line[1]))) > 0) or (
-                da_mode and int("".join(filter(str.isdigit, line[1]))) > 0
+            elif (not da_mode and star_num > 0) or (
+                da_mode and int("".join(filter(str.isdigit, line[2]))) > 0
             ):
                 uid_freq_comp[line[0]] = 1
                 if line[0] in self_uids:
@@ -1258,7 +1258,7 @@ def duo_write(duos_dict, usage, filename, archetype, check_duo):
         if usage[4][char]["app_flat"] > 0:
             out_duos_append = {
                 "char": char,
-                "round": usage[4][char]["round"],
+                "app": usage[4][char]["app"],
             }
             for i in range(duo_dict_len):
                 if i < len(duos_dict[char]):
@@ -1274,10 +1274,7 @@ def duo_write(duos_dict, usage, filename, archetype, check_duo):
                     out_duos_append["avg_round_" + str(i + 1)] = 0.00
                     out_duos_append["app_flat_" + str(i + 1)] = 0
             out_duos.append(out_duos_append)
-    if da_mode:
-        out_duos = sorted(out_duos, key=lambda t: t["round"], reverse=True)
-    else:
-        out_duos = sorted(out_duos, key=lambda t: t["round"], reverse=False)
+    out_duos = sorted(out_duos, key=lambda t: t["app"], reverse=True)
 
     if archetype != "all":
         filename = filename + "_" + archetype
@@ -1292,7 +1289,7 @@ def duo_write(duos_dict, usage, filename, archetype, check_duo):
         out_duos_exclu[duos["char"]] = {}
         if count == 0:
             # csv_writer.writerow(duos.keys())
-            temp_duos = ["char", "round"]
+            temp_duos = ["char", "app"]
             for i in range(10):
                 temp_duos += [
                     "char_" + str(i + 1),
@@ -1304,7 +1301,7 @@ def duo_write(duos_dict, usage, filename, archetype, check_duo):
         # csv_writer.writerow(duos.values())
         temp_duos = [
             duos["char"],
-            duos["round"],
+            duos["app"],
         ]
         for i in range(10):
             temp_duos += [
