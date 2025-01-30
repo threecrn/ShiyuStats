@@ -21,15 +21,15 @@ with open(str(os.getenv("REPO_PATH")) + "/data/w-engine.json") as char_file:
     WENGINE = json.load(char_file)
 
 # no need to add 2.2.1"_da"
-RECENT_PHASE = "1.4.3"
+RECENT_PHASE = "1.5.1"
 
 # if no past phase, past_phase = "null"
 # add 2.2.1"_da"
-past_phase = "1.3.3_da"
+past_phase = "1.4.2"
 global da_mode
 global as_mode
 # if as: da_mode = True
-da_mode = True
+da_mode = False
 as_mode = False
 char_infographics = ["Zhu Yuan", "Ben", "Nicole"]
 char_infographics = char_infographics[0]

@@ -194,5 +194,12 @@
         "id": "53015",
         "name": "Brawlerboo",
         "availability": "A"
+    },
+    "Snap": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole30.png",
+        "desc": "Its flash only shines for true superstars.",
+        "id": "54015",
+        "name": "Snap",
+        "availability": "S"
     }
 }

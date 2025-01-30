@@ -190,6 +190,8 @@ for char in chars2:
                     chars1[char_name]["camp"] = "Hollow Special Operations Section 6"
                 case "7":
                     chars1[char_name]["camp"] = "New Eridu Public Security"
+                case "8":
+                    chars1[char_name]["camp"] = "Stars of Lyra"
                 case _:
                     print("Unavailable camp: " + str(chars1[char_name]["camp"]))
 

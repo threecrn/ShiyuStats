@@ -542,5 +542,45 @@
         "name": "Item_Weapon_S_1311_Name",
         "availability": "Limited S",
         "role": "Support"
+    },
+    "Item_Weapon_A_1351_Name": {
+        "icon": "Weapon_A_1351",
+        "desc": "An energy W-Engine modded from spare parts of a truck's engine. It converts the original cylinder into an energy storage unit, which is highly advantageous.",
+        "id": "13135",
+        "name": "Item_Weapon_A_1351_Name",
+        "availability": "A",
+        "role": "Stun"
+    },
+    "Item_Weapon_S_1381_Name": {
+        "icon": "Weapon_S_1381",
+        "desc": "Item_Weapon_S_1381_ShortDesc",
+        "id": "14138",
+        "name": "Item_Weapon_S_1381_Name",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Item_Weapon_S_1361_Name": {
+        "icon": "Weapon_S_1361",
+        "desc": "Item_Weapon_S_1361_ShortDesc",
+        "id": "14136",
+        "name": "Item_Weapon_S_1361_Name",
+        "availability": "Limited S",
+        "role": "Stun"
+    },
+    "Heartstring Nocturne": {
+        "icon": "Weapon_S_1321",
+        "desc": "The sound of the strings, sharp as blades, cut through the night, protecting the one.",
+        "id": "14132",
+        "name": "Heartstring Nocturne",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Elegant Vanity": {
+        "icon": "Weapon_S_1311",
+        "desc": "Underneath the radiant splendor, her genuine self has never been hidden.",
+        "id": "14131",
+        "name": "Elegant Vanity",
+        "availability": "Limited S",
+        "role": "Support"
     }
 }

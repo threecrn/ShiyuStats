@@ -32,7 +32,7 @@
         "name": "Branch & Blade Song",
         "desc": [
             "CRIT DMG +16%",
-            "When Anomaly Mastery exceeds or equals 115 points, the equipper's CRIT damage increases by 30%. When any squad member applies Freeze or triggers the Shatter effect on an enemy, the equipper's CRIT Rate increases by 12%, lasting 15s."
+            "When Anomaly Mastery exceeds or equals 115 points, the equipper's CRIT DMG increases by 30%. When any squad member applies Freeze or triggers the Shatter effect on an enemy, the equipper's CRIT Rate increases by 12%, lasting 15s."
         ]
     },
     "31100": {
@@ -59,7 +59,7 @@
         "name": "Astral Voice",
         "desc": [
             "ATK +10%",
-            "Whenever any squad member enters the field using a Quick Assist, all squad members gain 1 stack of Astral, up to a maximum of 3 stacks, and lasting 15s. Repeated triggers reset the duration. Each stack of Astral increases the DMG dealt by the character entering the field using a Quick Assist by 8%. Only one of this effect can be active at a time in the same squad."
+            "Whenever any squad member enters the field using a Quick Assist, all squad members gain 1 stack of Astral, up to a maximum of 3 stacks, and lasting 15s. Repeated triggers reset the duration. Each stack of Astral increases the DMG dealt by the character entering the field using a Quick Assist by 8%. Only one instance of this effect can exist in the same squad."
         ]
     },
     "32400": {
@@ -69,6 +69,15 @@
         "desc": [
             "Electric DMG +10%",
             "As long as an enemy in combat is Shocked, the equipper's ATK is increased by 28%."
+        ]
+    },
+    "32900": {
+        "icon": "UI/Sprite/A1DynamicLoad/IconSuit/UnPacker/SuitBranch&BladeSong.png",
+        "id": "32900",
+        "name": "EquipmentSuit_32900_name",
+        "desc": [
+            "EquipmentSuit_32900_2_des",
+            "EquipmentSuit_32900_4_des"
         ]
     },
     "31500": {
@@ -105,6 +114,15 @@
         "desc": [
             "Anomaly Proficiency +30",
             "Fire DMG and Electric DMG increases by 15%. While off-field, EX Special Attack and Assist Attack DMG increases by 20%. When switching on-field, this buff continues for 5s, and this continuation effect can trigger once every 7.5s."
+        ]
+    },
+    "33000": {
+        "icon": "UI/Sprite/A1DynamicLoad/IconSuit/UnPacker/SuitAstralVoice.png",
+        "id": "33000",
+        "name": "EquipmentSuit_33000_name",
+        "desc": [
+            "EquipmentSuit_33000_2_des",
+            "EquipmentSuit_33000_4_des"
         ]
     },
     "31400": {

@@ -116,6 +116,7 @@ class Composition:
                 "Rina",
                 "Lucy",
                 "Seth",
+                "Astra Yao",
             ]:
                 self.support.insert(0, character)
             elif character in [

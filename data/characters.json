@@ -258,5 +258,27 @@
     "name": "Miyabi",
     "availability": "Limited S",
     "role": "Damage Dealer"
+  },
+  "Astra Yao": {
+    "element": "Ether",
+    "camp": "Stars of Lyra",
+    "icon": "IconRole36",
+    "skin": {
+      "3113110": {
+        "Name": "Astra Yao: Scarlet Rock",
+        "Desc": "The bold red is only to ignite the freedom deep within. On stage, nothing can overshadow her brilliance.",
+        "Image": "IconRole36"
+      },
+      "3113111": {
+        "Name": "Astra Yao: Chandelier",
+        "Desc": "The black-and-white dress glimmers in both light and shadows. Every smile of hers seems to sink into the flowing light of the night, becoming a timeless classic.",
+        "Image": "IconRole36_01"
+      }
+    },
+    "desc": "Astra Yao is widely regarded as Ridu's most iconic singer. With her extraordinary voice, stage presence, and songwriting talent, she has led the musical trends of an entire era. \"If music is the resonance of the soul, then Astra Yao is the spark that ignites it all,\" said one famous music critic.\n\nAs brilliant as she is, Astra remains remarkably sincere and pure. On stage, her voice resonates deeply with the audience, which has allowed her to amass a large and loyal fanbase known as her \"Astranauts.\" Of course, Astra's brilliance wouldn't be possible without the careful protection of her manager, Evelyn. Offstage, she appears to be just a cute, hapless girl who depends on Evelyn in her daily life, and on Wise and Belle in the Hollows.\n\n\"If I tickled Eous, would it make you laugh?\" Astra asked curiously while lifting the Proxy, who was linked via the HDD system.\n\nShe seems to have a particular fondness for Eous.\nContemplation: Human emotions are indeed an interesting subject. It's still hard to determine whether Astra likes Eous because of the owner, or whether she likes the owner because of Eous.",
+    "id": "1311",
+    "name": "Astra Yao",
+    "availability": "Limited S",
+    "role": "Support"
   }
 }
