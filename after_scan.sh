@@ -7,3 +7,4 @@ python hash.py &
 python comp_rates.py -w &
 python comp_rates.py -f &
 python comp_rates.py -a
+python combine_char.py

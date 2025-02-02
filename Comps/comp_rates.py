@@ -14,7 +14,6 @@ from slugify import slugify
 from comp_rates_config import (
     RECENT_PHASE,
     da_mode,
-    as_mode,
     skip_random,
     skip_self,
     alt_comps,
@@ -62,9 +61,7 @@ def main():
         self_uids = []
 
     da_filename = ""
-    if as_mode:
-        da_filename = "_as"
-    elif da_mode:
+    if da_mode:
         da_filename = "_da"
     if os.path.exists("../data/raw_csvs_real/"):
         stats = open("../data/raw_csvs_real/" + RECENT_PHASE + da_filename + ".csv")
