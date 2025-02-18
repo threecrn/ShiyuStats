@@ -87,6 +87,7 @@ class Composition:
                 "Zhu Yuan",
                 "Ellen",
                 "Soldier 11",
+                "Evelyn",
             ]:
                 self.dps.insert(0, character)
             if character in [
