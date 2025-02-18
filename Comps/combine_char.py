@@ -23,16 +23,22 @@ with open("../data/characters.json") as char_file:
     CHARACTERS = json.load(char_file)
 with open("../char_results/" + sd_phase + "/all.json") as stats:
     sd_dict = json.load(stats)
-with open("../char_results/" + da_phase + "_da/all.json") as stats:
-    da_dict = json.load(stats)
 with open("../char_results/" + sd_phase + "/all_C1.json") as stats:
     sd_dict_e1 = json.load(stats)
-with open("../char_results/" + da_phase + "_da/all_C1.json") as stats:
-    da_dict_e1 = json.load(stats)
 with open("../char_results/" + sd_phase + "/all_E0S0.json") as stats:
     sd_dict_s0 = json.load(stats)
+with open("../char_results/" + da_phase + "_da/all.json") as stats:
+    da_dict = json.load(stats)
+with open("../char_results/" + da_phase + "_da/all_C1.json") as stats:
+    da_dict_e1 = json.load(stats)
 with open("../char_results/" + da_phase + "_da/all_E0S0.json") as stats:
     da_dict_s0 = json.load(stats)
+with open("../char_results/" + da_phase + "_da/1-1.json") as stats:
+    da_dict_boss_1 = json.load(stats)
+with open("../char_results/" + da_phase + "_da/1-2.json") as stats:
+    da_dict_boss_2 = json.load(stats)
+with open("../char_results/" + da_phase + "_da/1-3.json") as stats:
+    da_dict_boss_3 = json.load(stats)
 
 uses = []
 uses_sd = {}
@@ -108,46 +114,35 @@ for char in CHARACTERS:
     char
     if char in slug:
         char = slug[char]
+    sd_dict_e1_char = next((x for x in sd_dict_e1 if x["char"] == char), {})
+    sd_dict_s0_char = next((x for x in sd_dict_s0 if x["char"] == char), {})
+    da_dict_e1_char = next((x for x in da_dict_e1 if x["char"] == char), {})
+    da_dict_s0_char = next((x for x in da_dict_s0 if x["char"] == char), {})
+    da_dict_boss_1_char = next((x for x in da_dict_boss_1 if x["char"] == char), {})
+    da_dict_boss_2_char = next((x for x in da_dict_boss_2 if x["char"] == char), {})
+    da_dict_boss_3_char = next((x for x in da_dict_boss_3 if x["char"] == char), {})
     uses_temp = {
         "char": char,
         "app_rate_sd": uses_sd.get(char, {}).get("app_rate", 0),
-        "app_rate_sd_e1": next((x for x in sd_dict_e1 if x["char"] == char), None)[
-            "app_rate"
-        ]
-        or 0,
-        "app_rate_sd_s0": next((x for x in sd_dict_s0 if x["char"] == char), None)[
-            "app_rate"
-        ]
-        or 0,
+        "app_rate_sd_e1": sd_dict_e1_char.get("app_rate", 0),
+        "app_rate_sd_s0": sd_dict_s0_char.get("app_rate", 0),
         "avg_round_sd": uses_sd.get(char, {}).get("avg_round", 600),
-        "avg_round_sd_e1": next((x for x in sd_dict_e1 if x["char"] == char), None)[
-            "avg_round"
-        ]
-        or 600,
-        "avg_round_sd_s0": next((x for x in sd_dict_s0 if x["char"] == char), None)[
-            "avg_round"
-        ]
-        or 600,
+        "avg_round_sd_e1": sd_dict_e1_char.get("avg_round", 600),
+        "avg_round_sd_s0": sd_dict_s0_char.get("avg_round", 600),
         "sample_sd": uses_sd.get(char, {}).get("sample", 0),
         "sample_size_players_sd": uses_sd.get(char, {}).get("sample_size_players", 0),
         "app_rate_da": uses_da.get(char, {}).get("app_rate", 0),
-        "app_rate_da_e1": next((x for x in da_dict_e1 if x["char"] == char), None)[
-            "app_rate"
-        ]
-        or 0,
-        "app_rate_da_s0": next((x for x in da_dict_s0 if x["char"] == char), None)[
-            "app_rate"
-        ]
-        or 0,
+        "app_rate_da_e1": da_dict_e1_char.get("app_rate", 0),
+        "app_rate_da_s0": da_dict_s0_char.get("app_rate", 0),
         "avg_round_da": uses_da.get(char, {}).get("avg_round", 0),
-        "avg_round_da_e1": next((x for x in da_dict_e1 if x["char"] == char), None)[
-            "avg_round"
-        ]
-        or 0,
-        "avg_round_da_s0": next((x for x in da_dict_s0 if x["char"] == char), None)[
-            "avg_round"
-        ]
-        or 0,
+        "avg_round_da_e1": da_dict_e1_char.get("avg_round", 0),
+        "avg_round_da_s0": da_dict_s0_char.get("avg_round", 0),
+        "app_rate_da_boss_1": da_dict_boss_1_char.get("app_rate", 0),
+        "avg_round_da_boss_1": da_dict_boss_1_char.get("avg_round", 0),
+        "app_rate_da_boss_2": da_dict_boss_2_char.get("app_rate", 0),
+        "avg_round_da_boss_2": da_dict_boss_2_char.get("avg_round", 0),
+        "app_rate_da_boss_3": da_dict_boss_3_char.get("app_rate", 0),
+        "avg_round_da_boss_3": da_dict_boss_3_char.get("avg_round", 0),
         "sample_da": uses_da.get(char, {}).get("sample", 0),
         "sample_size_players_da": uses_da.get(char, {}).get("sample_size_players", 0),
         "app_0": 0,
@@ -276,5 +271,9 @@ for char in CHARACTERS:
         )
     uses.append(uses_temp)
 
-with open("../char_results/builds.json", "w") as out_file:
+phase_num = RECENT_PHASE
+if da_mode:
+    phase_num = phase_num + "_da"
+
+with open("../char_results/" + phase_num + "/builds.json", "w") as out_file:
     out_file.write(json.dumps(uses, indent=2))
