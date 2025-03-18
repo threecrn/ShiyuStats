@@ -111,7 +111,6 @@ for char in da_dict:
 
 for char in CHARACTERS:
     char = slugify(char)
-    char
     if char in slug:
         char = slug[char]
     sd_dict_e1_char = next((x for x in sd_dict_e1 if x["char"] == char), {})
