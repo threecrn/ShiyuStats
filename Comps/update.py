@@ -142,11 +142,11 @@ for char in chars2:
                 chars1[char_name]["availability"] = "A"
             elif chars2[char]["rank"] == 4:
                 print(char_name)
-                add_char = input("Limited Character? (y/n): ")
-                if add_char == "y":
-                    chars1[char_name]["availability"] = "Limited S"
-                else:
-                    chars1[char_name]["availability"] = "Standard S"
+                # add_char = input("Limited Character? (y/n): ")
+                # if add_char == "y":
+                chars1[char_name]["availability"] = "Limited S"
+                # else:
+                #     chars1[char_name]["availability"] = "Standard S"
 
             # print("Role? 0: DPS, 1: Amplifier, 2: Sustain")
             # role_char = input()
