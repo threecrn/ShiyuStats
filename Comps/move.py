@@ -3,10 +3,10 @@ import shutil
 
 from comp_rates_config import RECENT_PHASE, da_mode
 
+suffix = ""
 if da_mode:
-    RECENT_PHASE_PF = RECENT_PHASE + "_da"
-else:
-    RECENT_PHASE_PF = RECENT_PHASE
+    suffix = "_da"
+RECENT_PHASE_PF = RECENT_PHASE + suffix
 
 source_dirs = [
     "../char_results",
@@ -31,6 +31,11 @@ for source_dir in source_dirs:
         mkdir(target_dir)
     for file_name in file_names:
         if (source_dir == "../mihomo" and file_name.startswith("output")) or (
-            source_dir != "../mihomo" and file_name.endswith(tuple([".json", ".csv"]))
+            source_dir != "../mihomo"
+            and file_name.endswith(tuple([".json", ".csv"]))
+            and (
+                "demographic_collect" not in file_name
+                or file_name == ("demographic_collect" + suffix + ".json")
+            )
         ):
             shutil.move(path.join(source_dir, file_name), target_dir)

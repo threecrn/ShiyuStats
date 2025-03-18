@@ -12,6 +12,17 @@ parser.add_argument("-t", "--top", action="store_true")
 parser.add_argument("-w", "--whale", action="store_true")
 parser.add_argument("-f", "--f2p", action="store_true")
 
+parser.add_argument(
+    "-sd",
+    "--shiyu_defense",
+    action="store_true",
+)
+parser.add_argument(
+    "-da",
+    "--deadly_assault",
+    action="store_true",
+)
+
 args = parser.parse_args()
 
 with open(str(os.getenv("REPO_PATH")) + "/data/characters.json") as char_file:
@@ -28,7 +39,17 @@ RECENT_PHASE = "1.5.3"
 past_phase = "1.5.2_da"
 global da_mode
 # if as: da_mode = True
-da_mode = True
+da_mode = args.deadly_assault
+
+if not da_mode:
+    da_mode = False
+
+suffix = ""
+if da_mode:
+    suffix = "_da"
+RECENT_PHASE_PF = RECENT_PHASE + suffix
+past_phase = past_phase + suffix
+
 char_infographics = ["Zhu Yuan", "Ben", "Nicole"]
 char_infographics = char_infographics[0]
 
