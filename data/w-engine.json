@@ -582,5 +582,45 @@
         "name": "Elegant Vanity",
         "availability": "Limited S",
         "role": "Support"
+    },
+    "Box Cutter": {
+        "icon": "Weapon_A_1351",
+        "desc": "An energy W-Engine modded from spare parts of a truck's engine. It converts the original cylinder into an energy storage unit, which is highly advantageous.",
+        "id": "13135",
+        "name": "Box Cutter",
+        "availability": "A",
+        "role": "Stun"
+    },
+    "Item_Weapon_S_1331_Name": {
+        "icon": "Weapon_S_1331",
+        "desc": "Item_Weapon_S_1331_ShortDesc",
+        "id": "14133",
+        "name": "Item_Weapon_S_1331_Name",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Item_Weapon_S_1291_Name": {
+        "icon": "Weapon_S_1291",
+        "desc": "Item_Weapon_S_1291_ShortDesc",
+        "id": "14129",
+        "name": "Item_Weapon_S_1291_Name",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Severed Innocence": {
+        "icon": "Weapon_S_1381",
+        "desc": "...",
+        "id": "14138",
+        "name": "Severed Innocence",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Spectral Gaze": {
+        "icon": "Weapon_S_1361",
+        "desc": "...",
+        "id": "14136",
+        "name": "Spectral Gaze",
+        "availability": "Limited S",
+        "role": "Stun"
     }
 }

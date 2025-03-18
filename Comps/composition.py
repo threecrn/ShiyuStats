@@ -88,6 +88,7 @@ class Composition:
                 "Ellen",
                 "Soldier 11",
                 "Evelyn",
+                "Soldier 0 - Anby",
             ]:
                 self.dps.insert(0, character)
             if character in [
@@ -109,7 +110,14 @@ class Composition:
                 "Burnice",
             ]:
                 self.subdps.append(character)
-            elif character in ["Anby", "Lycaon", "Koleda", "Qingyi", "Lighter"]:
+            elif character in [
+                "Anby",
+                "Lycaon",
+                "Koleda",
+                "Qingyi",
+                "Lighter",
+                "Pulchra",
+            ]:
                 self.stun.insert(0, character)
             elif character in [
                 "Soukaku",

@@ -291,5 +291,27 @@
         "name": "Evelyn",
         "availability": "Limited S",
         "role": "Damage Dealer"
+    },
+    "Pulchra": {
+        "element": "Physical",
+        "camp": "Sons of Calydon",
+        "icon": "IconRole38",
+        "skin": {},
+        "desc": "...",
+        "id": "1351",
+        "name": "Pulchra",
+        "availability": "A",
+        "role": "Stun"
+    },
+    "Soldier 0 - Anby": {
+        "element": "Electric",
+        "camp": "Obol Squad",
+        "icon": "IconRole40",
+        "skin": {},
+        "desc": "",
+        "id": "1381",
+        "name": "Soldier 0 - Anby",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
     }
 }
