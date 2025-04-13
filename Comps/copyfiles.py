@@ -1,0 +1,47 @@
+from os import listdir, path, mkdir
+import shutil
+from send2trash import send2trash
+from comp_rates_config import RECENT_PHASE, da_mode
+
+suffix = ""
+sd_suffix = ""
+if da_mode:
+    suffix = "_da"
+    sd_suffix = "da"
+else:
+    sd_suffix = "sd"
+
+RECENT_PHASE_PF = RECENT_PHASE + suffix
+
+source_dirs = [
+    "../char_results/" + RECENT_PHASE_PF,
+    "../comp_results/" + RECENT_PHASE_PF + "/json",
+]
+
+for source_dir in source_dirs:
+    if "comp_results" in source_dir:
+        target_dir = "../web_results/" + sd_suffix + "/comps"
+    else:
+        target_dir = "../web_results/" + sd_suffix + "/chars"
+
+    file_names = listdir(source_dir)
+    if path.exists(target_dir):
+        send2trash(target_dir)
+    mkdir(target_dir)
+    for file_name in file_names:
+        if "comp_results" in source_dir or (
+            file_name == "duo_usages.json"
+            or file_name == ("demographic_collect" + suffix + ".json")
+            or (file_name == "builds.json" and (RECENT_PHASE + "_da") in source_dir)
+        ):
+            if file_name == "builds.json":
+                temp_target_dir = target_dir
+                target_dir = "../web_results"
+            copyfrom = path.join(source_dir, file_name)
+            copyto = path.join(target_dir, file_name)
+            shutil.copyfile(copyfrom, copyto)
+            if file_name == "builds.json":
+                target_dir = temp_target_dir
+
+if da_mode:
+    shutil.make_archive("../results", "zip", "../web_results")

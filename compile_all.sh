@@ -14,6 +14,7 @@ echo ""
 echo "Move SD"
 python move.py
 python combine_char.py
+python copyfiles.py
 
 echo ""
 echo "DA"
@@ -24,3 +25,4 @@ echo ""
 echo "Move DA"
 python move.py -da
 python combine_char.py -da
+python copyfiles.py -da
