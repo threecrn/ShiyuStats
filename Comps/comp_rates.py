@@ -1453,6 +1453,7 @@ def char_usages_write(chars_dict, filename, archetype):
             "avg_round": str(chars_dict[char]["round"]),
             # "prev_avg_round": str(prev_round.get(char, 1)),
             "std_dev_round": str(chars_dict[char]["std_dev_round"]),
+            "q1_round": str(chars_dict[char]["q1_round"]),
             # "usage_rate": str(chars_dict[char]["usage"]) + "%",
             # "own_rate": str(chars_dict[char]["own"]) + "%",
             "role": chars_dict[char]["role"],
@@ -1582,7 +1583,7 @@ def char_usages_write(chars_dict, filename, archetype):
         filename = filename + "_E0S0"
 
     iterate_value_app = ["app_rate", "diff"]
-    iterate_value_round = ["avg_round", "std_dev_round", "diff_rounds"]
+    iterate_value_round = ["avg_round", "std_dev_round", "q1_round", "diff_rounds"]
     iterate_name_arti = []
     for i in range(weap_len):
         iterate_value_app.append("weapon_" + str(i + 1) + "_app")
