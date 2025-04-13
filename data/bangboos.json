@@ -201,5 +201,12 @@
         "id": "54015",
         "name": "Snap",
         "availability": "S"
+    },
+    "Robin": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole31.png",
+        "desc": "Three, two, one! Don't blink!",
+        "id": "54016",
+        "name": "Robin",
+        "availability": "S"
     }
 }

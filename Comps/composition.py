@@ -117,6 +117,7 @@ class Composition:
                 "Qingyi",
                 "Lighter",
                 "Pulchra",
+                "Trigger",
             ]:
                 self.stun.insert(0, character)
             elif character in [

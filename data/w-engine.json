@@ -622,5 +622,21 @@
         "name": "Spectral Gaze",
         "availability": "Limited S",
         "role": "Stun"
+    },
+    "Flight of Fancy": {
+        "icon": "Weapon_S_1331",
+        "desc": "A bird landed on the windowsill, scattering starlight from its tail feathers.",
+        "id": "14133",
+        "name": "Flight of Fancy",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Myriad Eclipse": {
+        "icon": "Weapon_S_1291",
+        "desc": "Shadowed by darkness at every step, he laid bare his heart to kindle a single, flickering flame.",
+        "id": "14129",
+        "name": "Myriad Eclipse",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
     }
 }
