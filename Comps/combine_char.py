@@ -1,5 +1,6 @@
 import json
 import re
+
 from comp_rates_config import RECENT_PHASE, da_mode
 from slugify import slugify
 
@@ -21,13 +22,13 @@ da_phase = phases["da_phase"]
 
 with open("../data/characters.json") as char_file:
     CHARACTERS = json.load(char_file)
-with open("../char_results/" + sd_phase + "/all.json") as stats:
+with open("../char_results/" + sd_phase + "/all2.json") as stats:
     sd_dict = json.load(stats)
 with open("../char_results/" + sd_phase + "/all_C1.json") as stats:
     sd_dict_e1 = json.load(stats)
 with open("../char_results/" + sd_phase + "/all_E0S0.json") as stats:
     sd_dict_s0 = json.load(stats)
-with open("../char_results/" + da_phase + "_da/all.json") as stats:
+with open("../char_results/" + da_phase + "_da/all2.json") as stats:
     da_dict = json.load(stats)
 with open("../char_results/" + da_phase + "_da/all_C1.json") as stats:
     da_dict_e1 = json.load(stats)
@@ -41,11 +42,14 @@ with open("../char_results/" + da_phase + "_da/1-3.json") as stats:
     da_dict_boss_3 = json.load(stats)
 
 uses = []
-uses_sd = {}
-uses_da = {}
+uses_sd: dict[str, dict[str, dict[str, float | dict[str, str]]]] = {}
+uses_da: dict[str, dict[str, dict[str, float | dict[str, str]]]] = {}
 stats_len = {
-    "weapons": 10,
-    "artifacts": 10,
+    "weapons": str(10),
+    "artifacts": str(10),
+    "drive_slot_4": str(3),
+    "drive_slot_5": str(3),
+    "drive_slot_6": str(3),
 }
 
 for char in sd_dict:
@@ -55,14 +59,19 @@ for char in sd_dict:
     uses_sd[char["char"]] = char.copy()
     uses_sd[char["char"]]["weapons"] = {}
     uses_sd[char["char"]]["artifacts"] = {}
-    uses_sd[char["char"]]["planars"] = {}
+    uses_sd[char["char"]]["drive_slot_4"] = {}
+    uses_sd[char["char"]]["drive_slot_5"] = {}
+    uses_sd[char["char"]]["drive_slot_6"] = {}
     for stat in char:
         for stat_name in [
             "weapon",
             "artifact",
+            "drive_slot_4",
+            "drive_slot_5",
+            "drive_slot_6",
         ]:
             if (
-                re.sub(r"\d", "", stat) == stat_name + "_"
+                re.sub(r"\d(?!.*\d)", "", stat) == stat_name + "_"
                 and char[stat] != ""
                 and char[stat] != "-"
             ):
@@ -75,9 +84,9 @@ for char in sd_dict:
                 if stat_name in ["weapon", "artifact"]:
                     temp_dict["round_sd"] = char[stat + "_round"]
                     temp_dict["round_da"] = 0.0
+                    uses_sd[char["char"]][stat_name + "s"][char[stat]] = temp_dict
                 else:
-                    stat_name = stat_name[:-1]
-                uses_sd[char["char"]][stat_name + "s"][char[stat]] = temp_dict
+                    uses_sd[char["char"]][stat_name][char[stat]] = temp_dict
 for char in da_dict:
     char["char"] = slugify(char["char"])
     if char["char"] in slug:
@@ -85,14 +94,19 @@ for char in da_dict:
     uses_da[char["char"]] = char.copy()
     uses_da[char["char"]]["weapons"] = {}
     uses_da[char["char"]]["artifacts"] = {}
-    uses_da[char["char"]]["planars"] = {}
+    uses_da[char["char"]]["drive_slot_4"] = {}
+    uses_da[char["char"]]["drive_slot_5"] = {}
+    uses_da[char["char"]]["drive_slot_6"] = {}
     for stat in char:
         for stat_name in [
             "weapon",
             "artifact",
+            "drive_slot_4",
+            "drive_slot_5",
+            "drive_slot_6",
         ]:
             if (
-                re.sub(r"\d", "", stat) == stat_name + "_"
+                re.sub(r"\d(?!.*\d)", "", stat) == stat_name + "_"
                 and char[stat] != ""
                 and char[stat] != "-"
             ):
@@ -105,81 +119,102 @@ for char in da_dict:
                 if stat_name in ["weapon", "artifact"]:
                     temp_dict["round_sd"] = 600
                     temp_dict["round_da"] = char[stat + "_round"]
+                    uses_da[char["char"]][stat_name + "s"][char[stat]] = temp_dict
                 else:
-                    stat_name = stat_name[:-1]
-                uses_da[char["char"]][stat_name + "s"][char[stat]] = temp_dict
+                    uses_da[char["char"]][stat_name][char[stat]] = temp_dict
 
 for char in CHARACTERS:
     char = slugify(char)
     if char in slug:
         char = slug[char]
-    sd_dict_e1_char = next((x for x in sd_dict_e1 if x["char"] == char), {})
-    sd_dict_s0_char = next((x for x in sd_dict_s0 if x["char"] == char), {})
-    da_dict_e1_char = next((x for x in da_dict_e1 if x["char"] == char), {})
-    da_dict_s0_char = next((x for x in da_dict_s0 if x["char"] == char), {})
-    da_dict_boss_1_char = next((x for x in da_dict_boss_1 if x["char"] == char), {})
-    da_dict_boss_2_char = next((x for x in da_dict_boss_2 if x["char"] == char), {})
-    da_dict_boss_3_char = next((x for x in da_dict_boss_3 if x["char"] == char), {})
+    sd_dict_e1_char: dict[str, str] = next(
+        (x for x in sd_dict_e1 if x["char"] == char), dict[str, str]()
+    )
+    sd_dict_s0_char: dict[str, str] = next(
+        (x for x in sd_dict_s0 if x["char"] == char), dict[str, str]()
+    )
+    da_dict_e1_char: dict[str, str] = next(
+        (x for x in da_dict_e1 if x["char"] == char), dict[str, str]()
+    )
+    da_dict_s0_char: dict[str, str] = next(
+        (x for x in da_dict_s0 if x["char"] == char), dict[str, str]()
+    )
+    da_dict_boss_1_char: dict[str, str] = next(
+        (x for x in da_dict_boss_1 if x["char"] == char), dict[str, str]()
+    )
+    da_dict_boss_2_char: dict[str, str] = next(
+        (x for x in da_dict_boss_2 if x["char"] == char), dict[str, str]()
+    )
+    da_dict_boss_3_char: dict[str, str] = next(
+        (x for x in da_dict_boss_3 if x["char"] == char), dict[str, str]()
+    )
     uses_temp = {
-        "char": char,
-        "app_rate_sd": uses_sd.get(char, {}).get("app_rate", 0),
-        "app_rate_sd_e1": sd_dict_e1_char.get("app_rate", 0),
-        "app_rate_sd_s0": sd_dict_s0_char.get("app_rate", 0),
-        "avg_round_sd": uses_sd.get(char, {}).get("avg_round", 600),
-        "avg_round_sd_e1": sd_dict_e1_char.get("avg_round", 600),
-        "avg_round_sd_s0": sd_dict_s0_char.get("avg_round", 600),
-        "sample_sd": uses_sd.get(char, {}).get("sample", 0),
-        "sample_size_players_sd": uses_sd.get(char, {}).get("sample_size_players", 0),
-        "app_rate_da": uses_da.get(char, {}).get("app_rate", 0),
-        "app_rate_da_e1": da_dict_e1_char.get("app_rate", 0),
-        "app_rate_da_s0": da_dict_s0_char.get("app_rate", 0),
-        "avg_round_da": uses_da.get(char, {}).get("avg_round", 0),
-        "avg_round_da_e1": da_dict_e1_char.get("avg_round", 0),
-        "avg_round_da_s0": da_dict_s0_char.get("avg_round", 0),
-        "app_rate_da_boss_1": da_dict_boss_1_char.get("app_rate", 0),
-        "avg_round_da_boss_1": da_dict_boss_1_char.get("avg_round", 0),
-        "app_rate_da_boss_2": da_dict_boss_2_char.get("app_rate", 0),
-        "avg_round_da_boss_2": da_dict_boss_2_char.get("avg_round", 0),
-        "app_rate_da_boss_3": da_dict_boss_3_char.get("app_rate", 0),
-        "avg_round_da_boss_3": da_dict_boss_3_char.get("avg_round", 0),
-        "sample_da": uses_da.get(char, {}).get("sample", 0),
-        "sample_size_players_da": uses_da.get(char, {}).get("sample_size_players", 0),
-        "app_0": 0,
-        "round_0_sd": uses_sd.get(char, {}).get("round_0", 600),
-        "round_0_da": uses_da.get(char, {}).get("round_0", 0),
-        "app_1": 0,
-        "round_1_sd": uses_sd.get(char, {}).get("round_1", 600),
-        "round_1_da": uses_da.get(char, {}).get("round_1", 0),
-        "app_2": 0,
-        "round_2_sd": uses_sd.get(char, {}).get("round_2", 600),
-        "round_2_da": uses_da.get(char, {}).get("round_2", 0),
-        "app_3": 0,
-        "round_3_sd": uses_sd.get(char, {}).get("round_3", 600),
-        "round_3_da": uses_da.get(char, {}).get("round_3", 0),
-        "app_4": 0,
-        "round_4_sd": uses_sd.get(char, {}).get("round_4", 600),
-        "round_4_da": uses_da.get(char, {}).get("round_4", 0),
-        "app_5": 0,
-        "round_5_sd": uses_sd.get(char, {}).get("round_5", 600),
-        "round_5_da": uses_da.get(char, {}).get("round_5", 0),
-        "app_6": 0,
-        "round_6_sd": uses_sd.get(char, {}).get("round_6", 600),
-        "round_6_da": uses_da.get(char, {}).get("round_6", 0),
-        "cons_avg": 0,
+        "char": str(char),
+        "app_rate_sd": str(uses_sd.get(char, {}).get("app_rate", 0)),
+        "app_rate_sd_e1": str(sd_dict_e1_char.get("app_rate", 0)),
+        "app_rate_sd_s0": str(sd_dict_s0_char.get("app_rate", 0)),
+        "avg_round_sd": str(uses_sd.get(char, {}).get("avg_round", 600)),
+        "avg_round_sd_e1": str(sd_dict_e1_char.get("avg_round", 600)),
+        "avg_round_sd_s0": str(sd_dict_s0_char.get("avg_round", 600)),
+        "sample_sd": str(uses_sd.get(char, {}).get("sample", 0)),
+        "sample_size_players_sd": str(
+            uses_sd.get(char, {}).get("sample_size_players", 0)
+        ),
+        "app_rate_da": str(uses_da.get(char, {}).get("app_rate", 0)),
+        "app_rate_da_e1": str(da_dict_e1_char.get("app_rate", 0)),
+        "app_rate_da_s0": str(da_dict_s0_char.get("app_rate", 0)),
+        "avg_round_da": str(uses_da.get(char, {}).get("avg_round", 0)),
+        "avg_round_da_e1": str(da_dict_e1_char.get("avg_round", 0)),
+        "avg_round_da_s0": str(da_dict_s0_char.get("avg_round", 0)),
+        "app_rate_da_boss_1": str(da_dict_boss_1_char.get("app_rate", 0)),
+        "avg_round_da_boss_1": str(da_dict_boss_1_char.get("avg_round", 0)),
+        "app_rate_da_boss_2": str(da_dict_boss_2_char.get("app_rate", 0)),
+        "avg_round_da_boss_2": str(da_dict_boss_2_char.get("avg_round", 0)),
+        "app_rate_da_boss_3": str(da_dict_boss_3_char.get("app_rate", 0)),
+        "avg_round_da_boss_3": str(da_dict_boss_3_char.get("avg_round", 0)),
+        "sample_da": str(uses_da.get(char, {}).get("sample", 0)),
+        "sample_size_players_da": str(
+            uses_da.get(char, {}).get("sample_size_players", 0)
+        ),
+        "app_0": str(0),
+        "round_0_sd": str(uses_sd.get(char, {}).get("round_0", 600)),
+        "round_0_da": str(uses_da.get(char, {}).get("round_0", 0)),
+        "app_1": str(0),
+        "round_1_sd": str(uses_sd.get(char, {}).get("round_1", 600)),
+        "round_1_da": str(uses_da.get(char, {}).get("round_1", 0)),
+        "app_2": str(0),
+        "round_2_sd": str(uses_sd.get(char, {}).get("round_2", 600)),
+        "round_2_da": str(uses_da.get(char, {}).get("round_2", 0)),
+        "app_3": str(0),
+        "round_3_sd": str(uses_sd.get(char, {}).get("round_3", 600)),
+        "round_3_da": str(uses_da.get(char, {}).get("round_3", 0)),
+        "app_4": str(0),
+        "round_4_sd": str(uses_sd.get(char, {}).get("round_4", 600)),
+        "round_4_da": str(uses_da.get(char, {}).get("round_4", 0)),
+        "app_5": str(0),
+        "round_5_sd": str(uses_sd.get(char, {}).get("round_5", 600)),
+        "round_5_da": str(uses_da.get(char, {}).get("round_5", 0)),
+        "app_6": str(0),
+        "round_6_sd": str(uses_sd.get(char, {}).get("round_6", 600)),
+        "round_6_da": str(uses_da.get(char, {}).get("round_6", 0)),
+        "cons_avg": str(0),
         "weapons": uses_sd.get(char, {}).get("weapons", {}),
         "artifacts": uses_sd.get(char, {}).get("artifacts", {}),
+        "drive_slot_4": uses_sd.get(char, {}).get("drive_slot_4", {}),
+        "drive_slot_5": uses_sd.get(char, {}).get("drive_slot_5", {}),
+        "drive_slot_6": uses_sd.get(char, {}).get("drive_slot_6", {}),
     }
 
-    rate_sd = (
+    rate_sd = float(
         uses_temp["app_rate_sd"]
         if (uses_temp["app_rate_sd"] == 0)
-        == (uses_sd.get(char, {}).get("weapon_1_app", {}) == 0)
+        == (str(uses_sd.get(char, {}).get("weapon_1_app", {})) == 0)
         else 0
     )
-    rate_da = (
+    rate_da = float(
         uses_temp["app_rate_da"]
         if (uses_temp["app_rate_da"] == 0)
-        == (uses_da.get(char, {}).get("weapon_1_app", {}) == 0)
+        == (str(uses_da.get(char, {}).get("weapon_1_app", {})) == 0)
         else 0
     )
     rate_combine = rate_sd + rate_da
@@ -213,7 +248,7 @@ for char in CHARACTERS:
         )
         uses_temp[stat] = {k: v for k, v in sorted_items}
 
-        for i in range(stats_len[stat]):
+        for i in range(int(stats_len[stat])):
             if i < len(list(uses_temp[stat])):
                 uses_temp[stat + "_" + str(i + 1)] = list(uses_temp[stat])[i]
                 if stat == "artifacts":
@@ -257,6 +292,33 @@ for char in CHARACTERS:
         "app_5",
         "app_6",
         "cons_avg",
+        "char_level",
+        "w_engine_level",
+        "basic_atk",
+        "special_atk",
+        "dash",
+        "ultimate",
+        "core_skill",
+        "assist",
+        "base_hp",
+        "base_atk",
+        "base_def",
+        "base_impact",
+        "crit_rate",
+        "crit_dmg",
+        "anomaly_mastery",
+        "anomaly_proficiency",
+        "pen_ratio",
+        "pen",
+        "base_energy_regen",
+        "dmg_bonus",
+        "percent_hp_sub",
+        "percent_atk_sub",
+        "percent_def_sub",
+        "crit_rate_sub",
+        "crit_dmg_sub",
+        "pen_sub",
+        "anomaly_proficiency_sub",
     ]
     for stat in stats_iter:
         stat_sd = uses_sd.get(char, {}).get(stat) or 0
