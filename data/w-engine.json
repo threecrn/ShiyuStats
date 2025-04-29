@@ -638,5 +638,43 @@
         "name": "Myriad Eclipse",
         "availability": "Limited S",
         "role": "Damage Dealer"
+    },
+    "Item_Weapon_S_1371_Name": {
+        "icon": "Weapon_S_1371",
+        "desc": "Item_Weapon_S_1371_ShortDesc",
+        "id": "14137",
+        "name": "Item_Weapon_S_1371_Name",
+        "availability": "Limited S"
+    },
+    "Item_Weapon_A_1421_Name": {
+        "icon": "Weapon_A_1421",
+        "desc": "Item_Weapon_A_1421_ShortDesc",
+        "id": "13142",
+        "name": "Item_Weapon_A_1421_Name",
+        "availability": "A",
+        "role": "Stun"
+    },
+    "Item_Weapon_B_Common_15_Name": {
+        "icon": "Weapon_B_Common_15",
+        "desc": "Item_Weapon_B_Common_15_ShortDesc",
+        "id": "12015",
+        "name": "Item_Weapon_B_Common_15_Name",
+        "availability": "B"
+    },
+    "Item_Weapon_S_1391_Name": {
+        "icon": "Weapon_S_1391",
+        "desc": "Item_Weapon_S_1391_ShortDesc",
+        "id": "14139",
+        "name": "Item_Weapon_S_1391_Name",
+        "availability": "Limited S",
+        "role": "Stun"
+    },
+    "Item_Weapon_A_Common_16_Name": {
+        "icon": "Weapon_A_Common_16",
+        "desc": "Item_Weapon_A_Common_16_ShortDesc",
+        "id": "13016",
+        "name": "Item_Weapon_A_Common_16_Name",
+        "availability": "A",
+        "role": "Stun"
     }
 }

@@ -44,6 +44,15 @@
             "Ultimate DMG increases by 20%. Launching an Ultimate increases the equipper's ATK by 15% for 12s."
         ]
     },
+    "33200": {
+        "icon": "UI/Sprite/A1DynamicLoad/IconSuit/UnPacker/SuitKingoftheSummit.png",
+        "id": "33200",
+        "name": "EquipmentSuit_33200_name",
+        "desc": [
+            "EquipmentSuit_33200_2_des",
+            "EquipmentSuit_33200_4_des"
+        ]
+    },
     "31200": {
         "icon": "UI/Sprite/A1DynamicLoad/IconSuit/UnPacker/SuitShockstarDisco.png",
         "id": "31200",
@@ -60,6 +69,15 @@
         "desc": [
             "ATK +10%",
             "Whenever any squad member enters the field using a Quick Assist, all squad members gain 1 stack of Astral, up to a maximum of 3 stacks, and lasting 15s. Repeated triggers reset the duration. Each stack of Astral increases the DMG dealt by the character entering the field using a Quick Assist by 8%. Only one instance of this effect can exist in the same squad."
+        ]
+    },
+    "33100": {
+        "icon": "UI/Sprite/A1DynamicLoad/IconSuit/UnPacker/SuitYunkuiTales.png",
+        "id": "33100",
+        "name": "EquipmentSuit_33100_name",
+        "desc": [
+            "EquipmentSuit_33100_2_des",
+            "EquipmentSuit_33100_4_des"
         ]
     },
     "32400": {

@@ -208,5 +208,19 @@
         "id": "54016",
         "name": "Robin",
         "availability": "S"
+    },
+    "Overtimeboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole32.png",
+        "desc": "Fatigue levels rising... Beep \u2014 now over 100!",
+        "id": "53014",
+        "name": "Overtimeboo",
+        "availability": "A"
+    },
+    "Bangboo_Name_54017": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole36.png",
+        "desc": "Bangboo_Desc_54017",
+        "id": "54017",
+        "name": "Bangboo_Name_54017",
+        "availability": "S"
     }
 }

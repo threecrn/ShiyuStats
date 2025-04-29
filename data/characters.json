@@ -324,5 +324,16 @@
         "name": "Trigger",
         "availability": "Limited S",
         "role": "Stun"
+    },
+    "Vivian": {
+        "element": "Ether",
+        "camp": "9",
+        "icon": "IconRole41",
+        "skin": {},
+        "desc": "Vivian is a member of Mockingbird, skilled in gathering all kinds of intel. She's also a jack of many trades \u2014 cooking, mixology, translation, art forgery, electronics repair, and more.\nIn the past, she apparently wandered without a home and was viewed as one who \"brought disaster,\" almost like a living omen of bad luck.\nIt's said she can predict incoming misfortune through her tears, though there's no scientific proof of this ability.\nA loyal follower of Phaethon. Ever since your original account went inactive on Inter-Knot, she's been trying to track you down \u2014 digging for clues, running intense searches across the network. However, Master, she didn't find anything... all thanks to my efforts in keeping your cybersecurity airtight.\nSuggestion: Until her true intentions are clear, do not reveal your identity as Phaethon.\nIn case you've already let your identity slip, be sure to lock your doors and wear proper sleepwear before going to bed. Based on her old blog posts, she's likely to express her admiration in... overly passionate and intense ways.",
+        "id": "1331",
+        "name": "Vivian",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
     }
 }
