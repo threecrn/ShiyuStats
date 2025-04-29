@@ -108,6 +108,7 @@ class Composition:
             elif character in [
                 "Grace",
                 "Burnice",
+                "Vivian",
             ]:
                 self.subdps.append(character)
             elif character in [
@@ -139,6 +140,7 @@ class Composition:
                 "Piper",
                 "Jane",
                 "Burnice",
+                "Vivian",
                 "Yanagi",
                 "Miyabi",
             ]:

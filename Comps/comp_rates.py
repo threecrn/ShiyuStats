@@ -1,48 +1,49 @@
 import csv
-import time
-import char_usage as cu
-import statistics
 import os
+import statistics
+import time
 
 # from scipy.stats import skew, trim_mean
 from itertools import permutations
-from plyer import notification
-from composition import Composition
-from player_phase import PlayerPhase
+
+import char_usage as cu
 from archetypes import find_archetype, findchars, resetfind
-from slugify import slugify
 from comp_rates_config import (
-    RECENT_PHASE,
-    da_mode,
-    skip_random,
-    skip_self,
-    alt_comps,
-    run_commands,
-    past_phase,
-    whaleOnly,
-    f2pOnly,
-    sigWeaps,
-    json,
-    char_infographics,
     CHARACTERS,
-    char_app_rate_threshold,
+    RECENT_PHASE,
+    alt_comps,
     app_rate_threshold,
     app_rate_threshold_round,
-    json_threshold,
     archetype,
+    char_app_rate_threshold,
+    char_infographics,
+    da_mode,
     duo_dict_len,
+    f2pOnly,
+    json,
+    json_threshold,
+    past_phase,
+    run_commands,
+    sigWeaps,
+    skip_random,
+    skip_self,
+    whaleOnly,
 )
+from composition import Composition
+from player_phase import PlayerPhase
+from plyer import notification  # type: ignore
+from slugify import slugify
 
 with open("prydwen-slug.json") as slug_file:
     slug = json.load(slug_file)
 
 
-def main():
+def main() -> None:
     for make_path in [
         "../comp_results",
         "../comp_results/json",
-        "../mihomo",
-        "../mihomo/results_real",
+        "../enka.network",
+        "../enka.network/results_real",
         "../char_results",
         "../rogue_results",
     ]:
@@ -54,7 +55,7 @@ def main():
 
     global self_uids
     if os.path.isfile("../../uids.csv"):
-        with open("../../uids.csv", "r", encoding="UTF8") as f:
+        with open("../../uids.csv", encoding="UTF8") as f:
             reader = csv.reader(f, delimiter=",")
             self_uids = list(reader)[0]
     else:
@@ -83,6 +84,7 @@ def main():
     self_freq_comp = {}
     # dps_freq_comp = {}
     last_uid = "0"
+    skip_uid = False
 
     for line in reader:
         star_num = 0
@@ -249,6 +251,7 @@ def main():
     print("done csv: ", (cur_time - start_time), "s")
 
     global usage
+    usage = {}
     global one_stage
     if da_mode:
         three_stages = ["1-1", "1-2", "1-3"]
@@ -694,18 +697,6 @@ def used_comps(players, comps, rooms, filename, phase=RECENT_PHASE):
                         comp.player
                     )
                 if whale_comp == whaleOnly and (not f2pOnly or f2p_comp):
-                    # for i in range (3):
-                    #     if comp_tuple[i] in players[phase][comp.player].owned:
-                    #         if players[phase][comp.player].owned[comp_tuple[i]]["weapon"] in comps_dict[star_threshold][comp_tuple][comp_tuple[i]]["weapon"]:
-                    #             comps_dict[star_threshold][comp_tuple][comp_tuple[i]]["weapon"][players[phase][comp.player].owned[comp_tuple[i]]["weapon"]] += 1
-                    #         else:
-                    #             comps_dict[star_threshold][comp_tuple][comp_tuple[i]]["weapon"][players[phase][comp.player].owned[comp_tuple[i]]["weapon"]] = 1
-                    #         if players[phase][comp.player].owned[comp_tuple[i]]["artifacts"] != "":
-                    #             if players[phase][comp.player].owned[comp_tuple[i]]["artifacts"] in comps_dict[star_threshold][comp_tuple][comp_tuple[i]]["artifacts"]:
-                    #                 comps_dict[star_threshold][comp_tuple][comp_tuple[i]]["artifacts"][players[phase][comp.player].owned[comp_tuple[i]]["artifacts"]] += 1
-                    #             else:
-                    #                 comps_dict[star_threshold][comp_tuple][comp_tuple[i]]["artifacts"][players[phase][comp.player].owned[comp_tuple[i]]["artifacts"]] = 1
-                    #         comps_dict[star_threshold][comp_tuple][comp_tuple[i]]["cons"][str(players[phase][comp.player].owned[comp_tuple[i]]["cons"])] += 1
                     comps_dict[star_threshold][comp_tuple]["round_num"][
                         list(str(comp.room).split("-"))[0]
                     ].append(comp.round_num)
@@ -838,33 +829,10 @@ def rank_usages(comps_dict, rooms, owns_offset=1):
             )
             # comps_dict[star_threshold][comp]["round_rank"] = rounds.index(comps_dict[star_threshold][comp]["round"]) + 1
 
-    # # To check the list of weapons and artifacts for a comp
-    # comp_tuples = [('Kafka', 'Asta', 'Tingyun', 'Luocha'), ('Kafka', 'Asta', 'Tingyun', 'Bailu')]
-    # for comp_tuple in comp_tuples:
-    #     print(comp_tuple)
-    #     print("   App: " + str(comps_dict[4][comp_tuple]["app_rate"]))
-    #     print("   Own: " + str(comps_dict[4][comp_tuple]["own_rate"]))
-    #     print("   Usage: " + str(comps_dict[4][comp_tuple]["usage_rate"]))
-    #     print("   S Count: " + str(comps_dict[4][comp_tuple]["S count"]))
-    #     if comps_dict[4][comp_tuple]["S count"] <= 1:
-    #         print("   F2P App: " + str(comps_dict[4][comp_tuple]["app_rate"]))
-    #     print()
-    #     for i in comp_tuple:
-    #         print(i + ": ")
-    #         for weapon in comps_dict[4][comp_tuple][i]["weapon"]:
-    #             print("   " + weapon + ": " + str(comps_dict[4][comp_tuple][i]["weapon"][weapon]))
-    #         print()
-    #         for artifacts in comps_dict[4][comp_tuple][i]["artifacts"]:
-    #             print("   " + artifacts + ": " + str(comps_dict[4][comp_tuple][i]["artifacts"][artifacts]))
-    #         print()
-    #         for cons in comps_dict[4][comp_tuple][i]["cons"]:
-    #             print("   " + cons + ": " + str(comps_dict[4][comp_tuple][i]["cons"][cons]))
-    #         print()
-
 
 def duo_usages(
     comps, players, usage, archetype, rooms, check_duo=False, filename="duo_usages"
-):
+) -> None:
     duos_dict = used_duos(players, comps, rooms, usage, check_duo)
     duo_write(duos_dict, usage, filename, archetype, check_duo)
 
@@ -946,16 +914,6 @@ def used_duos(players, comps, rooms, usage, check_duo, phase=RECENT_PHASE):
             avg_round = []
             for room_num in range(1, 8):
                 if duos_dict[duo]["round_num"][str(room_num)]:
-                    # duos_dict[duo]["app_flat"] += len(duos_dict[duo]["round_num"][str(room_num)])
-                    # if len(duos_dict[duo]["round_num"][str(room_num)]) > 1:
-                    #     skewness = skew(duos_dict[duo]["round_num"][str(room_num)], axis=0, bias=True)
-                    #     if abs(skewness) > 0.8:
-                    #         avg_round.append(trim_mean(duos_dict[duo]["round_num"][str(room_num)], 0.25))
-                    #     else:
-                    #         avg_round.append(statistics.mean(duos_dict[duo]["round_num"][str(room_num)]))
-                    # else:
-                    #     avg_round.append(statistics.mean(duos_dict[duo]["round_num"][str(room_num)]))
-                    # # avg_round.append(statistics.mean(duos_dict[duo]["round_num"][str(room_num)]))
                     avg_round += duos_dict[duo]["round_num"][str(room_num)]
             if avg_round:
                 duos_dict[duo]["round_num"] = round(statistics.mean(avg_round))
@@ -1098,18 +1056,6 @@ def comp_usages_write(comps_dict, filename, floor, info_char, sort_app):
                             # "usage_rate": str(comps_dict[star_threshold][comp]["usage_rate"]) + "%"
                         }
 
-                        # j = 1
-                        # if floor:
-                        #     for i in comp:
-                        #         if len(list(comps_dict[star_threshold][comp][i]["weapon"])):
-                        #             out_comps_append["weapon_" + str(j)] = list(comps_dict[star_threshold][comp][i]["weapon"])[0]
-                        #         else:
-                        #             out_comps_append["weapon_" + str(j)] = "-"
-                        #         if len(list(comps_dict[star_threshold][comp][i]["artifacts"])):
-                        #             out_comps_append["artifact_" + str(j)] = list(comps_dict[star_threshold][comp][i]["artifacts"])[0]
-                        #         else:
-                        #             out_comps_append["artifact_" + str(j)] = "-"
-                        #         j += 1
                         if info_char:
                             if comp_name not in comp_names:
                                 variations[comp_name] = 1

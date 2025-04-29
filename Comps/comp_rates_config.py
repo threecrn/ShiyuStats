@@ -1,11 +1,14 @@
-import json
 import argparse
+import json
 import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 parser = argparse.ArgumentParser()
+parser.add_argument("-off", "--offline_collect", action="store_true")
+parser.add_argument("-save", "--save_to_file", action="store_true")
 parser.add_argument("-a", "--all", action="store_true")
 parser.add_argument("-d", "--duos", action="store_true")
 parser.add_argument("-t", "--top", action="store_true")
@@ -25,6 +28,10 @@ parser.add_argument(
 
 args = parser.parse_args()
 
+# For enka.network
+offline_collect = args.offline_collect
+save_to_file = args.save_to_file
+
 with open(str(os.getenv("REPO_PATH")) + "/data/characters.json") as char_file:
     CHARACTERS = json.load(char_file)
 
@@ -32,11 +39,11 @@ with open(str(os.getenv("REPO_PATH")) + "/data/w-engine.json") as char_file:
     WENGINE = json.load(char_file)
 
 # no need to add 2.2.1"_da"
-RECENT_PHASE = "1.6.2"
+RECENT_PHASE = "1.7.1"
 
 # if no past phase, past_phase = "null"
 # add 2.2.1"_da"
-past_phase = "1.6.1"
+past_phase = "1.6.2"
 global da_mode
 # if as: da_mode = True
 da_mode = args.deadly_assault
@@ -108,7 +115,7 @@ elif args.duos:
         "Duos check",
     ]
 
-sigWeaps = []
+sigWeaps: list[str] = []
 for wengine in WENGINE:
     if WENGINE[wengine]["availability"] == "Limited S":
         sigWeaps += [WENGINE[wengine]["name"]]

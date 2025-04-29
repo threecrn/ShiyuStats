@@ -1,7 +1,8 @@
-from os import listdir, path, mkdir
 import shutil
-from send2trash import send2trash
+from os import listdir, mkdir, path
+
 from comp_rates_config import RECENT_PHASE, da_mode
+from send2trash import send2trash
 
 suffix = ""
 sd_suffix = ""
@@ -17,6 +18,9 @@ source_dirs = [
     "../char_results/" + RECENT_PHASE_PF,
     "../comp_results/" + RECENT_PHASE_PF + "/json",
 ]
+
+target_dir: str = ""
+temp_target_dir: str = ""
 
 for source_dir in source_dirs:
     if "comp_results" in source_dir:
@@ -35,7 +39,7 @@ for source_dir in source_dirs:
             or (file_name == "builds.json" and (RECENT_PHASE + "_da") in source_dir)
         ):
             if file_name == "builds.json":
-                temp_target_dir = target_dir
+                temp_target_dir: str = target_dir
                 target_dir = "../web_results"
             copyfrom = path.join(source_dir, file_name)
             copyto = path.join(target_dir, file_name)

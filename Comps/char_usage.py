@@ -1,18 +1,18 @@
-import json
-import os.path
-
 # import operator
 import csv
+import json
+import os.path
 import statistics
 
 # import matplotlib
 # import matplotlib.pyplot as plt
 import warnings
 
+from archetypes import find_archetype, findchars, resetfind
+from comp_rates_config import RECENT_PHASE, da_mode, f2pOnly, sigWeaps, whaleOnly
+
 # from scipy.stats import skew, trim_mean
 from percentile import calculate_percentile
-from archetypes import find_archetype, findchars, resetfind
-from comp_rates_config import RECENT_PHASE, da_mode, whaleOnly, f2pOnly, sigWeaps
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 if da_mode:

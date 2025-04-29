@@ -193,7 +193,7 @@ for char in chars2:
                 case "8":
                     chars1[char_name]["camp"] = "Stars of Lyra"
                 case _:
-                    print("Unavailable camp: " + str(chars1[char_name]["camp"]))
+                    chars1[char_name]["camp"] = str(chars1[char_name]["camp"])
 
             del chars1[char_name]["code"]
             del chars1[char_name]["rank"]
@@ -217,28 +217,30 @@ bangboos2 = json.load((io.StringIO(download)))
 
 for bangboo in bangboos2:
     bangboo_name = bangboos2[bangboo]["EN"]
-    if bangboo_name not in bangboos1 and bangboos2[bangboo]["icon"] != "":
-        add_bangboo = input("Add " + bangboo_name + "? (y/n): ")
-        if add_bangboo == "y":
-            bangboos1[bangboo_name] = bangboos2[bangboo].copy()
-            bangboos1[bangboo_name]["id"] = bangboo
-            bangboos1[bangboo_name]["name"] = bangboo_name
+    if (
+        bangboo_name not in bangboos1
+        and bangboos2[bangboo]["icon"] != ""
+        and "Bangboo_Name_" not in bangboos2[bangboo]["icon"]
+    ):
+        bangboos1[bangboo_name] = bangboos2[bangboo].copy()
+        bangboos1[bangboo_name]["id"] = bangboo
+        bangboos1[bangboo_name]["name"] = bangboo_name
 
-            if bangboos2[bangboo]["rank"] == 3:
-                bangboos1[bangboo_name]["availability"] = "A"
-            elif bangboos2[bangboo]["rank"] == 4:
-                bangboos1[bangboo_name]["availability"] = "S"
+        if bangboos2[bangboo]["rank"] == 3:
+            bangboos1[bangboo_name]["availability"] = "A"
+        elif bangboos2[bangboo]["rank"] == 4:
+            bangboos1[bangboo_name]["availability"] = "S"
 
-            # print("Role? 0: DPS, 1: Amplifier, 2: Sustain")
-            # role_bangboo = input()
-            # match str(role_bangboo):
+        # print("Role? 0: DPS, 1: Amplifier, 2: Sustain")
+        # role_bangboo = input()
+        # match str(role_bangboo):
 
-            del bangboos1[bangboo_name]["codename"]
-            del bangboos1[bangboo_name]["rank"]
-            del bangboos1[bangboo_name]["EN"]
-            del bangboos1[bangboo_name]["KO"]
-            del bangboos1[bangboo_name]["CHS"]
-            del bangboos1[bangboo_name]["JA"]
+        del bangboos1[bangboo_name]["codename"]
+        del bangboos1[bangboo_name]["rank"]
+        del bangboos1[bangboo_name]["EN"]
+        del bangboos1[bangboo_name]["KO"]
+        del bangboos1[bangboo_name]["CHS"]
+        del bangboos1[bangboo_name]["JA"]
 
 with open("../data/bangboos.json", "w") as out_file:
     out_file.write(json.dumps(bangboos1, indent=4))
