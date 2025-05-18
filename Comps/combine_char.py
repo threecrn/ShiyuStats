@@ -154,8 +154,11 @@ for char in CHARACTERS:
         "app_rate_sd_e1": str(sd_dict_e1_char.get("app_rate", 0)),
         "app_rate_sd_s0": str(sd_dict_s0_char.get("app_rate", 0)),
         "avg_round_sd": str(uses_sd.get(char, {}).get("avg_round", 600)),
+        "avg_round_q1_sd": str(uses_sd.get(char, {}).get("q1_round", 600)),
         "avg_round_sd_e1": str(sd_dict_e1_char.get("avg_round", 600)),
+        "avg_round_q1_sd_e1": str(sd_dict_e1_char.get("q1_round", 600)),
         "avg_round_sd_s0": str(sd_dict_s0_char.get("avg_round", 600)),
+        "avg_round_q1_sd_s0": str(sd_dict_s0_char.get("q1_round", 600)),
         "sample_sd": str(uses_sd.get(char, {}).get("sample", 0)),
         "sample_size_players_sd": str(
             uses_sd.get(char, {}).get("sample_size_players", 0)
@@ -164,14 +167,20 @@ for char in CHARACTERS:
         "app_rate_da_e1": str(da_dict_e1_char.get("app_rate", 0)),
         "app_rate_da_s0": str(da_dict_s0_char.get("app_rate", 0)),
         "avg_round_da": str(uses_da.get(char, {}).get("avg_round", 0)),
+        "avg_round_q1_da": str(uses_da.get(char, {}).get("q1_round", 0)),
         "avg_round_da_e1": str(da_dict_e1_char.get("avg_round", 0)),
+        "avg_round_q1_da_e1": str(da_dict_e1_char.get("q1_round", 0)),
         "avg_round_da_s0": str(da_dict_s0_char.get("avg_round", 0)),
+        "avg_round_q1_da_s0": str(da_dict_s0_char.get("q1_round", 0)),
         "app_rate_da_boss_1": str(da_dict_boss_1_char.get("app_rate", 0)),
         "avg_round_da_boss_1": str(da_dict_boss_1_char.get("avg_round", 0)),
+        "avg_round_q1_da_boss_1": str(da_dict_boss_1_char.get("q1_round", 0)),
         "app_rate_da_boss_2": str(da_dict_boss_2_char.get("app_rate", 0)),
         "avg_round_da_boss_2": str(da_dict_boss_2_char.get("avg_round", 0)),
+        "avg_round_q1_da_boss_2": str(da_dict_boss_2_char.get("q1_round", 0)),
         "app_rate_da_boss_3": str(da_dict_boss_3_char.get("app_rate", 0)),
         "avg_round_da_boss_3": str(da_dict_boss_3_char.get("avg_round", 0)),
+        "avg_round_q1_da_boss_3": str(da_dict_boss_3_char.get("q1_round", 0)),
         "sample_da": str(uses_da.get(char, {}).get("sample", 0)),
         "sample_size_players_da": str(
             uses_da.get(char, {}).get("sample_size_players", 0)
