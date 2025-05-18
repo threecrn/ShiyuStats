@@ -10,8 +10,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-off", "--offline_collect", action="store_true")
 parser.add_argument("-save", "--save_to_file", action="store_true")
 parser.add_argument("-a", "--all", action="store_true")
+parser.add_argument("-ca", "--comps_all", action="store_true")
 parser.add_argument("-d", "--duos", action="store_true")
 parser.add_argument("-t", "--top", action="store_true")
+parser.add_argument("-cht", "--chars_top", action="store_true")
+parser.add_argument("-ct", "--comps_top", action="store_true")
 parser.add_argument("-w", "--whale", action="store_true")
 parser.add_argument("-f", "--f2p", action="store_true")
 
@@ -101,11 +104,27 @@ if args.whale or args.top or args.f2p:
         "Comp usage 8 - 10",
     ]
 
+elif args.chars_top:
+    run_commands = [
+        "Char usages 8 - 10",
+    ]
+
+elif args.comps_top:
+    run_commands = [
+        "Comp usage 8 - 10",
+    ]
+
 elif args.all:
     run_commands = [
         "Char usages 8 - 10",
         "Char usages for each stage",
         "Char usages for each stage (combined)",
+        "Comp usage 8 - 10",
+        "Comp usages for each stage",
+    ]
+
+elif args.comps_all:
+    run_commands = [
         "Comp usage 8 - 10",
         "Comp usages for each stage",
     ]
