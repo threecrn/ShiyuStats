@@ -11,7 +11,7 @@ import pandas as pd
 scriptdir = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
 basedir = scriptdir / '../'
 
-import fn
+import common
 
 def load_da(ver='1.7.1'):
     fpath = basedir / 'data/raw_csvs' / f"{ver}_da.csv"
@@ -28,7 +28,7 @@ def cmd_show(args):
     logging.debug("cmd_show args={args}")
     df = load_da(args.version)
     if args.team:
-        query = fn.team_to_query(args.team)
+        query = common.team_to_query(args.team)
         logging.debug(f"team query={query}")
         df = df.query(query)
     if args.floor:
@@ -36,7 +36,7 @@ def cmd_show(args):
     if args.pandas_query:
         df = df.query(args.pandas_query)
     if args.pandas_order:
-        df = df.sort_values(fn.to_list(args.pandas_order))
+        df = df.sort_values(common.to_list(args.pandas_order))
     pd.set_option('display.max_rows', args.pandas_max_rows)
     print(df)
 
