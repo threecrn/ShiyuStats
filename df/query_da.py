@@ -1,0 +1,98 @@
+#!/usr/bin/python3
+
+import os
+import sys
+import logging
+import argparse
+import logging
+import pathlib
+import pandas as pd
+
+scriptdir = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
+basedir = scriptdir / '../'
+
+def to_list(s: str):
+    if s and s != '':
+        return s.split(',')
+    return None
+
+
+def load_da(ver='1.7.1'):
+    fpath = basedir / 'data/raw_csvs' / f"{ver}_da.csv"
+    logging.debug(f"load_da fpath={fpath}")
+    df = pd.read_csv(fpath, dtype={
+        'ch1_rank': 'Int8',
+        'ch2_rank': 'Int8',
+        'ch3_rank': 'Int8',
+    })
+    logging.debug(f"load_da df=[\n{df}\n]")
+    return df
+
+def cmd_show(args):
+    logging.debug("cmd_show args={args}")
+    df = load_da(args.version)
+    if args.team:
+        team = to_list(args.team)
+        query = ' and '.join([f"((ch1 == '{m}') or (ch2 == '{m}') or (ch3 == '{m}'))" for m in team])
+        logging.debug(f"team query={query}")
+        df = df.query(query)
+    if args.floor:
+        df = df[df['floor'] == args.floor]
+    if args.pandas_query:
+        df = df.query(args.pandas_query)
+    if args.pandas_order:
+        df = df.sort_values(to_list(args.pandas_order))
+    pd.set_option('display.max_rows', args.pandas_max_rows)
+    print(df)
+
+def get_cmd_map():
+    import inspect
+    return {name:obj
+        for name,obj in inspect.getmembers(sys.modules[__name__])
+        if (True
+            and inspect.isfunction(obj)
+            and name.startswith('cmd_')
+            and obj.__module__ == __name__
+        )
+    }
+
+def get_arg_parser():
+    command_map = get_cmd_map()
+    parser = argparse.ArgumentParser(
+        description="ZZZ Shiyu/DA data tool",
+        epilog=f"example: {sys.argv[0]} show_shiyu --version=1.6.1 --shiyu-floor=7 --shiyu-side=1 --team=Evelyn,Koleda --pandas-order=time"
+    )
+    parser.add_argument('--debug',  action="store_true", help='debug mode')
+    parser.add_argument('command', choices=[name[4:] for name in command_map.keys()])
+    parser.add_argument('-v', '--version', default='1.7.1', help="game version (e.g. 1.7.1)")
+    parser.add_argument('--floor', type=int, help="only specific floor [1..3]")
+
+    parser.add_argument('--team', help="comma separated list of team members (e.g. 'Miyabi,Yanagi')")
+    
+    #parser.add_argument('--output-format', default='df', choices=['df'])
+    #parser.add_argument('--include-columns', default=None)
+    #parser.add_argument('--exclude-columns', default=None)
+    parser.add_argument('--pandas-max-rows', default=None, type=int)
+    #parser.add_argument('--pandas-line-width', default=None, type=int)
+    parser.add_argument('--pandas-query', default=None)
+    parser.add_argument('--pandas-order', default=None)
+    return parser
+
+def handle_args(argv):
+    parser = get_arg_parser()
+    global args
+    args = parser.parse_args(argv)
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+    logging.debug("args: %s", args)
+    return args
+
+
+def main():
+    args = handle_args(sys.argv[1:])
+    command_map = get_cmd_map()
+    command_map[f"cmd_{args.command}"](args)
+
+
+if __name__ == "__main__":
+    main()
