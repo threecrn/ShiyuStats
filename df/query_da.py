@@ -13,6 +13,13 @@ basedir = scriptdir / '../'
 
 import common
 
+def load_char(ver='1.7.1'):
+    fpath = basedir / 'data/raw_csvs' / f"{ver}_char.csv"
+    logging.debug(f"load_char fpath={fpath}")
+    df = pd.read_csv(fpath)
+    logging.debug(f"load_char df=[\n{df}\n]")
+    return df
+
 def load_da(ver='1.7.1'):
     fpath = basedir / 'data/raw_csvs' / f"{ver}_da.csv"
     logging.debug(f"load_da fpath={fpath}")
@@ -30,6 +37,10 @@ def cmd_show(args):
     if args.team:
         query = common.team_to_query(args.team)
         logging.debug(f"team query={query}")
+        df = df.query(query)
+    if args.roaster:
+        query = common.roaster_to_query(args.roaster)
+        logging.debug(f"roaster query={query}")
         df = df.query(query)
     if args.floor:
         df = df[df['floor'] == args.floor]
@@ -64,6 +75,8 @@ def get_arg_parser():
 
     parser.add_argument('--team', help="comma separated list of team members (e.g. 'Miyabi,Yanagi'). May include mindscape constraints: 'Miyabi<=M2' means Miyabi up to M2. May exclude certain agents: '!Astra' means no team with Astra Yao in it.")
     
+    parser.add_argument('--roaster', help="comma separated list of roaster members (e.g. 'Miyabi,Yanagi,Lucy,Nicole'). May include mindscape constraints: 'Miyabi<=M2' means Miyabi up to M2.")
+
     #parser.add_argument('--output-format', default='df', choices=['df'])
     #parser.add_argument('--include-columns', default=None)
     #parser.add_argument('--exclude-columns', default=None)

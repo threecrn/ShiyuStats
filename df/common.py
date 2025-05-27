@@ -78,3 +78,36 @@ def team_to_query(s: str) -> str:
     query = team_query(team)
     logging.debug(f"query={query}")
     return query
+
+def roaster_query(roaster: list):
+    def render(agent,slot,cond):
+        if cond is None:
+            return f"(ch{slot} == '{agent}')"
+        else:
+            if cond[0] == 'lt':
+                return f"(ch{slot} == '{agent}' and ch{slot}_rank < {cond[1]})"
+            elif cond[0] == 'le':
+                return f"(ch{slot} == '{agent}' and ch{slot}_rank <= {cond[1]})"
+            elif cond[0] == 'gt':
+                return f"(ch{slot} == '{agent}' and ch{slot}_rank > {cond[1]})"
+            elif cond[0] == 'ge':
+                return f"(ch{slot} == '{agent}' and ch{slot}_rank >= {cond[1]})"
+            elif cond[0] == 'eq':
+                return f"(ch{slot} == '{agent}' and ch{slot}_rank == {cond[1]})"
+        return f"(ch{slot} == '{agent}')"
+    
+    return ' and '.join([
+        '(' + " or ".join([render(m[0], i, m[1]) for m in roaster]) + ')'
+        for i in range(1,4)
+    ])
+
+def roaster_to_query(s: str) -> str:
+    l = to_list(s)
+    logging.debug(f"l={l}")
+    l = [map_agent_expr(a) for a in l]
+    logging.debug(f"l={l}")
+    roaster = map_agent_list(l)
+    logging.debug(f"roaster={roaster}")
+    query = roaster_query(roaster)
+    logging.debug(f"query={query}")
+    return query
