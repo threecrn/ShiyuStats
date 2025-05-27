@@ -11,11 +11,7 @@ import pandas as pd
 scriptdir = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
 basedir = scriptdir / '../'
 
-def to_list(s: str):
-    if s and s != '':
-        return s.split(',')
-    return None
-
+import fn
 
 def load_da(ver='1.7.1'):
     fpath = basedir / 'data/raw_csvs' / f"{ver}_da.csv"
@@ -32,7 +28,7 @@ def cmd_show(args):
     logging.debug("cmd_show args={args}")
     df = load_da(args.version)
     if args.team:
-        team = to_list(args.team)
+        team = fn.map_agent_list(fn.to_list(args.team))
         query = ' and '.join([f"((ch1 == '{m}') or (ch2 == '{m}') or (ch3 == '{m}'))" for m in team])
         logging.debug(f"team query={query}")
         df = df.query(query)
@@ -41,7 +37,7 @@ def cmd_show(args):
     if args.pandas_query:
         df = df.query(args.pandas_query)
     if args.pandas_order:
-        df = df.sort_values(to_list(args.pandas_order))
+        df = df.sort_values(fn.to_list(args.pandas_order))
     pd.set_option('display.max_rows', args.pandas_max_rows)
     print(df)
 

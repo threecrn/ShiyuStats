@@ -11,11 +11,7 @@ import pandas as pd
 scriptdir = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))
 basedir = scriptdir / '../'
 
-def to_list(s: str):
-    if s and s != '':
-        return s.split(',')
-    return None
-
+import fn
 
 def load_shiyu(ver='1.7.1'):
     fpath = basedir / 'data/raw_csvs' / f"{ver}.csv"
@@ -28,22 +24,22 @@ def load_shiyu(ver='1.7.1'):
     logging.debug(f"load_shiyu df=[\n{df}\n]")
     return df
 
-def cmd_show_shiyu(args):
-    logging.debug("cmd_show_shiyu args={args}")
+def cmd_show(args):
+    logging.debug("cmd_show args={args}")
     df = load_shiyu(args.version)
-    if args.shiyu_floor:
-        df = df[df["floor"] == args.shiyu_floor]
-    if args.shiyu_side:
-        df = df[df["node"] == args.shiyu_side]
+    if args.floor:
+        df = df[df["floor"] == args.floor]
+    if args.side:
+        df = df[df["node"] == args.side]
     if args.team:
-        team = to_list(args.team)
+        team = fn.map_agent_list(fn.to_list(args.team))
         query = ' and '.join([f"((ch1 == '{m}') or (ch2 == '{m}') or (ch3 == '{m}'))" for m in team])
         logging.debug(f"team query={query}")
         df = df.query(query)
     if args.pandas_query:
         df = df.query(args.pandas_query)
     if args.pandas_order:
-        df = df.sort_values(to_list(args.pandas_order))
+        df = df.sort_values(fn.to_list(args.pandas_order))
     pd.set_option('display.max_rows', args.pandas_max_rows)
     print(df)
 
@@ -62,13 +58,13 @@ def get_arg_parser():
     command_map = get_cmd_map()
     parser = argparse.ArgumentParser(
         description="ZZZ Shiyu/DA data tool",
-        epilog=f"example: {sys.argv[0]} show_shiyu --version=1.6.1 --shiyu-floor=7 --shiyu-side=1 --team=Evelyn,Koleda --pandas-order=time"
+        epilog=f"example: {sys.argv[0]} show --version=1.6.1 --floor=7 --side=1 --team=Evelyn,Koleda --pandas-order=time"
     )
     parser.add_argument('--debug',  action="store_true", help='debug mode')
     parser.add_argument('command', choices=[name[4:] for name in command_map.keys()])
     parser.add_argument('-v', '--version', default='1.7.1', help="game version (e.g. 1.7.1)")
-    parser.add_argument('--shiyu-floor', type=int, help="only specific shiyu floor [1..7]")
-    parser.add_argument('--shiyu-side', type=int, help="only specific shiyu side [1..2]")
+    parser.add_argument('--floor', type=int, help="only specific shiyu floor [1..7]")
+    parser.add_argument('--side', type=int, help="only specific shiyu side [1..2]")
 
     parser.add_argument('--team', help="comma separated list of team members (e.g. 'Miyabi,Yanagi')")
     
