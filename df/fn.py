@@ -17,11 +17,11 @@ agent_aliases = {
 
 def map_agent_expr(a: str):
     pat_not_agent = r'^[!](?P<agent>.+)$'
-    pat_rank_lt = r'^(?P<agent>.+?)[<](?P<rank>[1-6])$'
-    pat_rank_le = r'^(?P<agent>.+?)[<][=](?P<rank>[1-6])$'
-    pat_rank_gt = r'^(?P<agent>.+?)[>](?P<rank>[0-5])$'
-    pat_rank_ge = r'^(?P<agent>.+?)[>][=](?P<rank>[0-5])$'
-    pat_rank_eq = r'^(?P<agent>.+?)[=]{1,2}(?P<rank>[0-6])$'
+    pat_rank_lt = r'^(?P<agent>.+?)[<][Mm](?P<rank>[1-6])$'
+    pat_rank_le = r'^(?P<agent>.+?)[<][=][Mm](?P<rank>[1-6])$'
+    pat_rank_gt = r'^(?P<agent>.+?)[>][Mm](?P<rank>[0-5])$'
+    pat_rank_ge = r'^(?P<agent>.+?)[>][=][Mm](?P<rank>[0-5])$'
+    pat_rank_eq = r'^(?P<agent>.+?)[=]{1,2}[Mm](?P<rank>[0-6])$'
     if m := re.match(pat_not_agent, a):
         return (m.group('agent'), ('not',))
     elif m := re.match(pat_rank_lt, a):

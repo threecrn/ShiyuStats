@@ -54,15 +54,15 @@ def get_cmd_map():
 def get_arg_parser():
     command_map = get_cmd_map()
     parser = argparse.ArgumentParser(
-        description="ZZZ Shiyu/DA data tool",
-        epilog=f"example: {sys.argv[0]} show_shiyu --version=1.6.1 --shiyu-floor=7 --shiyu-side=1 --team=Evelyn,Koleda --pandas-order=time"
+        description="ZZZ DA data tool",
+        epilog=f"example: {sys.argv[0]} show --version=1.6.1 --floor=3 --team=Evelyn,Koleda --pandas-order=score"
     )
     parser.add_argument('--debug',  action="store_true", help='debug mode')
     parser.add_argument('command', choices=[name[4:] for name in command_map.keys()])
     parser.add_argument('-v', '--version', default='1.7.1', help="game version (e.g. 1.7.1)")
-    parser.add_argument('--floor', type=int, help="only specific floor [1..3]")
+    parser.add_argument('--floor', type=int, help="only specific floor/boss [1..3]")
 
-    parser.add_argument('--team', help="comma separated list of team members (e.g. 'Miyabi,Yanagi')")
+    parser.add_argument('--team', help="comma separated list of team members (e.g. 'Miyabi,Yanagi'). May include mindscape constraints: 'Miyabi<=M2' means Miyabi up to M2. May exclude certain agents: '!Astra' means no team with Astra Yao in it.")
     
     #parser.add_argument('--output-format', default='df', choices=['df'])
     #parser.add_argument('--include-columns', default=None)
