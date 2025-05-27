@@ -28,8 +28,7 @@ def cmd_show(args):
     logging.debug("cmd_show args={args}")
     df = load_da(args.version)
     if args.team:
-        team = fn.map_agent_list(fn.to_list(args.team))
-        query = ' and '.join([f"((ch1 == '{m}') or (ch2 == '{m}') or (ch3 == '{m}'))" for m in team])
+        query = fn.team_to_query(args.team)
         logging.debug(f"team query={query}")
         df = df.query(query)
     if args.floor:
