@@ -49,6 +49,11 @@ def cmd_show(args):
     if args.pandas_order:
         df = df.sort_values(common.to_list(args.pandas_order))
     pd.set_option('display.max_rows', args.pandas_max_rows)
+    if args.shorten:
+        df['ch1'] = common.series_shorten_agent(df['ch1'])
+        df['ch2'] = common.series_shorten_agent(df['ch2'])
+        df['ch3'] = common.series_shorten_agent(df['ch3'])
+        df['boss'] = common.series_shorten_da_boss(df['boss'])
     print(df)
 
 def get_cmd_map():
@@ -70,20 +75,10 @@ def get_arg_parser():
     )
     parser.add_argument('--debug',  action="store_true", help='debug mode')
     parser.add_argument('command', choices=[name[4:] for name in command_map.keys()])
-    parser.add_argument('-v', '--version', default='1.7.1', help="game version (e.g. 1.7.1)")
     parser.add_argument('--floor', type=int, help="only specific floor/boss [1..3]")
 
-    parser.add_argument('--team', help="comma separated list of team members (e.g. 'Miyabi,Yanagi'). May include mindscape constraints: 'Miyabi<=M2' means Miyabi up to M2. May exclude certain agents: '!Astra' means no team with Astra Yao in it.")
+    common.add_query_arguments(parser)
     
-    parser.add_argument('--roaster', help="comma separated list of roaster members (e.g. 'Miyabi,Yanagi,Lucy,Nicole'). May include mindscape constraints: 'Miyabi<=M2' means Miyabi up to M2.")
-
-    #parser.add_argument('--output-format', default='df', choices=['df'])
-    #parser.add_argument('--include-columns', default=None)
-    #parser.add_argument('--exclude-columns', default=None)
-    parser.add_argument('--pandas-max-rows', default=None, type=int)
-    #parser.add_argument('--pandas-line-width', default=None, type=int)
-    parser.add_argument('--pandas-query', default=None)
-    parser.add_argument('--pandas-order', default=None)
     return parser
 
 def handle_args(argv):
