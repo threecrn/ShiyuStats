@@ -55,6 +55,8 @@ def cmd_show(args):
         df['ch1'] = common.series_shorten_agent(df['ch1'])
         df['ch2'] = common.series_shorten_agent(df['ch2'])
         df['ch3'] = common.series_shorten_agent(df['ch3'])
+    if args.exclude_columns:
+        df = df.drop(common.to_list(args.exclude_columns))
     print(df)
 
 def get_cmd_map():
