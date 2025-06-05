@@ -52,7 +52,7 @@ def add_query_arguments(parser):
     
     #parser.add_argument('--output-format', default='df', choices=['df'])
     #parser.add_argument('--include-columns', default=None)
-    #parser.add_argument('--exclude-columns', default=None)
+    parser.add_argument('--exclude-columns', default=None)
     parser.add_argument('--pandas-max-rows', default=None, type=int)
     #parser.add_argument('--pandas-line-width', default=None, type=int)
     parser.add_argument('--pandas-query', default=None, help='pandas query to filter result before output (e.g. "floor in (1,2) and bangboo == \'Rocketboo\'")')
