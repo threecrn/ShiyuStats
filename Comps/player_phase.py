@@ -38,19 +38,26 @@ class PlayerPhase:
         Element, a string.
         """
         for arti in articombinations:
-            articom = []
-            comarti = []
+            articom: list[str] = []
+            comarti: list[str] = []
             for artiset in articombinations[arti]:
                 articom.append(artiset + ", ")
                 comarti.append(", " + artiset)
-            for i in articom:
-                if i in artifacts and "4p" not in artifacts:
-                    artifacts = artifacts.replace(i, arti + ", ")
-            for i in comarti:
-                if i in artifacts and "4p" not in artifacts:
-                    artifacts = artifacts.replace(i, "")
-                    artifacts = arti + ", " + artifacts
+            replaced = False
+            arti_name = articombinations[arti][0]
+            for arti_replace in comarti:
+                if arti_replace in artifacts and "4p" not in artifacts:
+                    artifacts = artifacts.replace(arti_replace, ", " + arti_name)
+                    replaced = True
+            if replaced:
+                arti_name = articombinations[arti][1]
+            for arti_replace in articom:
+                if arti_replace in artifacts and "4p" not in artifacts:
+                    artifacts = artifacts.replace(arti_replace, "")
+                    artifacts = artifacts + ", " + arti_name
 
+        if "Flex, " in artifacts:
+            artifacts = artifacts.replace("Flex, ", "") + ", Flex"
         self.owned[name] = {
             "level": int(level),
             "cons": int(cons),
