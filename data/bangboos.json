@@ -229,5 +229,12 @@
         "id": "54017",
         "name": "Belion",
         "availability": "S"
+    },
+    "Bangboo_Name_54018": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole37.png",
+        "desc": "Bangboo_Desc_54018",
+        "id": "54018",
+        "name": "Bangboo_Name_54018",
+        "availability": "S"
     }
 }
