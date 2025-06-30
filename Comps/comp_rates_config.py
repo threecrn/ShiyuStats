@@ -42,11 +42,10 @@ with open(str(os.getenv("REPO_PATH")) + "/data/w-engine.json") as char_file:
     WENGINE = json.load(char_file)
 
 # no need to add 2.2.1"_da"
-RECENT_PHASE = "1.7.1"
+RECENT_PHASE = "2.0.1"
 
 # if no past phase, past_phase = "null"
-# add 2.2.1"_da"
-past_phase = "1.6.2"
+past_phase = "1.7.2"
 global da_mode
 # if as: da_mode = True
 da_mode = args.deadly_assault

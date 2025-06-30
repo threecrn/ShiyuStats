@@ -162,6 +162,8 @@ for char in chars2:
                     chars1[char_name]["role"] = "Support"
                 case "5":
                     chars1[char_name]["role"] = "Support"
+                case "6":
+                    chars1[char_name]["role"] = "Damage Dealer"
 
             match str(chars1[char_name]["element"]):
                 case "200":

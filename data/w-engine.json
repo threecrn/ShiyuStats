@@ -676,5 +676,81 @@
         "name": "Item_Weapon_A_Common_16_Name",
         "availability": "A",
         "role": "Stun"
+    },
+    "Qingming Birdcage": {
+        "icon": "Weapon_S_1371",
+        "desc": "Item_Weapon_S_1371_ShortDesc",
+        "id": "14137",
+        "name": "Qingming Birdcage",
+        "availability": "Limited S"
+    },
+    "Tremor Trigram Receptacle": {
+        "icon": "Weapon_A_1421",
+        "desc": "Item_Weapon_A_1421_ShortDesc",
+        "id": "13142",
+        "name": "Tremor Trigram Receptacle",
+        "availability": "A",
+        "role": "Stun"
+    },
+    "Radiowave Journey": {
+        "icon": "Weapon_A_Common_14",
+        "desc": "...",
+        "id": "13014",
+        "name": "Radiowave Journey",
+        "availability": "A"
+    },
+    "Puzzle Sphere": {
+        "icon": "Weapon_A_Common_12",
+        "desc": "...",
+        "id": "13012",
+        "name": "Puzzle Sphere",
+        "availability": "A"
+    },
+    "[Cinder] Cobalt": {
+        "icon": "Weapon_B_Common_15",
+        "desc": "Item_Weapon_B_Common_15_ShortDesc",
+        "id": "12015",
+        "name": "[Cinder] Cobalt",
+        "availability": "B"
+    },
+    "Roaring Fur-nace": {
+        "icon": "Weapon_S_1391",
+        "desc": "Item_Weapon_S_1391_ShortDesc",
+        "id": "14139",
+        "name": "Roaring Fur-nace",
+        "availability": "Limited S",
+        "role": "Stun"
+    },
+    "Reel Projector": {
+        "icon": "Weapon_A_Common_16",
+        "desc": "Item_Weapon_A_Common_16_ShortDesc",
+        "id": "13016",
+        "name": "Reel Projector",
+        "availability": "A",
+        "role": "Stun"
+    },
+    "Tremor Trigram Vessel": {
+        "icon": "Weapon_A_1421",
+        "desc": "Pressing acupoints is like cooking. Striking the fatal acupoint is like setting the stove on fire, bringing disaster.",
+        "id": "13142",
+        "name": "Tremor Trigram Vessel",
+        "availability": "A",
+        "role": "Stun"
+    },
+    "Item_Weapon_S_1411_Name": {
+        "icon": "Weapon_S_1411",
+        "desc": "Item_Weapon_S_1411_ShortDesc",
+        "id": "14141",
+        "name": "Item_Weapon_S_1411_Name",
+        "availability": "Limited S",
+        "role": "Support"
+    },
+    "Item_Weapon_S_1401_Name": {
+        "icon": "Weapon_S_1401",
+        "desc": "Item_Weapon_S_1401_ShortDesc",
+        "id": "14140",
+        "name": "Item_Weapon_S_1401_Name",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
     }
 }
