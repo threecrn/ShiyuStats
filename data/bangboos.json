@@ -222,5 +222,19 @@
         "id": "54017",
         "name": "Bangboo_Name_54017",
         "availability": "S"
+    },
+    "Belion": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole36.png",
+        "desc": "The true essence of martial arts is the lightness and purity of heart.",
+        "id": "54017",
+        "name": "Belion",
+        "availability": "S"
+    },
+    "Bangboo_Name_54018": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole37.png",
+        "desc": "Bangboo_Desc_54018",
+        "id": "54018",
+        "name": "Bangboo_Name_54018",
+        "availability": "S"
     }
 }

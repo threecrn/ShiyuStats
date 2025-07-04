@@ -335,5 +335,64 @@
         "name": "Vivian",
         "availability": "Limited S",
         "role": "Damage Dealer"
+    },
+    "Hugo": {
+        "element": "Ice",
+        "camp": "9",
+        "icon": "IconRole42",
+        "skin": {},
+        "desc": "Hugo calls himself a collector and runs a fairly successful gallery, mingling with the \"elite\" of New Eridu.\nIn truth, he's the leader of the phantom thieves syndicate, Mockingbird \u2014 and Lycaon's former partner.\nDespite his cruel (edgy and dramatic) words, deep down he has his own sense of fairness and justice.\n\nRecords suggest that Hugo had a troubled childhood.\nAs the illegitimate son of the Ravenlocks, a long-established TOPS family, he was rejected by his mother from an early age because of his heterochromatic eyes.\nHis father bought him back like a cheap commodity, using him to provoke a cutthroat succession battle between his children. In that brutal struggle, the only one kind to Hugo \u2014 his sister, Serena \u2014 became the first to fall. The ones who orchestrated her death pinned the blame on Hugo, thinking it would destroy him. But to their shock, their father actually praised Hugo's actions, calling them the very traits a worthy heir should possess.\nAfter running away from his family, Hugo met Lycaon and Jack and learned to be a phantom thief. After Jack passed away, Hugo and Lycaon formed Mockingbird together.\n\nLater, during one of Mockingbird's missions, Hugo came face-to-face with his father. In a brief moment of hesitation, he chose not to take his revenge and kill him \u2014 an act of mercy that ended up costing the lives of many innocent people. His close friend Lycaon, due to a misunderstanding born from those circumstances, broke ties with him and ultimately left Mockingbird.\nAfter drifting on his own for a while, Hugo met Vivian, a girl who reminded him of his sister Serena. He took her under his wing and reformed the Mockingbird syndicate.",
+        "id": "1291",
+        "name": "Hugo",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Pan Yinhu": {
+        "element": "Physical",
+        "camp": "10",
+        "icon": "IconRole45",
+        "potential": [],
+        "skin": {},
+        "desc": "Pan Yinhu, disciple of Yunkui Summit, serves as both the head chef and financial manager of Suibian Temple. He's proficient in martial arts, and an expert in pressure-point techniques.\nAs the one managing Suibian Temple's money, he's a master at keeping costs down and can bargain a 5,000 Denny piece of meat down to 500. If he can make something at home, he refuses to purchase it at a store, and no matter which big supermarket or shop you name, he's got a coupon for it tucked in his pocket.\nThanks to him, the members of Suibian Temple enjoy delicious yet budget-friendly meals every day. As the head of the kitchen, he demands precise flavor profiles and pays keen attention to his friends' opinions.\nWhat's more, given his years of frugality, it's safe to assume that both the group's treasury and his secret piggy bank have ballooned to jaw-dropping levels.",
+        "id": "1421",
+        "name": "Pan Yinhu",
+        "availability": "A",
+        "role": "Support"
+    },
+    "Yixuan": {
+        "element": "Ether",
+        "camp": "10",
+        "icon": "IconRole44",
+        "potential": [],
+        "spelement": "UI/Sprite/A1DynamicLoad/IconGeneralBuff/Packer/IconAuricInk.png",
+        "skin": {
+            "3113710": {
+                "Name": "Yixuan: Summit of Clouds",
+                "Desc": "As the Master of Yunkui Summit, one's fashion and accessories need only be what feels natural. Stay true to one's self.",
+                "Image": "IconRole44"
+            },
+            "3113711": {
+                "Name": "Yixuan: Trails of Ink",
+                "Desc": "A custom attire in shades of ink. Like an elusive shadow, gone in a flash.",
+                "Image": "IconRole44_01"
+            }
+        },
+        "desc": "Yixuan is the 13th High Preceptor of Yunkui Summit and a Void Hunter-level investigator, officially recognized by Mayor Mayflower.\n\nShe was once an orphan, wandering the world with her sister from a young age. Later, the then-High Preceptor of Yunkui Summit took them in, and they became disciples, learning the craft of Yunkui Summit. During this time, Yixuan demonstrated exceptional talent. No matter the technique, she would quickly master it, not only understanding it thoroughly but also creating her own unique techniques. The Qingming Bird was one of the special techniques she and her sister developed together, which helped her eliminate enemies and banish evil spirits in various difficult and dangerous situations. After becoming the sect's High Preceptor, she accepted an invitation from Mayor Mayflower and joined the Hollow Investigative Association as a partnered special investigator.\n\nAfter becoming High Preceptor, Yixuan took in many talented disciples to continue Yunkui Summit's lineage. However, her approach is rather casual, and often, even when teaching by example, her disciples can only guess her intentions... Yet, Yixuan isn't troubled by this, as she believes there's no standard answer to the so-called \"right path.\" What matters to her is that her disciples find their own \"right path.\" Of course, if they can understand and learn on their own, that's even better. As their Shifu, she simply lets things unfold naturally.",
+        "id": "1371",
+        "name": "Yixuan",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Ju Fufu": {
+        "element": "Fire",
+        "camp": "10",
+        "icon": "IconRole43",
+        "potential": [],
+        "skin": {},
+        "desc": "Ju Fufu, a rare tiger Thiren of New Eridu. She looks small and is still young, but she's the most senior disciple of Suibian Temple and one of Yixuan's first disciples.\n\n\"Able to deal with anything,\" \"can even make Shifu listen,\" \"super patient and meticulous teacher,\" \"has great taste when choosing restaurants for teambuilding.\"\n\u2014Yunkui Summit trainee performance review, peer evaluation\n\n\"Always messing up the tasks given by Shifu,\" \"doesn't command respect in speech or combat,\" \"doesn't know how to act tough against bad guys,\" \"juniors are more skilled.\"\n\u2014Yunkui Summit trainee performance review, self-evaluation\n\n\"'The most skilled senior ever who can do anything, a righteous hero with righteous might' is what I heard her say when I passed by her room. Hm... I concur.\"\n\u2014Yunkui Summit trainee performance review, Shifu's evaluation\n\nOther: I suggest you suggest Yunkui Summit improve their network security to avoid the risk of disciples' personal data being stolen or leaked.",
+        "id": "1391",
+        "name": "Ju Fufu",
+        "availability": "Limited S",
+        "role": "Stun"
     }
 }

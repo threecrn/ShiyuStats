@@ -37,14 +37,18 @@ for source_dir in source_dirs:
             file_name == "duo_usages.json"
             or file_name == ("demographic_collect" + suffix + ".json")
             or (file_name == "builds.json" and (RECENT_PHASE + "_da") in source_dir)
+            or (
+                file_name == "bosses_name.csv"
+                and (RECENT_PHASE + "_da") not in source_dir
+            )
         ):
-            if file_name == "builds.json":
+            if file_name in ["builds.json", "bosses_name.csv"]:
                 temp_target_dir: str = target_dir
                 target_dir = "../web_results"
             copyfrom = path.join(source_dir, file_name)
             copyto = path.join(target_dir, file_name)
             shutil.copyfile(copyfrom, copyto)
-            if file_name == "builds.json":
+            if file_name in ["builds.json", "bosses_name.csv"]:
                 target_dir = temp_target_dir
 
 if da_mode:
