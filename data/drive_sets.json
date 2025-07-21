@@ -53,6 +53,15 @@
             "When the equipper is a Stun character and uses an EX Special Attack or Chain Attack, increases CRIT DMG of all squad members by 15%, and when the equipper's CRIT Rate is more than or equal to 50%, further increases CRIT DMG by 15%, lasting 15s. Repeated triggers reset the duration. Passive effects of the same name do not stack."
         ]
     },
+    "33400": {
+        "icon": "",
+        "id": "33400",
+        "name": "EquipmentSuit_33400_name",
+        "desc": [
+            "EquipmentSuit_33400_2_des",
+            "EquipmentSuit_33400_4_des"
+        ]
+    },
     "31200": {
         "icon": "UI/Sprite/A1DynamicLoad/IconSuit/UnPacker/SuitShockstarDisco.png",
         "id": "31200",
@@ -96,6 +105,15 @@
         "desc": [
             "The DMG of Aftershocks and Dash Attacks is increased by 15%.",
             "Upon hitting an enemy with an Aftershock or Dash Attack, if the DMG dealt aligns with the equipper's attribute, the equipper gains 1 stack of a buff effect, at most once per use of a skill. For each stack, the equipper's ATK increases by 4%, and CRIT Rate increases by 4%. The effect can stack up to 3 times and lasts for 15s. Repeated triggers reset the duration."
+        ]
+    },
+    "33300": {
+        "icon": "",
+        "id": "33300",
+        "name": "EquipmentSuit_33300_name",
+        "desc": [
+            "EquipmentSuit_33300_2_des",
+            "EquipmentSuit_33300_4_des"
         ]
     },
     "31500": {
@@ -149,7 +167,7 @@
         "name": "Hormone Punk",
         "desc": [
             "ATK +10%",
-            "Upon entering combat or switching in, its user's ATK increases by 25% for 10s. This effect can trigger once every 20s."
+            "Upon becoming the active character in combat, the equipper's ATK increases by 25% for 10s. This effect can trigger once every 20s."
         ]
     },
     "32200": {

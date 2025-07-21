@@ -132,6 +132,7 @@ class Composition:
                 "Seth",
                 "Astra Yao",
                 "Pan Yinhu",
+                "Yuzuha",
             ]:
                 self.support.insert(0, character)
             elif character in [

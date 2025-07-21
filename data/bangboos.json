@@ -236,5 +236,12 @@
         "id": "54018",
         "name": "Bangboo_Name_54018",
         "availability": "S"
+    },
+    "Miss Esme": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole37.png",
+        "desc": "In the name of Starshine, I shall alter the course of destiny!",
+        "id": "54018",
+        "name": "Miss Esme",
+        "availability": "S"
     }
 }
