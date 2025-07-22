@@ -13,14 +13,14 @@ basedir = scriptdir / '../'
 
 import common
 
-def load_char(ver='1.7.1'):
+def load_char(ver:str='1.7.1') -> pd.DataFrame:
     fpath = basedir / 'data/raw_csvs' / f"{ver}_char.csv"
     logging.debug(f"load_char fpath={fpath}")
     df = pd.read_csv(fpath)
     logging.debug(f"load_char df=[\n{df}\n]")
     return df
 
-def load_shiyu(ver='1.7.1'):
+def load_shiyu(ver:str='1.7.1') -> pd.DataFrame:
     fpath = basedir / 'data/raw_csvs' / f"{ver}.csv"
     logging.debug(f"load_shiyu fpath={fpath}")
     df = pd.read_csv(fpath, dtype={
@@ -31,7 +31,7 @@ def load_shiyu(ver='1.7.1'):
     logging.debug(f"load_shiyu df=[\n{df}\n]")
     return df
 
-def cmd_show(args):
+def cmd_show(args) -> None:
     logging.debug("cmd_show args={args}")
     df = load_shiyu(args.version)
     if args.floor:
@@ -59,7 +59,7 @@ def cmd_show(args):
         df = df.drop(common.to_list(args.exclude_columns))
     print(df)
 
-def get_cmd_map():
+def get_cmd_map() -> dict:
     import inspect
     return {name:obj
         for name,obj in inspect.getmembers(sys.modules[__name__])

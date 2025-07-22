@@ -41,7 +41,7 @@ def series_shorten_da_boss(ser):
 def series_shorten_agent(ser):
     return ser.map(agent_shortended).fillna(ser)
 
-def add_query_arguments(parser):
+def add_query_arguments(parser) -> None:
     parser.add_argument('-v', '--version', type=str, default='1.7.1', help="game version (e.g. 1.7.1)")
 
     parser.add_argument('--team', help="comma separated list of team members (e.g. 'Miyabi,Yanagi'). May include mindscape constraints: 'Miyabi<=M2' means Miyabi up to M2. May exclude certain agents: '!Astra' means no team with Astra Yao in it.")
@@ -87,7 +87,7 @@ def map_agent_list(l: list):
         for a in l
     ]
 
-def team_query(team: list):
+def team_query(team: list) -> str:
     def render_or(agent,slot,cond):
         if cond is None:
             return f"(ch{slot} == '{agent}')"
@@ -123,7 +123,7 @@ def team_to_query(s: str) -> str:
     logging.debug(f"query={query}")
     return query
 
-def roaster_query(roaster: list):
+def roaster_query(roaster: list) -> str:
     def render(agent,slot,cond):
         if cond is None:
             return f"(ch{slot} == '{agent}')"
