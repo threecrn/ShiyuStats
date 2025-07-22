@@ -752,5 +752,29 @@
         "name": "Item_Weapon_S_1401_Name",
         "availability": "Limited S",
         "role": "Damage Dealer"
+    },
+    "Item_Weapon_S_1301_Name": {
+        "icon": "Weapon_S_1301",
+        "desc": "Item_Weapon_S_1301_ShortDesc",
+        "id": "14130",
+        "name": "Item_Weapon_S_1301_Name",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Metanukimorphosis": {
+        "icon": "Weapon_S_1411",
+        "desc": "A masterfully crafted design, infused with the creator's pursuit of beauty.",
+        "id": "14141",
+        "name": "Metanukimorphosis",
+        "availability": "Limited S",
+        "role": "Support"
+    },
+    "Practiced Perfection": {
+        "icon": "Weapon_S_1401",
+        "desc": "Starlight became her blade, and she held courage and love firmly in her hands.",
+        "id": "14140",
+        "name": "Practiced Perfection",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
     }
 }
