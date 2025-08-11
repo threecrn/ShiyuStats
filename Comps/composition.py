@@ -91,6 +91,7 @@ class Composition:
                 "Soldier 0 - Anby",
                 "Hugo",
                 "Yixuan",
+                "Alice",
             ]:
                 self.dps.insert(0, character)
             if character in [
@@ -148,6 +149,7 @@ class Composition:
                 "Vivian",
                 "Yanagi",
                 "Miyabi",
+                "Alice",
             ]:
                 self.anomaly.append(character)
 
