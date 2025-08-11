@@ -417,5 +417,28 @@
         "name": "Yuzuha",
         "availability": "Limited S",
         "role": "Support"
+    },
+    "Alice": {
+        "element": "Physical",
+        "camp": "11",
+        "icon": "IconRole46",
+        "potential": [],
+        "skin": {
+            "3114010": {
+                "Name": "Alice: Celestian Etiquette",
+                "Desc": "The young woman's perfect symmetry is only ever slightly compromised when she wears the school crest \u2014 such is the elegant and noble Thymefield spirit.",
+                "Image": "IconRole46"
+            },
+            "3114011": {
+                "Name": "Alice: Sea of Thyme",
+                "Desc": "Though it wasn't completely symmetrical, she did not mind this gift from a dear friend.\nThe girl pushed open the locked door and walked along the pink beach after the sudden downpour, the cool waves brushing over her ankles. There were no unknowns left to frighten her.",
+                "Image": "IconRole46_01"
+            }
+        },
+        "desc": "Alice Thymefield, a new member of Spook Shack, is a young lady from the prestigious Thymefield family of New Eridu.\n\nAlice has studied fencing and Ether science since childhood, showing exceptional talent in both fields. She currently attends Celestia School for Girls, a subsidiary of High Ambitions Academy, where she's a model student excelling in both academics and conduct. It is predicted that she will one day inherit the family business and become a next-generation Ether scholar of New Eridu.\n\nShe places extreme importance on order and patterns, showing an almost obsessive pursuit of symmetry in particular. This even affects her aesthetic judgment, making symmetry the primary criterion in determining whether something is beautiful or ugly.\n\nFurthermore, she's easily frightened, with practically zero resistance to ghost stories and supernatural tales. Despite this, she seems to show considerable interest in encountering such phenomena. Suggestion: Master can use ghost stories as a topic of conversation with her. No matter how much she initially refuses, it is likely that she will eventually come closer to investigate.",
+        "id": "1401",
+        "name": "Alice",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
     }
 }
