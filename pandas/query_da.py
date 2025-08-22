@@ -13,13 +13,6 @@ basedir = scriptdir / '../'
 
 import common
 
-def load_char(ver='1.7.1'):
-    fpath = basedir / 'data/raw_csvs' / f"{ver}_char.csv"
-    logging.debug(f"load_char fpath={fpath}")
-    df = pd.read_csv(fpath)
-    logging.debug(f"load_char df=[\n{df}\n]")
-    return df
-
 def load_da(ver='1.7.1'):
     fpath = basedir / 'data/raw_csvs' / f"{ver}_da.csv"
     logging.debug(f"load_da fpath={fpath}")
@@ -31,9 +24,19 @@ def load_da(ver='1.7.1'):
     logging.debug(f"load_da df=[\n{df}\n]")
     return df
 
-def cmd_show(args):
+def cmd_show(args) -> None:
     logging.debug("cmd_show args={args}")
-    df = load_da(args.version)
+    versions = common.to_list(args.version)
+    pd.set_option('display.max_rows', args.pandas_max_rows)
+    for version in versions:
+        df = load_and_filter_version(version, args)
+        df['version'] = version
+        print(df)
+
+def load_and_filter_version(version, args) -> pd.DataFrame:
+    df = load_da(version)
+    if args.floor:
+        df = df[df["floor"] == args.floor]
     if args.team:
         query = common.team_to_query(args.team)
         logging.debug(f"team query={query}")
@@ -42,13 +45,10 @@ def cmd_show(args):
         query = common.roaster_to_query(args.roaster)
         logging.debug(f"roaster query={query}")
         df = df.query(query)
-    if args.floor:
-        df = df[df['floor'] == args.floor]
     if args.pandas_query:
         df = df.query(args.pandas_query)
     if args.pandas_order:
         df = df.sort_values(common.to_list(args.pandas_order))
-    pd.set_option('display.max_rows', args.pandas_max_rows)
     if args.shorten:
         df['ch1'] = common.series_shorten_agent(df['ch1'])
         df['ch2'] = common.series_shorten_agent(df['ch2'])
@@ -56,7 +56,7 @@ def cmd_show(args):
         df['boss'] = common.series_shorten_da_boss(df['boss'])
     if args.exclude_columns:
         df = df.drop(common.to_list(args.exclude_columns))
-    print(df)
+    return df
 
 def get_cmd_map():
     import inspect

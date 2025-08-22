@@ -1,6 +1,7 @@
 import re
 import logging
 import argparse
+import pandas as pd
 
 def to_list(s: str):
     if s and s != '':
@@ -155,3 +156,10 @@ def roaster_to_query(s: str) -> str:
     query = roaster_query(roaster)
     logging.debug(f"query={query}")
     return query
+
+def load_char(ver:str='1.7.1') -> pd.DataFrame:
+    fpath = basedir / 'data/raw_csvs' / f"{ver}_char.csv"
+    logging.debug(f"load_char fpath={fpath}")
+    df = pd.read_csv(fpath)
+    logging.debug(f"load_char df=[\n{df}\n]")
+    return df
