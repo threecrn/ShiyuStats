@@ -17,6 +17,7 @@ boss_aliases = {
     'NPompey': 'Notorious - Pompey',
     'Marionette': 'Notorious - Marionette',
     'NButcher':   'Notorious - Dead End Butcher',
+    'Fiend':   'Miasmic Fiend - Unfathomable',
 }
 
 da_boss_shortended = {
