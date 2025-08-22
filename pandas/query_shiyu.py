@@ -55,6 +55,9 @@ def load_and_filter_version(version, args) -> pd.DataFrame:
         df['ch1'] = common.series_shorten_agent(df['ch1'])
         df['ch2'] = common.series_shorten_agent(df['ch2'])
         df['ch3'] = common.series_shorten_agent(df['ch3'])
+    def team_string(ch1, ch1_rank, ch2, ch2_rank, ch3, ch3_rank):
+        return ",".join([f"{p[0]}M{p[1]}" for p in sorted([i for i in [(ch1,ch1_rank), (ch2,ch2_rank), (ch3,ch3_rank)] if type(i[0]) == str])])
+    df['team'] = df.apply(lambda row: team_string(row['ch1'], row['ch1_rank'], row['ch2'], row['ch2_rank'], row['ch3'], row['ch3_rank']), axis=1)
     if args.exclude_columns:
         df = df.drop(common.to_list(args.exclude_columns))
     return df
