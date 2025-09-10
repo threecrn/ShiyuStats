@@ -32,8 +32,8 @@ parser.add_argument(
 args = parser.parse_args()
 
 # For enka.network
-offline_collect = args.offline_collect
-save_to_file = args.save_to_file
+offline_collect: bool = args.offline_collect
+save_to_file: bool = args.save_to_file
 
 with open(str(os.getenv("REPO_PATH")) + "/data/characters.json") as char_file:
     CHARACTERS = json.load(char_file)
@@ -46,7 +46,6 @@ RECENT_PHASE = "2.1.2"
 
 # if no past phase, past_phase = "null"
 past_phase = "2.1.1"
-global da_mode
 # if as: da_mode = True
 da_mode = args.deadly_assault
 
@@ -63,13 +62,9 @@ char_infographics = ["Zhu Yuan", "Ben", "Nicole"]
 char_infographics = char_infographics[0]
 
 # threshold for comps in character infographics, non-inclusive
-global char_app_rate_threshold
 char_app_rate_threshold = 0.25
 
 # threshold for comps, not inclusive
-global app_rate_threshold
-global app_rate_threshold_round
-global f2p_app_rate_threshold
 app_rate_threshold = 0.1
 app_rate_threshold_round = 0
 json_threshold = 0
@@ -81,8 +76,8 @@ duo_dict_len_print = 10
 skip_self = False
 skip_random = False
 archetype = "all"
-whaleOnly = args.whale
-f2pOnly = args.f2p
+whaleOnly: bool = args.whale
+f2pOnly: bool = args.f2p
 
 # Char infographics should be separated from overall comp rankings
 run_commands = [

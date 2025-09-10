@@ -11,11 +11,9 @@ skip_random = False
 print_chart = False
 
 # stats.py
-# comp_stats = ['Bailu', 'Jing Yuan', 'Tingyun', 'Yukong']
 comp_stats = []
 check_char = True
 check_char_name = "Yanqing"
-# check_stats = ["cvalue"]
 check_stats: list[str] = []
 
 # stat.py
@@ -23,24 +21,25 @@ run_all_chars = True
 run_chars_name = ["Miyabi"]
 
 
-phase_num = RECENT_PHASE
+phase_num = str(RECENT_PHASE)
 if da_mode:
     phase_num = phase_num + "_da"
 
-f = open("../data/drive_sets.json")
-relics_data = json.load(f)
+with open("../data/drive_sets.json") as f:
+    relics_data = json.load(f)
 
-f = open(".enka_py/assets/zzz/equipments.json")
-drive_data = json.load(f)
+with open(".enka_py/assets/zzz/equipments.json") as f:
+    drive_data = json.load(f)
 
-f = open("../data/characters.json")
-characters = json.load(f)
+with open("../data/characters.json") as f:
+    characters = json.load(f)
 
 trailblazer_ids: list[str] = []
-for _char_name, char in characters.items():
+for char in characters.values():
     if "trailblazer_ids" in char:
-        for trailblazer_id in char["trailblazer_ids"]:
-            trailblazer_ids.append(trailblazer_id)
+        trailblazer_ids.extend(
+            trailblazer_id for trailblazer_id in char["trailblazer_ids"]
+        )
 
 if os.path.exists("../char_results/uids.csv"):
     with open("../char_results/uids.csv", encoding="UTF8") as f:
@@ -48,22 +47,19 @@ if os.path.exists("../char_results/uids.csv"):
         uids = list(reader)
         uids = [int(uid[0]) for uid in uids]
         uids = list(dict.fromkeys(uids))
-        # uids = uids[uids.index({uid})+1:]
 else:
     uids = [1301113181]
 
 for make_path in [
-    "results_real/" + RECENT_PHASE,
+    "results_real/" + phase_num,
 ]:
     if not os.path.exists(make_path):
         os.makedirs(make_path)
 
 filenum = 1
-while os.path.exists(
-    "results_real/" + RECENT_PHASE + "/output" + str(filenum) + ".csv"
-):
+while os.path.exists("results_real/" + phase_num + "/output" + str(filenum) + ".csv"):
     filenum += 1
-filename = "results_real/" + RECENT_PHASE + "/output" + str(filenum)
+filename = "results_real/" + phase_num + "/output" + str(filenum)
 
 
 def to_snake_case(key: str) -> str:
