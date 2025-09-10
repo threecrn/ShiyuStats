@@ -132,7 +132,7 @@ else:
 data = transform_csv_data(filename)
 
 type_hints = CharacterData.__annotations__
-statkeys = [key for key, type_ in type_hints.items() if type_ is not str]
+statkeys = [key for key, type_ in type_hints.items() if type_ != "str"]
 
 
 class StatsChar:
@@ -212,6 +212,9 @@ for uid in data:
                 for key in statkeys:
                     value = getattr(cur_char, key)
                     value = 0 if value is None else value
+                    if isinstance(value, str):
+                        print(uid, char, key, value)
+                        sys_exit()
                     stats[char].stats_count[key].append(value)
                 for i in mainstats[char]:
                     if getattr(cur_char, i) in mainstats[char][i]:
