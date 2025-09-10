@@ -243,5 +243,19 @@
         "id": "54018",
         "name": "Miss Esme",
         "availability": "S"
+    },
+    "Excaliboo": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole39.png",
+        "desc": "Only a sacred sword is needed to crown the true king.",
+        "id": "53016",
+        "name": "Excaliboo",
+        "availability": "A"
+    },
+    "Mercury": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole38.png",
+        "desc": "A Bangboo uninterested in military merits is not a good soldier.",
+        "id": "54019",
+        "name": "Mercury",
+        "availability": "S"
     }
 }
