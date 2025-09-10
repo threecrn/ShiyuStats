@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import csv
 import json
 import os.path
@@ -5,6 +7,7 @@ import sys
 
 sys.path.append("../Comps/")
 from comp_rates_config import RECENT_PHASE, da_mode
+from enka.zzz import AgentStatType  # pyright: ignore[reportMissingTypeStubs]
 
 skip_self = False
 skip_random = False
@@ -67,20 +70,27 @@ def to_snake_case(key: str) -> str:
     return key.replace(" ", "_").lower()
 
 
-desired_stats_keys = [
-    "Base HP",
-    "Base ATK",
-    "Base DEF",
-    "Base Impact",
-    "CRIT Rate",
-    "CRIT DMG",
-    "Anomaly Mastery",
-    "Anomaly Proficiency",
-    "PEN Ratio",
-    "PEN",
-    "Base Energy Regen",
-    "DMG Bonus",
-]
+desired_stats_dict: dict[AgentStatType, str] = {
+    AgentStatType.MAX_HP: "Base HP",
+    AgentStatType.ATK: "Base ATK",
+    AgentStatType.DEF: "Base DEF",
+    AgentStatType.IMPACT: "Base Impact",
+    AgentStatType.CRIT_RATE: "CRIT Rate",
+    AgentStatType.CRIT_DMG: "CRIT DMG",
+    AgentStatType.ANOMALY_MASTERY: "Anomaly Mastery",
+    AgentStatType.ANOMALY_PROFICIENCY: "Anomaly Proficiency",
+    AgentStatType.PEN_RATIO: "PEN Ratio",
+    AgentStatType.PEN: "PEN",
+    AgentStatType.ENERGY_REGEN: "Base Energy Regen",
+    AgentStatType.SHEER_FORCE: "Sheer Force",
+    AgentStatType.ICE_DMG_BONUS: "DMG Bonus",
+    AgentStatType.FIRE_DMG_BONUS: "DMG Bonus",
+    AgentStatType.ETHER_DMG_BONUS: "DMG Bonus",
+    AgentStatType.ELECTRIC_DMG_BONUS: "DMG Bonus",
+    AgentStatType.PHYSICAL_DMG_BONUS: "DMG Bonus",
+}
+
+desired_stats_keys: list[str] = list(dict.fromkeys(desired_stats_dict.values()))
 
 substat_keys = [
     "Percent HP",

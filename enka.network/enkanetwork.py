@@ -13,8 +13,14 @@ from typing import TYPE_CHECKING
 
 import aiohttp
 import enka  # pyright: ignore[reportMissingTypeStubs]
+from enka.zzz import (  # pyright: ignore[reportMissingTypeStubs]
+    AgentStatType,
+    Element,
+    SkillType,
+)
 from enka_config import (
     csv,
+    desired_stats_dict,
     desired_stats_keys,
     drive_data,
     filename,
@@ -29,7 +35,10 @@ sys.path.append("../Comps/")
 from comp_rates_config import offline_collect, save_to_file
 
 if TYPE_CHECKING:
-    from enka.zzz import ShowcaseResponse  # pyright: ignore[reportMissingTypeStubs]
+    from enka.zzz import (  # pyright: ignore[reportMissingTypeStubs]
+        AgentSkill,
+        ShowcaseResponse,  # pyright: ignore[reportMissingTypeStubs]
+    )
 
 print(len(uids))
 
@@ -123,6 +132,21 @@ async def main() -> None:
 
                     for character in data.agents:
                         element_name = character.elements[-1]
+                        dmg_bonus: AgentStatType = AgentStatType.PHYSICAL_DMG_BONUS
+                        match element_name:
+                            case Element.PHYSICAL:
+                                dmg_bonus = AgentStatType.PHYSICAL_DMG_BONUS
+                            case Element.FIRE:
+                                dmg_bonus = AgentStatType.FIRE_DMG_BONUS
+                            case Element.ICE | Element.FIRE_FROST:
+                                dmg_bonus = AgentStatType.ICE_DMG_BONUS
+                            case Element.ELECTRIC:
+                                dmg_bonus = AgentStatType.ELECTRIC_DMG_BONUS
+                            case Element.ETHER | Element.AURIC_ETHER:
+                                dmg_bonus = AgentStatType.ETHER_DMG_BONUS
+                            case _:
+                                dmg_bonus = AgentStatType.PHYSICAL_DMG_BONUS
+
                         if element_name == "Elec":
                             element_name = "Electric"
                         if element_name == "Physics":
@@ -153,21 +177,36 @@ async def main() -> None:
                             ],
                         )
 
-                        line.extend(skill.level for skill in character.skills)
+                        def find_skill(
+                            skill_type: SkillType,
+                            skills: list[AgentSkill],
+                        ) -> int:
+                            return next(
+                                skill.level
+                                for skill in skills
+                                if skill.type == skill_type
+                            )
+
+                        skill_array = [
+                            find_skill(SkillType.BASIC_ATK, character.skills),
+                            find_skill(SkillType.SPECIAL_ATK, character.skills),
+                            find_skill(SkillType.DASH, character.skills),
+                            find_skill(SkillType.ULTIMATE, character.skills),
+                            find_skill(SkillType.CORE_SKILL, character.skills),
+                            find_skill(SkillType.ASSIST, character.skills),
+                        ]
+                        line.extend(skill_array)
+
                         desired_stats: dict[str, float] = dict.fromkeys(
-                            [
-                                key
-                                if key != "DMG Bonus"
-                                else f"{element_name} DMG Bonus"
-                                for key in desired_stats_keys
-                            ],
+                            desired_stats_keys,
                             0,
                         )
 
                         for stat in character.stats.values():
-                            stat_name = stat.name.replace("\xa0", " ")
-                            if stat_name in desired_stats:
-                                desired_stats[stat_name] = (
+                            if stat.type in desired_stats_dict and (
+                                "Bonus" not in stat.name or dmg_bonus == stat.type
+                            ):
+                                desired_stats[desired_stats_dict[stat.type]] = (
                                     stat.value / 100
                                     if "%" in stat.format
                                     else stat.value
