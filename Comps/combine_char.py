@@ -309,6 +309,7 @@ for char in CHARACTERS:
         "base_atk",
         "base_def",
         "base_impact",
+        "sheer_force",
         "crit_rate",
         "crit_dmg",
         "anomaly_mastery",
