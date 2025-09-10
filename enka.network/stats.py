@@ -1,9 +1,14 @@
+"""Calculate stats."""
+
+from __future__ import annotations
+
 import csv
 import json
 import operator
 import os
 import statistics
 from dataclasses import dataclass
+from sys import exit as sys_exit
 
 import numpy as np
 from enka_config import (
@@ -20,14 +25,18 @@ from slugify import slugify
 with open("../Comps/prydwen-slug.json") as slug_file:
     slug = json.load(slug_file)
 
-if os.path.exists("../data/raw_csvs_real/"):
-    f = open("../data/raw_csvs_real/" + phase_num + ".csv")
-else:
-    f = open("../data/raw_csvs/" + phase_num + ".csv")
-reader = csv.reader(f, delimiter=",")
-headers = next(reader)
-spiral = list(reader)
-f.close()
+with open(
+    (
+        "../data/raw_csvs_real/"
+        if os.path.exists("../data/raw_csvs_real/")
+        else "../data/raw_csvs/"
+    )
+    + phase_num
+    + ".csv",
+) as f:
+    reader = csv.reader(f, delimiter=",")
+    headers = next(reader)
+    spiral = list(reader)
 
 with open("../char_results/" + phase_num + "/all.csv") as f:
     reader = csv.reader(f, delimiter=",")
@@ -52,6 +61,7 @@ class CharacterData:
     base_atk: int
     base_def: int
     base_impact: int
+    sheer_force: int
     crit_rate: float
     crit_dmg: float
     anomaly_mastery: int
@@ -77,12 +87,13 @@ class CharacterData:
     drive_sets: str
 
     @classmethod
-    def from_dict(cls, data: dict[str, str | int | float]) -> "CharacterData":
-        """Converts a dictionary (from CSV row) into a CharacterData instance."""
-        return cls(**data)  # type: ignore
+    def from_dict(cls, data: dict[str, str | int | float]) -> CharacterData:
+        """Convert dictionary (from CSV row) to a CharacterData instance."""
+        return cls(**data)  # pyright: ignore[reportArgumentType]
 
 
 def transform_csv_data(file_path: str) -> dict[int, dict[str, CharacterData]]:
+    """Transform the CSV data into a dictionary of UID → {character: CharacterData}."""
     result: dict[int, dict[str, CharacterData]] = {}
 
     with open(file_path) as csv_file:
@@ -125,10 +136,13 @@ statkeys = [key for key, type_ in type_hints.items() if type_ is not str]
 
 
 class StatsChar:
+    """Represent a character's stats."""
+
     def __init__(self, char: str) -> None:
+        """Initialize. Takes in a character name, as a string."""
         self.name = char
         self.stats_count: dict[str, list[float]] = {key: [] for key in statkeys}
-        self.stats_write: dict[str, float | str] = {key: 0 for key in statkeys}
+        self.stats_write: dict[str, float | str] = dict.fromkeys(statkeys, 0)
         self.sample_size = 0
         self.sample_size_players = 0
 
@@ -154,12 +168,11 @@ for spiral_row in spiral:
                 spiral_rows[cur_uid][char] = 0
             spiral_rows[cur_uid][char] += 1
 
-for build in builds:
-    chars.append(build[0])
+chars.extend(build[0] for build in builds)
 
 for char in chars:
     stats[char] = StatsChar(char)
-    mean[char] = {key: 0 for key in statkeys}
+    mean[char] = dict.fromkeys(statkeys, 0)
     median[char] = mean[char].copy()
     mainstats[char] = {
         "drive_slot_4": {},
@@ -174,7 +187,7 @@ substatkeys: list[str] = [f"{to_snake_case(key)}_sub" for key in substat_keys]
 if os.path.isfile("../../uids.csv"):
     with open("../../uids.csv", encoding="UTF8") as f:
         reader = csv.reader(f, delimiter=",")
-        self_uids = list(reader)[0]
+        self_uids = next(iter(reader))
 else:
     self_uids = []
 
@@ -190,8 +203,8 @@ for uid in data:
     if cur_uid in spiral_rows:
         for char in data[uid]:
             if char not in chars:
-                print(char)
-                exit()
+                print(char, "not exist")
+                sys_exit()
             if char in spiral_rows[cur_uid]:
                 stats[char].sample_size_players += 1
                 cur_char = data[uid][char]
@@ -214,19 +227,23 @@ for char in copy_chars:
                 stats[char].stats_write[stat] = 0
             else:
                 stats[char].stats_write[stat] = round(
-                    statistics.mean(stats[char].stats_count[stat]), 2
+                    statistics.mean(stats[char].stats_count[stat]),
+                    2,
                 )
 
         stats[char].stats_write["sample_size_players"] = stats[char].sample_size_players
 
         for stat in mainstats[char]:
             sorted_stats = sorted(
-                mainstats[char][stat].items(), key=operator.itemgetter(1), reverse=True
+                mainstats[char][stat].items(),
+                key=operator.itemgetter(1),
+                reverse=True,
             )
-            mainstats[char][stat] = {k: v for k, v in sorted_stats}
+            mainstats[char][stat] = dict(sorted_stats)
             for mainstat in mainstats[char][stat]:
                 mainstats[char][stat][mainstat] = round(
-                    mainstats[char][stat][mainstat] / stats[char].sample_size, 4
+                    mainstats[char][stat][mainstat] / stats[char].sample_size,
+                    4,
                 )
             mainstatlist = list(mainstats[char][stat])
             i = 0
@@ -256,24 +273,28 @@ for char in copy_chars:
                 stats[char].stats_write[stat + "_" + str(i + 1) + "_app"] = "-"
                 i += 1
 
-if os.path.exists("results_real"):
-    file1 = open("results_real/chars.csv", "w", newline="")
-    file2 = open("results_real/demographic.csv", "w", newline="")
-else:
-    file1 = open("results/chars.csv", "w", newline="")
-    file2 = open("results/demographic.csv", "w", newline="")
-
-csv_writer = csv.writer(file1)
-csv_writer2 = csv.writer(file2)
-del stats[chars[0]].sample_size
-csv_writer.writerow(["name", *stats[chars[0]].stats_write.keys()])
-for char in chars:
-    if char != chars[0]:
-        del stats[char].sample_size
-    csv_writer.writerow([stats[char].name, *stats[char].stats_write.values()])
-    csv_writer2.writerow([char + ": " + str(stats[char].sample_size_players)])
-file1.close()
-file2.close()
+exist_real = os.path.exists("results_real")
+with (
+    open(
+        "results_real/chars.csv" if exist_real else "results/chars.csv",
+        "w",
+        newline="",
+    ) as file1,
+    open(
+        "results_real/demographic.csv" if exist_real else "results/demographic.csv",
+        "w",
+        newline="",
+    ) as file2,
+):
+    csv_writer = csv.writer(file1)
+    csv_writer2 = csv.writer(file2)
+    del stats[chars[0]].sample_size
+    csv_writer.writerow(["name", *stats[chars[0]].stats_write.keys()])
+    for char in chars:
+        if char != chars[0]:
+            del stats[char].sample_size
+        csv_writer.writerow([stats[char].name, *stats[char].stats_write.values()])
+        csv_writer2.writerow([char + ": " + str(stats[char].sample_size_players)])
 
 temp_stats: list[str] = []
 iter_char = 0
@@ -283,29 +304,30 @@ with open("../char_results/" + phase_num + "/appearance_combine.json") as app_ch
     APP = json.load(app_char_file)
 with open("../char_results/" + phase_num + "/rounds_combine.json") as round_char_file:
     ROUND = json.load(round_char_file)
-for char in stats:
+for char, char_value in stats.items():
     iterate_value_app: list[str] = []
     for i in range(3):
         iterate_value_app.append("drive_slot_4_" + str(i + 1) + "_app")
         iterate_value_app.append("drive_slot_5_" + str(i + 1) + "_app")
         iterate_value_app.append("drive_slot_6_" + str(i + 1) + "_app")
     for value in iterate_value_app:
-        if isinstance(stats[char].stats_write[value], float):
+        if isinstance(char_value.stats_write[value], float):
             stats[char].stats_write[value] = round(
-                float(stats[char].stats_write[value]) * 100, 2
+                float(char_value.stats_write[value]) * 100,
+                2,
             )
         else:
             stats[char].stats_write[value] = 0.00
 
-    stats[char].name = slugify(stats[char].name)
-    if stats[char].name in slug:
-        stats[char].name = slug[stats[char].name]
-    if stats[char].name == CHARACTERS[iter_char]["char"]:
+    stats[char].name = slugify(char_value.name)
+    if char_value.name in slug:
+        stats[char].name = slug[char_value.name]
+    if char_value.name == CHARACTERS[iter_char]["char"]:
         del stats[char].name
     else:
-        print(stats[char].name)
+        print(char_value.name)
         print(CHARACTERS[iter_char]["char"])
-        exit()
+        sys_exit()
 
     app_dict: dict[str, float] = {}
     if not (da_mode):
@@ -318,8 +340,7 @@ for char in stats:
             "1_app": APP["1-1"]["4"][char]["app"],
             "1_round": ROUND["1-1"]["4"][char]["round"],
         }
-    temp_stats.append((CHARACTERS[iter_char] | stats[char].stats_write) | app_dict)
-    # temp_stats.append((CHARACTERS[iter_char]) | app_dict)
+    temp_stats.append((CHARACTERS[iter_char] | char_value.stats_write) | app_dict)
     iter_char += 1
 
 if not os.path.exists("../char_results/" + phase_num):
