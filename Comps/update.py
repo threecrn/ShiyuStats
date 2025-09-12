@@ -1,7 +1,8 @@
-import json
-import requests
-import re
 import io
+import json
+import re
+
+import requests
 
 download = requests.get("https://api.hakush.in/zzz/data/equipment.json").content.decode(
     "utf-8"
@@ -12,7 +13,7 @@ with open("../data/drive_affixes.json") as artifact_file:
     artifacts2 = json.load(artifact_file)
 # artifacts2 = {}
 
-artifacts_affixes = {}
+artifacts_affixes: dict[str, list[str]] = {}
 for artifact in artifacts:
     artifacts[artifact]["id"] = artifact
     artifacts[artifact]["name"] = artifacts[artifact]["EN"]["name"]
@@ -52,6 +53,7 @@ for artifact in artifacts:
 
 for artifact in list(artifacts_affixes.keys()):
     if len(artifacts_affixes[artifact]) > 1:
+        add_arti = "n"
         if artifact not in artifacts2:
             if len(artifact) > 12:
                 print("Set name too long: " + artifact)
@@ -76,7 +78,7 @@ with open("../data/w-engine.json") as char_file:
 download = requests.get("https://api.hakush.in/zzz/data/weapon.json").content.decode(
     "utf-8"
 )
-wengine2 = json.load((io.StringIO(download)))
+wengine2 = json.load(io.StringIO(download))
 
 for weap in wengine2:
     weap_name = wengine2[weap]["EN"]
@@ -127,7 +129,7 @@ with open("../data/characters.json") as char_file:
 download = requests.get("https://api.hakush.in/zzz/data/character.json").content.decode(
     "utf-8"
 )
-chars2 = json.load((io.StringIO(download)))
+chars2 = json.load(io.StringIO(download))
 
 for char in chars2:
     char_name = chars2[char]["EN"]
@@ -215,7 +217,7 @@ with open("../data/bangboos.json") as bangboo_file:
 download = requests.get("https://api.hakush.in/zzz/data/bangboo.json").content.decode(
     "utf-8"
 )
-bangboos2 = json.load((io.StringIO(download)))
+bangboos2 = json.load(io.StringIO(download))
 
 for bangboo in bangboos2:
     bangboo_name = bangboos2[bangboo]["EN"]

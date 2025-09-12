@@ -2,8 +2,6 @@ import csv
 import os
 import statistics
 import time
-
-# from scipy.stats import skew, trim_mean
 from itertools import permutations
 
 import char_usage as cu
@@ -763,26 +761,11 @@ def rank_usages(comps_dict, rooms, owns_offset=1):
                     uses_room[room_num] = len(
                         comps_dict[star_threshold][comp]["round_num"][str(room_num)]
                     )
-                    if comps_dict[star_threshold][comp]["uses"] > 1:
-                        # skewness = skew(comps_dict[star_threshold][comp]["round_num"][str(room_num)], axis=0, bias=True)
-                        # if abs(skewness) > 0.8:
-                        #     avg_round.append(trim_mean(comps_dict[star_threshold][comp]["round_num"][str(room_num)], 0.25))
-                        # else:
-                        avg_round.append(
-                            statistics.mean(
-                                comps_dict[star_threshold][comp]["round_num"][
-                                    str(room_num)
-                                ]
-                            )
+                    avg_round.append(
+                        statistics.mean(
+                            comps_dict[star_threshold][comp]["round_num"][str(room_num)]
                         )
-                    else:
-                        avg_round.append(
-                            statistics.mean(
-                                comps_dict[star_threshold][comp]["round_num"][
-                                    str(room_num)
-                                ]
-                            )
-                        )
+                    )
                     # avg_round.append(statistics.mean(comps_dict[star_threshold][comp]["round_num"][str(room_num)]))
                     # avg_round += comps_dict[star_threshold][comp]["round_num"][str(room_num)]
 

@@ -100,6 +100,7 @@ class Composition:
                 "Nekomata",
                 "Anton",
                 "Harumasa",
+                "Seed",
             ]:
                 self.dps.append(character)
             elif character in [

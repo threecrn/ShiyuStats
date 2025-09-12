@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import csv
 import json
 import os.path
@@ -5,17 +7,16 @@ import sys
 
 sys.path.append("../Comps/")
 from comp_rates_config import RECENT_PHASE, da_mode
+from enka.zzz import AgentStatType  # pyright: ignore[reportMissingTypeStubs]
 
 skip_self = False
 skip_random = False
 print_chart = False
 
 # stats.py
-# comp_stats = ['Bailu', 'Jing Yuan', 'Tingyun', 'Yukong']
 comp_stats = []
 check_char = True
 check_char_name = "Yanqing"
-# check_stats = ["cvalue"]
 check_stats: list[str] = []
 
 # stat.py
@@ -23,24 +24,25 @@ run_all_chars = True
 run_chars_name = ["Miyabi"]
 
 
-phase_num = RECENT_PHASE
+phase_num = str(RECENT_PHASE)
 if da_mode:
     phase_num = phase_num + "_da"
 
-f = open("../data/drive_sets.json")
-relics_data = json.load(f)
+with open("../data/drive_sets.json") as f:
+    relics_data = json.load(f)
 
-f = open(".enka_py/assets/zzz/equipments.json")
-drive_data = json.load(f)
+with open(".enka_py/assets/zzz/equipments.json") as f:
+    drive_data = json.load(f)
 
-f = open("../data/characters.json")
-characters = json.load(f)
+with open("../data/characters.json") as f:
+    characters = json.load(f)
 
 trailblazer_ids: list[str] = []
-for _char_name, char in characters.items():
+for char in characters.values():
     if "trailblazer_ids" in char:
-        for trailblazer_id in char["trailblazer_ids"]:
-            trailblazer_ids.append(trailblazer_id)
+        trailblazer_ids.extend(
+            trailblazer_id for trailblazer_id in char["trailblazer_ids"]
+        )
 
 if os.path.exists("../char_results/uids.csv"):
     with open("../char_results/uids.csv", encoding="UTF8") as f:
@@ -48,22 +50,19 @@ if os.path.exists("../char_results/uids.csv"):
         uids = list(reader)
         uids = [int(uid[0]) for uid in uids]
         uids = list(dict.fromkeys(uids))
-        # uids = uids[uids.index({uid})+1:]
 else:
     uids = [1301113181]
 
 for make_path in [
-    "results_real/" + RECENT_PHASE,
+    "results_real/" + phase_num,
 ]:
     if not os.path.exists(make_path):
         os.makedirs(make_path)
 
 filenum = 1
-while os.path.exists(
-    "results_real/" + RECENT_PHASE + "/output" + str(filenum) + ".csv"
-):
+while os.path.exists("results_real/" + phase_num + "/output" + str(filenum) + ".csv"):
     filenum += 1
-filename = "results_real/" + RECENT_PHASE + "/output" + str(filenum)
+filename = "results_real/" + phase_num + "/output" + str(filenum)
 
 
 def to_snake_case(key: str) -> str:
@@ -71,20 +70,27 @@ def to_snake_case(key: str) -> str:
     return key.replace(" ", "_").lower()
 
 
-desired_stats_keys = [
-    "Base HP",
-    "Base ATK",
-    "Base DEF",
-    "Base Impact",
-    "CRIT Rate",
-    "CRIT DMG",
-    "Anomaly Mastery",
-    "Anomaly Proficiency",
-    "PEN Ratio",
-    "PEN",
-    "Base Energy Regen",
-    "DMG Bonus",
-]
+desired_stats_dict: dict[AgentStatType, str] = {
+    AgentStatType.MAX_HP: "Base HP",
+    AgentStatType.ATK: "Base ATK",
+    AgentStatType.DEF: "Base DEF",
+    AgentStatType.IMPACT: "Base Impact",
+    AgentStatType.CRIT_RATE: "CRIT Rate",
+    AgentStatType.CRIT_DMG: "CRIT DMG",
+    AgentStatType.ANOMALY_MASTERY: "Anomaly Mastery",
+    AgentStatType.ANOMALY_PROFICIENCY: "Anomaly Proficiency",
+    AgentStatType.PEN_RATIO: "PEN Ratio",
+    AgentStatType.PEN: "PEN",
+    AgentStatType.ENERGY_REGEN: "Base Energy Regen",
+    AgentStatType.SHEER_FORCE: "Sheer Force",
+    AgentStatType.ICE_DMG_BONUS: "DMG Bonus",
+    AgentStatType.FIRE_DMG_BONUS: "DMG Bonus",
+    AgentStatType.ETHER_DMG_BONUS: "DMG Bonus",
+    AgentStatType.ELECTRIC_DMG_BONUS: "DMG Bonus",
+    AgentStatType.PHYSICAL_DMG_BONUS: "DMG Bonus",
+}
+
+desired_stats_keys: list[str] = list(dict.fromkeys(desired_stats_dict.values()))
 
 substat_keys = [
     "Percent HP",

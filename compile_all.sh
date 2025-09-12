@@ -2,14 +2,13 @@
 
 set -e # Stop on error
 
-if [[ -d "data/raw_csvs_real" ]]; then
-  cd enka.network
-  python combine.py
-  cd ../Comps
-  python combine_raw_chars.py
-  python hash.py
+# Check for arguments, e.g. `sh compile_all.sh hello`
+if [ -n "$1" ]; then
+  cd Comps
 else
   cd Comps
+  python combine_raw_chars.py
+  python hash.py
 fi
 
 echo ""

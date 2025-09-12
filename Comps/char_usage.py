@@ -1,17 +1,11 @@
-# import operator
 import csv
 import json
 import os.path
 import statistics
-
-# import matplotlib
-# import matplotlib.pyplot as plt
 import warnings
 
 from archetypes import find_archetype, findchars, resetfind
 from comp_rates_config import RECENT_PHASE, da_mode, f2pOnly, sigWeaps, whaleOnly
-
-# from scipy.stats import skew, trim_mean
 from percentile import calculate_percentile
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
@@ -399,19 +393,6 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                                     75 if da_mode else 25,
                                 )
                             )
-                            # skewness = skew(
-                            #     appears[star_num][char]["round"][str(room_num)],
-                            #     axis=0,
-                            #     bias=True,
-                            # )
-                            # if abs(skewness) > 0.8:
-                            #     avg_round.append(
-                            #         trim_mean(
-                            #             appears[star_num][char]["round"][str(room_num)],
-                            #             0.25,
-                            #         )
-                            #     )
-                            # else:
                             avg_round.append(
                                 statistics.mean(
                                     appears[star_num][char]["round"][str(room_num)]
@@ -501,39 +482,13 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                         if appears[star_num][char]["cons_freq"][cons]["round"][
                             str(room_num)
                         ]:
-                            if appears[star_num][char]["cons_freq"][cons]["flat"] > 1:
-                                # skewness = skew(
-                                #     appears[star_num][char]["cons_freq"][cons]["round"][
-                                #         str(room_num)
-                                #     ],
-                                #     axis=0,
-                                #     bias=True,
-                                # )
-                                # if abs(skewness) > 0.8:
-                                #     avg_round.append(
-                                #         trim_mean(
-                                #             appears[star_num][char]["cons_freq"][cons][
-                                #                 "round"
-                                #             ][str(room_num)],
-                                #             0.25,
-                                #         )
-                                #     )
-                                # else:
-                                avg_round.append(
-                                    statistics.mean(
-                                        appears[star_num][char]["cons_freq"][cons][
-                                            "round"
-                                        ][str(room_num)]
-                                    )
+                            avg_round.append(
+                                statistics.mean(
+                                    appears[star_num][char]["cons_freq"][cons]["round"][
+                                        str(room_num)
+                                    ]
                                 )
-                            else:
-                                avg_round.append(
-                                    statistics.mean(
-                                        appears[star_num][char]["cons_freq"][cons][
-                                            "round"
-                                        ][str(room_num)]
-                                    )
-                                )
+                            )
                             # avg_round += appears[star_num][char]["cons_freq"][cons]["round"][str(room_num)]
                             # avg_round.append(statistics.mean(appears[star_num][char]["cons_freq"][cons]["round"][str(room_num)]))
                     if avg_round:
@@ -577,14 +532,6 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                         if appears[star_num][char]["weap_freq"][weapon]["round"][
                             str(room_num)
                         ]:
-                            # if appears[star_num][char]["weap_freq"][weapon]["flat"] > 1:
-                            #     skewness = skew(appears[star_num][char]["weap_freq"][weapon]["round"][str(room_num)], axis=0, bias=True)
-                            #     if abs(skewness) > 0.8:
-                            #         avg_round.append(trim_mean(appears[star_num][char]["weap_freq"][weapon]["round"][str(room_num)], 0.25))
-                            #     else:
-                            #         avg_round.append(statistics.mean(appears[star_num][char]["weap_freq"][weapon]["round"][str(room_num)]))
-                            # else:
-                            #     avg_round.append(statistics.mean(appears[star_num][char]["weap_freq"][weapon]["round"][str(room_num)]))
                             avg_round += appears[star_num][char]["weap_freq"][weapon][
                                 "round"
                             ][str(room_num)]
@@ -632,14 +579,6 @@ def appearances(players, chambers=ROOMS, offset=1, info_char=False):
                         if appears[star_num][char]["arti_freq"][arti]["round"][
                             str(room_num)
                         ]:
-                            # if appears[star_num][char]["arti_freq"][arti]["flat"] > 1:
-                            #     skewness = skew(appears[star_num][char]["arti_freq"][arti]["round"][str(room_num)], axis=0, bias=True)
-                            #     if abs(skewness) > 0.8:
-                            #         avg_round.append(trim_mean(appears[star_num][char]["arti_freq"][arti]["round"][str(room_num)], 0.25))
-                            #     else:
-                            #         avg_round.append(statistics.mean(appears[star_num][char]["arti_freq"][arti]["round"][str(room_num)]))
-                            # else:
-                            #     avg_round.append(statistics.mean(appears[star_num][char]["arti_freq"][arti]["round"][str(room_num)]))
                             avg_round += appears[star_num][char]["arti_freq"][arti][
                                 "round"
                             ][str(room_num)]
