@@ -5,6 +5,7 @@ import json
 import os.path
 import statistics
 import warnings
+from itertools import chain
 
 from comp_rates_config import RECENT_PHASE, da_mode, f2p_only, sig_weaps, whale_only
 from percentile import calculate_percentile
@@ -34,6 +35,8 @@ ROOMS = (
 gear_app_threshold = 0
 with open("../data/characters.json") as char_file:
     CHARACTERS = json.load(char_file)
+with open("../data/bangboos.json") as char_file:
+    BANGBOOS = json.load(char_file)
 
 
 class RoundApp:
@@ -71,10 +74,12 @@ def appearances(
     users: dict[str, dict[str, PlayerPhase]],
     chambers: list[str] = ROOMS,
     info_char: bool = False,
-) -> dict[int, dict[str, CharApp]]:
+) -> dict[int, tuple[dict[str, CharApp], dict[str, CharApp]]]:
     """Calculate appearance data for each character."""
     app: dict[str, CharApp] = {}
     user_chars: dict[str, set[str]] = {}
+    app_boos: dict[str, CharApp] = {}
+    user_boos: dict[str, set[str]] = {}
     if os.path.exists("../char_results/duo_check.csv"):
         with open("../char_results/duo_check.csv") as f:
             valid_duo_dps = list(csv.reader(f, delimiter=","))
@@ -87,6 +92,9 @@ def appearances(
     for character in CHARACTERS:
         user_chars[character] = set()
         app[character] = CharApp()
+    for boo in BANGBOOS:
+        user_boos[boo] = set()
+        app_boos[boo] = CharApp()
 
     # There's probably a better way to cache these things
     for user in users[RECENT_PHASE].values():
@@ -204,8 +212,25 @@ def appearances(
                             user.chambers[chamber].round_num,
                         )
 
+            boo = user.chambers[chamber].bangboo
+            if boo:
+                if chambers == ["7-1", "7-2"] or (
+                    da_mode and chambers == ["1-1", "1-2", "1-3"]
+                ):
+                    user_boos[boo].add(user.player)
+                app_boos[boo].app_flat += 1
+
+                if (
+                    whale_comp == whale_only
+                    and (not f2p_only or f2p_comp)
+                    and dps_count == 1
+                ):
+                    app_boos[boo].round_list[cur_chamber].append(
+                        user.chambers[chamber].round_num,
+                    )
+
     total = len(all_uids) / 100.0
-    for char, char_item in app.items():
+    for char, char_item in chain(app.items(), app_boos.items()):
         char_item.app = round(char_item.app_flat / total, 2) if total > 0 else 0.00
         if char_item.app_flat >= 20:
             avg_round: list[float] = []
@@ -268,7 +293,9 @@ def appearances(
                 char_item.round = 0
                 char_item.q1_round = 0
 
-        char_item.sample = len(user_chars[char])
+        char_item.sample = len(
+            user_chars[char] if char in user_chars else user_boos[char],
+        )
 
         if da_mode:
             if chambers != ["1-1", "1-2", "1-3"]:
@@ -389,7 +416,7 @@ def appearances(
                 char_item.arti_freq[arti].round = 600
                 if da_mode:
                     char_item.arti_freq[arti].round = 0
-    return {4: app}
+    return {4: (app, app_boos)}
 
 
 class CharUsageData(CharApp):
@@ -406,8 +433,12 @@ class CharUsageData(CharApp):
         self.usage = 0
         self.diff: str | int = "-"
         self.diff_rounds = "-"
-        self.role = str(CHARACTERS[char]["role"])
-        self.rarity = str(CHARACTERS[char]["availability"])
+        self.role = str(CHARACTERS[char]["role"] if char in CHARACTERS else "")
+        self.rarity = str(
+            CHARACTERS[char]["availability"]
+            if char in CHARACTERS
+            else BANGBOOS[char]["availability"],
+        )
         self.weapons: dict[str, RoundApp] = {}
         self.weapons_round: dict[str, RoundApp] = {}
         self.artifacts: dict[str, RoundApp] = {}
@@ -417,14 +448,17 @@ class CharUsageData(CharApp):
 
 
 def usages(
-    app: dict[int, dict[str, CharApp]],
+    app: dict[int, tuple[dict[str, CharApp], dict[str, CharApp]]],
     past_phase: str,
     chambers: list[str] = ROOMS,
-) -> dict[int, dict[str, CharUsageData]]:
+) -> tuple[dict[int, dict[str, CharUsageData]], dict[int, dict[str, CharUsageData]]]:
     """Calculate usage data for each character."""
     uses: dict[int, dict[str, CharUsageData]] = {}
+    uses_boos: dict[int, dict[str, CharUsageData]] = {}
     past_usage: dict[str, dict[str, dict[str, dict[str, float]]]] = {}
     past_rounds: dict[str, dict[str, dict[str, dict[str, float]]]] = {}
+    past_usage_boos: dict[str, dict[str, dict[str, dict[str, float]]]] = {}
+    past_rounds_boos: dict[str, dict[str, dict[str, dict[str, float]]]] = {}
 
     if chambers == ["7-1", "7-2"] or (da_mode and chambers == ["1-1", "1-2", "1-3"]):
         stage = "all"
@@ -438,10 +472,47 @@ def usages(
             past_rounds = json.load(stats)
     except Exception:
         print("No past usage data")
+    try:
+        with open(
+            "../char_results/" + past_phase + "/bangboo_appearance.json",
+        ) as stats:
+            past_usage = json.load(stats)
+        with open("../char_results/" + past_phase + "/bangboo_rounds.json") as stats:
+            past_rounds = json.load(stats)
+    except Exception:
+        print("No past bangboo usage data")
 
-    for star_num, app_chars in app.items():
+    for star_num, (app_chars, app_boos) in app.items():
         uses[star_num] = {}
+        uses_boos[star_num] = {}
         rates: list[float] = []
+        rates_boos: list[float] = []
+
+        for boo, app_boo in app_boos.items():
+            uses_boos[star_num][boo] = CharUsageData(app_boo, boo)
+            rates_boos.append(uses_boos[star_num][boo].app)
+            if stage not in past_usage_boos:
+                continue
+            if boo in past_usage_boos[stage][str(star_num)]:
+                uses_boos[star_num][boo].diff = str(
+                    round(
+                        app_boo.app - past_usage_boos[stage][str(star_num)][boo]["app"],
+                        2,
+                    ),
+                )
+            if boo in past_rounds_boos[stage][str(star_num)]:
+                uses_boos[star_num][boo].diff_rounds = str(
+                    round(
+                        app_boo.round
+                        - past_rounds_boos[stage][str(star_num)][boo]["round"],
+                        2,
+                    ),
+                )
+        rates_boos.sort(reverse=True)
+        for uses_boo in uses_boos[star_num].values():
+            # if owns[star_num][boo.app_flat > 0:
+            uses_boo.rank = rates_boos.index(uses_boo.app) + 1
+
         for char, app_char in app_chars.items():
             uses[star_num][char] = CharUsageData(app_char, char)
             rates.append(uses[star_num][char].app)
@@ -500,4 +571,5 @@ def usages(
         for char in uses[star_num]:
             # if owns[star_num][char.app_flat > 0:
             uses[star_num][char].rank = rates.index(uses[star_num][char].app) + 1
-    return uses
+
+    return uses, uses_boos

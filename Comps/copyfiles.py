@@ -1,3 +1,5 @@
+"""Copy files to web directory."""
+
 import shutil
 from os import listdir, mkdir, path
 
@@ -34,7 +36,7 @@ for source_dir in source_dirs:
     mkdir(target_dir)
     for file_name in file_names:
         if "comp_results" in source_dir or (
-            file_name == "duo_usages.json"
+            file_name in ["duo_usages.json", "bangboo_all.json"]
             or file_name == ("demographic_collect" + suffix + ".json")
             or (file_name == "builds.json" and (RECENT_PHASE + "_da") in source_dir)
             or (
