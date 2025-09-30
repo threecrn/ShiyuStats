@@ -10,6 +10,7 @@ from sys import exit as sys_exit
 import char_usage as cu
 from comp_rates_config import (
     CHARACTERS,
+    DEFAULT_ROUND,
     RECENT_PHASE,
     app_rate_threshold,
     app_rate_threshold_round,
@@ -58,9 +59,7 @@ if os.path.isfile("../../uids.csv"):
 else:
     self_uids = []
 
-da_filename = ""
-if da_mode:
-    da_filename = "_da"
+da_filename = "_da" if da_mode else ""
 with (
     open("../data/raw_csvs_real/" + RECENT_PHASE + da_filename + ".csv")
     if os.path.exists("../data/raw_csvs_real/")
@@ -115,19 +114,13 @@ for line in reader:
         stage = str(line[1])
         comp_chars_temp: list[str] = []
         cons_chars_temp: list[int] = []
-        if da_mode:
-            for i in [6, 8, 10]:
-                if line[i] != "" and line[i] in CHARACTERS:
-                    comp_chars_temp.append(line[i])
-                    cons_chars_temp.append(int(float(line[i + 1])))
-        else:
-            for i in [5, 7, 9]:
-                if line[i] != "" and line[i] in CHARACTERS:
-                    comp_chars_temp.append(line[i])
-                    cons_chars_temp.append(int(float(line[i + 1])))
+        for i in [6, 8, 10] if da_mode else [5, 7, 9]:
+            if line[i] != "" and line[i] in CHARACTERS:
+                comp_chars_temp.append(line[i])
+                cons_chars_temp.append(int(float(line[i + 1])))
         if comp_chars_temp:
-            if da_mode:
-                comp = Composition(
+            comp = (
+                Composition(
                     line[0],
                     comp_chars_temp,
                     RECENT_PHASE,
@@ -137,8 +130,8 @@ for line in reader:
                     line[12],
                     cons_chars_temp,
                 )
-            else:
-                comp = Composition(
+                if da_mode
+                else Composition(
                     line[0],
                     comp_chars_temp,
                     RECENT_PHASE,
@@ -148,6 +141,7 @@ for line in reader:
                     line[11],
                     cons_chars_temp,
                 )
+            )
             all_comps.append(comp)
             if int(star_num) == 3:
                 three_star_sample[stage] += 1
@@ -352,22 +346,13 @@ def main() -> None:
                 )
                 appearances_write[room][star_num] = {}
                 rounds_write[room][star_num] = {}
-                if da_mode:
-                    rounds[room][star_num] = dict(
-                        sorted(
-                            char_cham[star_num].items(),
-                            key=lambda t: t[1].round,
-                            reverse=True,
-                        ),
-                    )
-                else:
-                    rounds[room][star_num] = dict(
-                        sorted(
-                            char_cham[star_num].items(),
-                            key=lambda t: t[1].round,
-                            reverse=False,
-                        ),
-                    )
+                rounds[room][star_num] = dict(
+                    sorted(
+                        char_cham[star_num].items(),
+                        key=lambda t: t[1].round,
+                        reverse=da_mode,
+                    ),
+                )
                 for char in char_cham[star_num]:
                     appearances_write[room][star_num][char] = {
                         "app": char_cham[star_num][char].app,
@@ -421,22 +406,13 @@ def main() -> None:
                 )
                 appearances_write[room][star_num] = {}
                 rounds_write[room][star_num] = {}
-                if da_mode:
-                    rounds[room][star_num] = dict(
-                        sorted(
-                            char_chambers[room][star_num].items(),
-                            key=lambda t: t[1].round,
-                            reverse=True,
-                        ),
-                    )
-                else:
-                    rounds[room][star_num] = dict(
-                        sorted(
-                            char_chambers[room][star_num].items(),
-                            key=lambda t: t[1].round,
-                            reverse=False,
-                        ),
-                    )
+                rounds[room][star_num] = dict(
+                    sorted(
+                        char_chambers[room][star_num].items(),
+                        key=lambda t: t[1].round,
+                        reverse=da_mode,
+                    ),
+                )
                 for char in char_chambers[room][star_num]:
                     appearances_write[room][star_num][char] = {
                         "app": char_chambers[room][star_num][char].app,
@@ -692,9 +668,7 @@ def rank_usages(
         if avg_round:
             rounded_avg_round = round(statistics.mean(avg_round))
         else:
-            rounded_avg_round = 600
-            if da_mode:
-                rounded_avg_round = 0
+            rounded_avg_round = DEFAULT_ROUND
 
         if total == 0:
             print(comps_dict[4][comp].uses)
@@ -783,9 +757,7 @@ def used_duos(
             if avg_round:
                 cur_duo.round = round(statistics.mean(avg_round))
             else:
-                cur_duo.round = 600
-                if da_mode:
-                    cur_duo.round = 0
+                cur_duo.round = DEFAULT_ROUND
             if duo[0] not in return_duos:
                 return_duos[duo[0]] = {}
             return_duos[duo[0]][duo[1]] = cur_duo
@@ -829,22 +801,13 @@ def comp_usages_write(
                 reverse=True,
             ),
         )
-    elif da_mode:
-        comps_dict[4] = dict(
-            sorted(
-                comps_dict[4].items(),
-                key=lambda t: t[1].round,
-                reverse=True,
-            ),
-        )
-    else:
-        comps_dict[4] = dict(
-            sorted(
-                comps_dict[4].items(),
-                key=lambda t: t[1].round,
-                reverse=False,
-            ),
-        )
+    comps_dict[4] = dict(
+        sorted(
+            comps_dict[4].items(),
+            key=lambda t: t[1].round,
+            reverse=da_mode,
+        ),
+    )
     comp_names: list[str] = []
     dual_comp_names: list[str] = []
 
@@ -1202,9 +1165,9 @@ def char_usages_write(
                 else:
                     out_chars_append["weapon_" + str(i + 1)] = ""
                     out_chars_append["weapon_" + str(i + 1) + "_app"] = "0.0"
-                    out_chars_append["weapon_" + str(i + 1) + "_round"] = "600"
-                    if da_mode:
-                        out_chars_append["weapon_" + str(i + 1) + "_round"] = "0.0"
+                    out_chars_append["weapon_" + str(i + 1) + "_round"] = str(
+                        DEFAULT_ROUND,
+                    )
             for i in range(arti_len):
                 if i < len(list(cur_char.artifacts)):
                     arti_name = list(cur_char.artifacts)[i]
@@ -1233,9 +1196,9 @@ def char_usages_write(
                     out_chars_append["artifact_" + str(i + 1) + "_2"] = ""
                     out_chars_append["artifact_" + str(i + 1) + "_3"] = ""
                     out_chars_append["artifact_" + str(i + 1) + "_app"] = "0.0"
-                    out_chars_append["artifact_" + str(i + 1) + "_round"] = "600"
-                    if da_mode:
-                        out_chars_append["artifact_" + str(i + 1) + "_round"] = "0.0"
+                    out_chars_append["artifact_" + str(i + 1) + "_round"] = str(
+                        DEFAULT_ROUND,
+                    )
             for i in range(7):
                 out_chars_append["app_" + str(i)] = (
                     str(next(iter(list(cur_char.cons_usage.values())[i].values())))
@@ -1253,23 +1216,19 @@ def char_usages_write(
             for i in range(weap_len):
                 out_chars_append["weapon_" + str(i + 1)] = ""
                 out_chars_append["weapon_" + str(i + 1) + "_app"] = "0.0"
-                out_chars_append["weapon_" + str(i + 1) + "_round"] = "600"
-                if da_mode:
-                    out_chars_append["weapon_" + str(i + 1) + "_round"] = "0.0"
+                out_chars_append["weapon_" + str(i + 1) + "_round"] = str(DEFAULT_ROUND)
             for i in range(arti_len):
                 out_chars_append["artifact_" + str(i + 1)] = ""
                 out_chars_append["artifact_" + str(i + 1) + "_1"] = ""
                 out_chars_append["artifact_" + str(i + 1) + "_2"] = ""
                 out_chars_append["artifact_" + str(i + 1) + "_3"] = ""
                 out_chars_append["artifact_" + str(i + 1) + "_app"] = "0.0"
-                out_chars_append["artifact_" + str(i + 1) + "_round"] = "600"
-                if da_mode:
-                    out_chars_append["artifact_" + str(i + 1) + "_round"] = "0.0"
+                out_chars_append["artifact_" + str(i + 1) + "_round"] = str(
+                    DEFAULT_ROUND,
+                )
             for i in range(7):
                 out_chars_append["app_" + str(i)] = "0.0%"
-                out_chars_append["round_" + str(i)] = "600"
-                if da_mode:
-                    out_chars_append["round_" + str(i)] = "0.0"
+                out_chars_append["round_" + str(i)] = str(DEFAULT_ROUND)
             out_chars_append["cons_avg"] = cur_char.cons_avg
             out_chars_append["sample"] = cur_char.sample
             out_chars_append["sample_app_flat"] = cur_char.sample_app_flat
@@ -1317,18 +1276,14 @@ def char_usages_write(
             if str(out_chars[i][value]).replace(".", "").replace("-", "").isnumeric():
                 out_chars[i][value] = round(float(out_chars[i][value]))
             else:
-                out_chars[i][value] = 600
-                if da_mode:
-                    out_chars[i][value] = 0
+                out_chars[i][value] = DEFAULT_ROUND
         for value in iterate_name_arti:
             if out_chars[i][value]:
                 out_chars[i][value] = (
                     str(out_chars[i][value]).replace(".", "").replace("-", "")
                 )
             else:
-                out_chars[i][value] = 600
-                if da_mode:
-                    out_chars[i][value] = 0
+                out_chars[i][value] = DEFAULT_ROUND
     with open("../char_results/" + filename + ".json", "w") as out_file:
         out_file.write(json.dumps(out_chars, indent=2))
 

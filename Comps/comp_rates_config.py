@@ -55,6 +55,8 @@ da_mode = args.deadly_assault
 if not da_mode:
     da_mode = False
 
+DEFAULT_ROUND = 0 if da_mode else 600
+
 suffix = ""
 if da_mode:
     suffix = "_da"

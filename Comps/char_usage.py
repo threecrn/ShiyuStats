@@ -426,6 +426,11 @@ def usages(
     past_usage: dict[str, dict[str, dict[str, dict[str, float]]]] = {}
     past_rounds: dict[str, dict[str, dict[str, dict[str, float]]]] = {}
 
+    if chambers == ["7-1", "7-2"] or (da_mode and chambers == ["1-1", "1-2", "1-3"]):
+        stage = "all"
+    else:
+        stage = chambers[0]
+
     try:
         with open("../char_results/" + past_phase + "/appearance.json") as stats:
             past_usage = json.load(stats)
@@ -441,13 +446,6 @@ def usages(
             uses[star_num][char] = CharUsageData(app_char, char)
             rates.append(uses[star_num][char].app)
 
-            if chambers == ["7-1", "7-2"] or (
-                da_mode and chambers == ["1-1", "1-2", "1-3"]
-            ):
-                # if chambers == ROOMS:
-                stage = "all"
-            else:
-                stage = chambers[0]
             if char in past_usage[stage][str(star_num)]:
                 uses[star_num][char].diff = str(
                     round(
