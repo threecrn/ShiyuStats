@@ -221,6 +221,8 @@ bangboos2 = json.load(io.StringIO(download))
 
 for bangboo in bangboos2:
     bangboo_name = bangboos2[bangboo]["EN"]
+    if bangboo_name == "..." or "Bangboo_Name" in bangboo_name:
+        continue
     if (
         bangboo_name not in bangboos1
         and bangboos2[bangboo]["icon"] != ""

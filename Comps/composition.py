@@ -76,6 +76,7 @@ class Composition:
                 "Anton",
                 "Harumasa",
                 "Seed",
+                "Orphie & Magus",
             ]:
                 self.dps.append(character)
             elif character in [
