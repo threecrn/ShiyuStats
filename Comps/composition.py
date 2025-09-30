@@ -1,3 +1,5 @@
+"""An object that stores information about a particular composition."""
+
 import json
 
 # Set class constants in initialization
@@ -5,67 +7,40 @@ import json
 with open("../data/characters.json") as char_file:
     CHARACTERS = json.load(char_file)
 
-# # Load the list of elements from the reactions file
-# with open('../data/reaction.json') as react_file:
-#     ELEMENTS = list(json.load(react_file).keys())
-
 
 class Composition:
-    """An object that stores information about a particular composition. Has:
-    player: a string for the player who used this comp.
-    phase: a string for the phase this composition was used in.
-    room: a string in the form XX-X-X for the room this comp was used in.
-    char_presence: a string --> boolean dict for chars in this comp.
-    characters: a list of strings for the names of the chars in this comp.
-    elements: a string --> int dict for the num of chars for each element.
-    resonance: a string --> boolean dict for which resonances are active.
-
-    Additional methods are:
-    resonance_string: returns the resonances active as a string.
-    on_res_chars: returns the list of characters activating the resonance.
-    char_elemeent_list: returns the list of character's elements.
-    """
+    """An object that stores information about a particular composition."""
 
     def __init__(
         self,
-        uid,
-        comp_chars,
-        phase,
-        round_num,
-        star_num,
-        room,
-        info_char,
-        bangboo,
-        comp_chars_cons,
-    ):
-        """Composition constructor. Takes in:
-        A player, as a UID string
-        A composition, as a length-four list of character strings
-        A phase, as a string
-        A room, as a string
-        """
+        uid: str,
+        comp_chars: list[str],
+        phase: str,
+        round_num: str,
+        star_num: int,
+        room: str,
+        bangboo: str,
+        comp_chars_cons: list[int],
+    ) -> None:
+        """Composition constructor."""
         self.player = str(uid)
         self.phase = phase
         self.room = room
         self.round_num = int(round_num)
-        self.star_num = int(star_num)
-        self.char_structs(comp_chars, info_char, comp_chars_cons)
+        self.star_num = star_num
+        self.char_structs(comp_chars, comp_chars_cons)
         self.bangboo = bangboo
-        # self.comp_elements()
 
-    def char_structs(self, comp_chars, info_char, comp_chars_cons):
-        """Character structure creator.
-        Makes a presence dict that maps character names to bools, and
-        a list (alphabetically ordered) of the character names.
-        """
-        self.char_presence = {}
-        self.char_cons = {}
-        fives = []
-        self.dps = []
-        self.subdps = []
-        self.stun = []
-        self.support = []
-        self.anomaly = []
+    def char_structs(self, comp_chars: list[str], comp_chars_cons: list[int]) -> None:
+        """Character structure creator."""
+        self.char_presence: dict[str, bool] = {}
+        self.char_cons: dict[str, int] = {}
+        fives: list[str] = []
+        self.dps: list[str] = []
+        self.subdps: list[str] = []
+        self.stun: list[str] = []
+        self.support: list[str] = []
+        self.anomaly: list[str] = []
         len_element = {
             "Ice": 0,
             "Fire": 0,
@@ -173,29 +148,12 @@ class Composition:
 
         """Name structure creator.
         """
-        # comp_names = {
-        # }
         self.comp_name = "-"
         self.alt_comp_name = "-"
         self.dual_comp_name = "-"
-        # for comp_name in comp_names:
-        #     if self.characters in comp_names[comp_name]:
-        #         self.comp_name = comp_name
-        #         break
 
         if self.comp_name == "-":
-            # if len(self.anomaly) >= 1:
-            #     if len(self.anomaly) > 2:
-            #         self.alt_comp_name = self.characters[0] + " Triple Anomaly"
-            #     elif len(self.anomaly) > 1:
-            #         self.alt_comp_name = self.characters[0] + " Dual Anomaly"
-            #     # elif len(self.dps) + len(self.subdps) == 1:
-            #     #     self.alt_comp_name = self.characters[0] + " Solo Anomaly"
-
             archetype = ""
-            # if len(self.support) == 0:
-            #     archetype = " No Support"
-            #     self.alt_comp_name = self.characters[0] + " No Support"
             if len(self.dps) + len(self.subdps) > 1:
                 if len(self.anomaly) >= 1:
                     archetype = " Anomaly"
@@ -204,60 +162,16 @@ class Composition:
                 else:
                     archetype = " Dual Carry"
                 self.dual_comp_name = self.characters[1] + archetype
-            else:
-                if len(self.support) > 1:
-                    archetype = " Dual Support"
-                elif len(self.stun) > 0:
-                    archetype = " Stun"
+            elif len(self.support) > 1:
+                archetype = " Dual Support"
+            elif len(self.stun) > 0:
+                archetype = " Stun"
 
             if self.dps or self.subdps or self.stun:
                 self.comp_name = self.characters[0] + archetype
             else:
                 self.comp_name = "Full Support"
 
-    # def comp_elements(self):
-    #     """Composition elements tracker.
-    #     Creates a dict that maps elements to number of chars with that element,
-    #     and a dict that maps the resonance(s) the comp has to booleans.
-    #     """
-    #     self.elements = dict.fromkeys(ELEMENTS, 0)
-    #     for char in self.characters:
-    #         self.elements[CHARACTERS[char]["element"]] += 1
-
-    #     # self.resonance = dict.fromkeys(ELEMENTS, False)
-
-    #     # # Add the unique resonance to the list of element resonances,
-    #     # # and set it as the default. Technically there's the edge case for
-    #     # # if there's < 4 characters, it should be false I think?
-    #     # self.resonance['Unique'] = len(self.characters) == 4
-    #     # for ele in ELEMENTS:
-    #     #     if self.elements[ele] >= 2:
-    #     #         self.resonance[ele] = True
-    #     #         self.resonance['Unique'] = False
-
-    # def resonance_string(self):
-    #     """Returns the resonance of the composition. Two resos are joined by a ,"""
-    #     resos = []
-    #     for reso in self.resonance.keys():
-    #         if self.resonance[reso]:
-    #             resos.append(reso)
-    #     return ", ".join(resos)
-
-    # def on_res_chars(self):
-    #     """Returns the list of characters who match the composition's resonance."""
-    #     chars = []
-    #     for char in self.characters:
-    #         if self.resonance[CHARACTERS[char]["element"]] or self.resonance["Unique"]:
-    #             chars.append(char)
-    #     return chars
-
-    # def char_element_list(self):
-    #     """Returns the characters' elements as a list"""
-    #     return [ CHARACTERS[char]['element'] for char in self.characters ]
-
-    def contains_chars(self, chars):
-        """Returns a bool whether this comp contains all the chars in included list."""
-        for char in chars:
-            if not self.char_presence[char]:
-                return False
-        return True
+    def contains_chars(self, chars: list[str]) -> bool:
+        """Return a bool whether this comp contains all the chars in included list."""
+        return all(self.char_presence[char] for char in chars)
