@@ -4,11 +4,13 @@ set -e # Stop on error
 
 # Check for arguments, e.g. `sh compile_all.sh hello`
 if [ -n "$1" ]; then
-  cd Comps
+	cd Comps
 else
-  cd Comps
-  python combine_raw_chars.py
-  python hash.py
+	cd Comps
+	python combine_raw_chars.py
+	python csv_to_pickle.py &
+	python csv_to_pickle.py -da &
+	python hash.py
 fi
 
 echo ""

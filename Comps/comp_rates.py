@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import csv
-import os
 import statistics
 import time
 from itertools import permutations
+from os.path import isfile
 from sys import exit as sys_exit
+from typing import TYPE_CHECKING
 
 import char_usage as cu
 from comp_rates_config import (
@@ -27,203 +28,41 @@ from comp_rates_config import (
     past_phase,
     run_commands,
     sig_weaps,
-    skip_random,
-    skip_self,
     whale_only,
 )
 from composition import Composition
-from player_phase import PlayerPhase
+from csv_to_pickle import PickleData, load_pickle_data  # noqa: TC002
 from plyer import notification  # type: ignore[reportMissingTypeStubs]
 from slugify import slugify
+
+if TYPE_CHECKING:
+    from player_phase import PlayerPhase
 
 with open("prydwen-slug.json") as slug_file:
     slug = json.load(slug_file)
 
 
-for make_path in [
-    "../comp_results",
-    "../comp_results/json",
-    "../enka.network",
-    "../enka.network/results_real",
-    "../char_results",
-    "../rogue_results",
-]:
-    if not os.path.exists(make_path):
-        os.makedirs(make_path)
-
 start_time = time.time()
 print("start")
 
-if os.path.isfile("../../uids.csv"):
+da_filename = "_da" if da_mode else ""
+
+loaded_data: PickleData = load_pickle_data("../data/pickle/data" + da_filename + ".pkl")
+
+all_players: dict[str, dict[str, PlayerPhase]] = loaded_data.all_players
+all_comps: list[Composition] = loaded_data.all_comps
+avg_round_stage: dict[str, list[int]] = loaded_data.avg_round_stage
+sample_size: dict[int | str, dict[str, int | float]] = loaded_data.sample_size
+all_comps_json: dict[str, list[dict[str, str | float]]] = {}
+all_comp_uids: set[str] = set()
+
+if isfile("../../uids.csv"):
     with open("../../uids.csv", encoding="UTF8") as f:
         reader = csv.reader(f, delimiter=",")
         self_uids = next(iter(reader))
 else:
     self_uids = []
 
-da_filename = "_da" if da_mode else ""
-with (
-    open("../data/raw_csvs_real/" + RECENT_PHASE + da_filename + ".csv")
-    if os.path.exists("../data/raw_csvs_real/")
-    else open("../data/raw_csvs/" + RECENT_PHASE + da_filename + ".csv")
-) as f:
-    stats = f
-    reader = csv.reader(stats)
-    next(reader)
-    reader = list(reader)
-all_comps: list[Composition] = []
-all_chambers = ["1"] if da_mode else ["1", "2", "3", "4", "5", "6", "7"]
-three_star_sample = {}
-for chamber_num in all_chambers:
-    three_star_sample[chamber_num] = 0
-
-# uid_freq_comp will help detect duplicate UIDs
-uid_freq_comp: dict[str, int] = {}
-self_freq_comp: dict[str, int] = {}
-last_uid = "0"
-skip_uid = False
-
-for line in reader:
-    star_num = 0
-    match str(line[3]):
-        case "B":
-            star_num = 1
-        case "A":
-            star_num = 2
-        case "S":
-            star_num = 3
-        case _:
-            if not (da_mode):
-                print("Unknown star num")
-    if skip_self and line[0] in self_uids:
-        continue
-    if skip_random and line[0] not in self_uids:
-        continue
-    if line[0] != last_uid:
-        skip_uid = False
-        if line[0] in uid_freq_comp:
-            skip_uid = True
-        elif (not da_mode and star_num > 0) or (
-            da_mode and int("".join(filter(str.isdigit, line[2]))) > 0
-        ):
-            uid_freq_comp[line[0]] = 1
-            if line[0] in self_uids:
-                self_freq_comp[line[0]] = 1
-        else:
-            skip_uid = True
-    last_uid = line[0]
-    if not skip_uid:
-        stage = str(line[1])
-        comp_chars_temp: list[str] = []
-        cons_chars_temp: list[int] = []
-        for i in [6, 8, 10] if da_mode else [5, 7, 9]:
-            if line[i] != "" and line[i] in CHARACTERS:
-                comp_chars_temp.append(line[i])
-                cons_chars_temp.append(int(float(line[i + 1])))
-        if comp_chars_temp:
-            comp = (
-                Composition(
-                    line[0],
-                    comp_chars_temp,
-                    RECENT_PHASE,
-                    line[3],
-                    int(line[2]),
-                    "1-" + stage,
-                    line[12],
-                    cons_chars_temp,
-                )
-                if da_mode
-                else Composition(
-                    line[0],
-                    comp_chars_temp,
-                    RECENT_PHASE,
-                    line[4],
-                    star_num,
-                    stage + "-" + str(line[2]),
-                    line[11],
-                    cons_chars_temp,
-                )
-            )
-            all_comps.append(comp)
-            if int(star_num) == 3:
-                three_star_sample[stage] += 1
-
-sample_size = {}
-for chamber_num in all_chambers:
-    sample_size[chamber_num] = {}
-avg_round_stage: dict[str, list[int]] = {}
-for chamber_num in all_chambers:
-    avg_round_stage[chamber_num] = []
-if os.path.exists("../char_results/duo_check.csv"):
-    with open("../char_results/duo_check.csv") as f:
-        valid_duo_dps = list(csv.reader(f, delimiter=","))
-else:
-    valid_duo_dps = []
-sample_size["all"] = {
-    "total": len(uid_freq_comp),
-    "self_report": len(self_freq_comp),
-    "random": len(uid_freq_comp) - len(self_freq_comp),
-}
-if da_mode:
-    sample_size["1"] = sample_size["all"].copy()
-
-with (
-    open("../data/raw_csvs_real/" + RECENT_PHASE + "_char.csv")
-    if os.path.exists("../data/raw_csvs_real/")
-    else open("../data/raw_csvs/" + RECENT_PHASE + "_char.csv")
-) as f:
-    stats = f
-    reader = csv.reader(stats)
-    next(reader)
-    reader = list(reader)
-
-all_players: dict[str, dict[str, PlayerPhase]] = {}
-all_players[RECENT_PHASE] = {}
-player = PlayerPhase(last_uid, RECENT_PHASE)
-# uid_freq_char and last_uid will help detect duplicate UIDs
-last_uid = "0"
-uid_freq_char: list[str] = []
-
-# Append lines
-for line in reader:
-    line[1] = RECENT_PHASE
-    if line[0] in uid_freq_comp:
-        if line[0] != last_uid:
-            skip_uid = False
-            if line[0] in uid_freq_char:
-                skip_uid = True
-            else:
-                uid_freq_char.append(line[0])
-        if not skip_uid:
-            if line[0] != last_uid:
-                all_players[RECENT_PHASE][last_uid] = player
-                last_uid = line[0]
-                player = PlayerPhase(last_uid, RECENT_PHASE)
-            player.add_character(
-                line[2],
-                line[3],
-                line[4],
-                line[5],
-                line[6],
-                line[7],
-            )
-all_players[RECENT_PHASE][last_uid] = player
-
-for comp in all_comps:
-    if comp.player not in all_players[comp.phase]:
-        all_players[comp.phase][comp.player] = PlayerPhase(comp.player, comp.phase)
-    all_players[comp.phase][comp.player].add_comp(comp)
-
-with open("../char_results/uids.csv", "w", newline="") as f:
-    csv_writer = csv.writer(f)
-    for uid in uid_freq_comp:
-        csv_writer.writerow([uid])
-
-cur_time = time.time()
-print("done csv: ", (cur_time - start_time), "s")
-
-all_comps_json = {}
-all_comp_uids: set[str] = set()
 if da_mode:
     three_stages = ["1-1", "1-2", "1-3"]
     three_double_stages = [["1-1", "1-2", "1-3"]]
@@ -573,10 +412,6 @@ def used_comps(
                 f2p_comp = False
             if CHARACTERS[comp_tuple[char]]["role"] == "Damage Dealer":
                 dps_count += 1
-            for duo_dps in valid_duo_dps:
-                if set(duo_dps).issubset(comp_tuple):
-                    dps_count = 1
-                    break
 
         if whale_comp:
             whale_count += 1
