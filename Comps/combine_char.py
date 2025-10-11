@@ -1,3 +1,8 @@
+"""Combine character data."""
+
+# pyright: reportGeneralTypeIssues=false, reportUnknownArgumentType=false, reportOperatorIssue=false, reportIndexIssue=false, reportArgumentType=false, reportUnknownMemberType=false, reportAttributeAccessIssue=false, reportUnnecessaryComparison=false, reportUnknownVariableType=false
+from __future__ import annotations
+
 import json
 import re
 
@@ -128,25 +133,32 @@ for char in CHARACTERS:
     if char in slug:
         char = slug[char]
     sd_dict_e1_char: dict[str, str] = next(
-        (x for x in sd_dict_e1 if x["char"] == char), dict[str, str]()
+        (x for x in sd_dict_e1 if x["char"] == char),
+        dict[str, str](),
     )
     sd_dict_s0_char: dict[str, str] = next(
-        (x for x in sd_dict_s0 if x["char"] == char), dict[str, str]()
+        (x for x in sd_dict_s0 if x["char"] == char),
+        dict[str, str](),
     )
     da_dict_e1_char: dict[str, str] = next(
-        (x for x in da_dict_e1 if x["char"] == char), dict[str, str]()
+        (x for x in da_dict_e1 if x["char"] == char),
+        dict[str, str](),
     )
     da_dict_s0_char: dict[str, str] = next(
-        (x for x in da_dict_s0 if x["char"] == char), dict[str, str]()
+        (x for x in da_dict_s0 if x["char"] == char),
+        dict[str, str](),
     )
     da_dict_boss_1_char: dict[str, str] = next(
-        (x for x in da_dict_boss_1 if x["char"] == char), dict[str, str]()
+        (x for x in da_dict_boss_1 if x["char"] == char),
+        dict[str, str](),
     )
     da_dict_boss_2_char: dict[str, str] = next(
-        (x for x in da_dict_boss_2 if x["char"] == char), dict[str, str]()
+        (x for x in da_dict_boss_2 if x["char"] == char),
+        dict[str, str](),
     )
     da_dict_boss_3_char: dict[str, str] = next(
-        (x for x in da_dict_boss_3 if x["char"] == char), dict[str, str]()
+        (x for x in da_dict_boss_3 if x["char"] == char),
+        dict[str, str](),
     )
     uses_temp = {
         "char": char,
@@ -225,10 +237,11 @@ for char in CHARACTERS:
     rate_combine = rate_sd + rate_da
     rate_combine = rate_combine if rate_combine else 1
 
-    for stat in stats_len:
+    for stat, stat_item in stats_len.items():
         for item in uses_temp[stat]:
             uses_temp[stat][item]["app"] = round(
-                uses_temp[stat][item]["app"] * rate_sd / rate_combine, 2
+                uses_temp[stat][item]["app"] * rate_sd / rate_combine,
+                2,
             )
         for item in uses_da.get(char, {}).get(stat, {}):
             if item != "" and item != "-":
@@ -245,36 +258,39 @@ for char in CHARACTERS:
                 else:
                     uses_temp[stat][item] = uses_da[char][stat][item].copy()
                     uses_temp[stat][item]["app"] = round(
-                        uses_temp[stat][item]["app"] * rate_da / rate_combine, 2
+                        uses_temp[stat][item]["app"] * rate_da / rate_combine,
+                        2,
                     )
 
         sorted_items = sorted(
-            uses_temp[stat].items(), key=lambda t: t[1]["app"], reverse=True
+            uses_temp[stat].items(),
+            key=lambda t: t[1]["app"],
+            reverse=True,
         )
-        uses_temp[stat] = {k: v for k, v in sorted_items}
+        uses_temp[stat] = dict(sorted_items)
 
-        for i in range(int(stats_len[stat])):
+        for i in range(int(stat_item)):
             if i < len(list(uses_temp[stat])):
                 uses_temp[stat + "_" + str(i + 1)] = list(uses_temp[stat])[i]
                 if stat == "artifacts":
                     uses_temp[stat + "_" + str(i + 1) + "_1"] = list(
-                        uses_temp[stat].values()
+                        uses_temp[stat].values(),
                     )[i]["1"]
                     uses_temp[stat + "_" + str(i + 1) + "_2"] = list(
-                        uses_temp[stat].values()
+                        uses_temp[stat].values(),
                     )[i]["2"]
                     uses_temp[stat + "_" + str(i + 1) + "_3"] = list(
-                        uses_temp[stat].values()
+                        uses_temp[stat].values(),
                     )[i]["3"]
                 uses_temp[stat + "_" + str(i + 1) + "_app"] = list(
-                    uses_temp[stat].values()
+                    uses_temp[stat].values(),
                 )[i]["app"]
                 if stat in ["weapons", "artifacts"]:
                     uses_temp[stat + "_" + str(i + 1) + "_round_sd"] = list(
-                        uses_temp[stat].values()
+                        uses_temp[stat].values(),
                     )[i]["round_sd"]
                     uses_temp[stat + "_" + str(i + 1) + "_round_da"] = list(
-                        uses_temp[stat].values()
+                        uses_temp[stat].values(),
                     )[i]["round_da"]
             else:
                 uses_temp[stat + "_" + str(i + 1)] = ""

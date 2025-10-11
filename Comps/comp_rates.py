@@ -121,19 +121,6 @@ def main() -> None:
         cur_time = time.time()
         print("done char: ", (cur_time - start_time), "s")
 
-    if "Duos check" in run_commands:
-        usage, boo_usage = char_usages(
-            three_stages,
-            filename="all",
-        )
-        duo_usages(
-            all_comps,
-            all_players,
-            usage,
-            archetype,
-            three_stages,
-        )
-
     if "Char usages 8 - 10" in run_commands:
         usage, boo_usage = char_usages(
             one_stage,
@@ -141,8 +128,6 @@ def main() -> None:
         )
         if not whale_only and not f2p_only:
             duo_usages(
-                all_comps,
-                all_players,
                 usage,
                 archetype,
                 one_stage,
@@ -335,7 +320,7 @@ def comp_usages(
     """Comp usage."""
     global top_comps_app
     top_comps_app = {}
-    comps_dict = used_comps(all_players, all_comps, rooms, filename)
+    comps_dict = used_comps(rooms, filename)
     rank_usages(comps_dict, rooms)
     comp_usages_write(comps_dict, filename, floor, info_char, True)
     comp_usages_write(comps_dict, filename, floor, info_char, False)
@@ -363,8 +348,6 @@ class CompUsage(Composition):
 
 
 def used_comps(
-    players: dict[str, dict[str, PlayerPhase]],
-    comps: list[Composition],
     rooms: list[str],
     filename: str,
     phase: str = RECENT_PHASE,
@@ -377,7 +360,7 @@ def used_comps(
     whale_count = 0
     f2p_count = 0
 
-    for comp in comps:
+    for comp in all_comps:
         comp_tuple = tuple(comp.characters)
         cur_room = next(iter(str(comp.room).split("-")))
         # Check if the comp is used in the rooms that are being checked
@@ -400,13 +383,13 @@ def used_comps(
                     if comp.char_cons[comp_tuple[char]] > 0:
                         whale_comp = True
                 elif (
-                    comp_tuple[char] in players[phase][comp.player].owned
-                    and players[phase][comp.player].owned[comp_tuple[char]].cons > 0
+                    comp_tuple[char] in all_players[phase][comp.player].owned
+                    and all_players[phase][comp.player].owned[comp_tuple[char]].cons > 0
                 ):
                     whale_comp = True
             if (
-                comp_tuple[char] in players[phase][comp.player].owned
-                and players[phase][comp.player].owned[comp_tuple[char]].weapon
+                comp_tuple[char] in all_players[phase][comp.player].owned
+                and all_players[phase][comp.player].owned[comp_tuple[char]].weapon
                 not in sig_weaps
             ):
                 f2p_comp = False
@@ -518,20 +501,16 @@ def rank_usages(
 
 
 def duo_usages(
-    comps: list[Composition],
-    players: dict[str, dict[str, PlayerPhase]],
     usage: dict[int, dict[str, cu.CharUsageData]],
     archetype: str,
     rooms: list[str],
 ) -> None:
     """Calculate duo usage."""
-    duos_dict = used_duos(players, comps, rooms, usage)
+    duos_dict = used_duos(rooms, usage)
     duo_write(duos_dict, usage, "duo_usages", archetype)
 
 
 def used_duos(
-    players: dict[str, dict[str, PlayerPhase]],
-    comps: list[Composition],
     rooms: list[str],
     usage: dict[int, dict[str, cu.CharUsageData]],
     phase: str = RECENT_PHASE,
@@ -539,7 +518,7 @@ def used_duos(
     """Return dictionary of all the duos used and how many times they were used."""
     duos_dict: dict[tuple[str, str], cu.RoundApp] = {}
 
-    for comp in comps:
+    for comp in all_comps:
         if len(comp.characters) < 2 or comp.room not in rooms:
             continue
 
@@ -551,8 +530,8 @@ def used_duos(
                     if comp.char_cons[char] > 0:
                         whale_comp = True
                 elif (
-                    char in players[phase][comp.player].owned
-                    and players[phase][comp.player].owned[char].cons > 0
+                    char in all_players[phase][comp.player].owned
+                    and all_players[phase][comp.player].owned[char].cons > 0
                 ):
                     whale_comp = True
 
