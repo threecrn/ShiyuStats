@@ -470,8 +470,8 @@ def usages(
             past_usage = json.load(stats)
         with open("../char_results/" + past_phase + "/rounds.json") as stats:
             past_rounds = json.load(stats)
-    except Exception:
-        print("No past usage data")
+    except FileNotFoundError:
+        pass
     try:
         with open(
             "../char_results/" + past_phase + "/bangboo_appearance.json",
@@ -479,8 +479,8 @@ def usages(
             past_usage = json.load(stats)
         with open("../char_results/" + past_phase + "/bangboo_rounds.json") as stats:
             past_rounds = json.load(stats)
-    except Exception:
-        print("No past bangboo usage data")
+    except FileNotFoundError:
+        pass
 
     for star_num, (app_chars, app_boos) in app.items():
         uses[star_num] = {}
@@ -517,14 +517,14 @@ def usages(
             uses[star_num][char] = CharUsageData(app_char, char)
             rates.append(uses[star_num][char].app)
 
-            if char in past_usage[stage][str(star_num)]:
+            if past_usage and char in past_usage[stage][str(star_num)]:
                 uses[star_num][char].diff = str(
                     round(
                         app_char.app - past_usage[stage][str(star_num)][char]["app"],
                         2,
                     ),
                 )
-            if char in past_rounds[stage][str(star_num)]:
+            if past_rounds and char in past_rounds[stage][str(star_num)]:
                 uses[star_num][char].diff_rounds = str(
                     round(
                         app_char.round
