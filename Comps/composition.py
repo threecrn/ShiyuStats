@@ -15,7 +15,6 @@ class Composition:
         self,
         uid: str,
         comp_chars: list[str],
-        phase: str,
         round_num: str,
         star_num: int,
         room: str,
@@ -24,7 +23,6 @@ class Composition:
     ) -> None:
         """Composition constructor."""
         self.player = str(uid)
-        self.phase = phase
         self.room = room
         self.round_num = int(round_num)
         self.star_num = star_num

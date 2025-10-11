@@ -24,7 +24,7 @@ from player_phase import PlayerPhase
 class PickleData:
     """Container for pickle data."""
 
-    all_players: dict[str, dict[str, PlayerPhase]]
+    all_players: dict[str, PlayerPhase]
     all_comps: list[Composition]
     avg_round_stage: dict[str, list[int]]
     sample_size: dict[int | str, dict[str, int | float]]
@@ -130,7 +130,6 @@ def main() -> None:
                     Composition(
                         line[0],
                         comp_chars_temp,
-                        RECENT_PHASE,
                         line[3],
                         int(line[2]),
                         "1-" + stage,
@@ -141,7 +140,6 @@ def main() -> None:
                     else Composition(
                         line[0],
                         comp_chars_temp,
-                        RECENT_PHASE,
                         line[4],
                         star_num,
                         stage + "-" + str(line[2]),
@@ -177,9 +175,8 @@ def main() -> None:
         next(reader)
         reader = list(reader)
 
-    all_players: dict[str, dict[str, PlayerPhase]] = {}
-    all_players[RECENT_PHASE] = {}
-    player = PlayerPhase(last_uid, RECENT_PHASE)
+    all_players: dict[str, PlayerPhase] = {}
+    player = PlayerPhase(last_uid)
     # uid_freq_char and last_uid will help detect duplicate UIDs
     last_uid = "0"
     uid_freq_char: list[str] = []
@@ -196,9 +193,9 @@ def main() -> None:
                     uid_freq_char.append(line[0])
             if not skip_uid:
                 if line[0] != last_uid:
-                    all_players[RECENT_PHASE][last_uid] = player
+                    all_players[last_uid] = player
                     last_uid = line[0]
-                    player = PlayerPhase(last_uid, RECENT_PHASE)
+                    player = PlayerPhase(last_uid)
                 player.add_character(
                     line[2],
                     line[3],
@@ -207,12 +204,12 @@ def main() -> None:
                     line[6],
                     line[7],
                 )
-    all_players[RECENT_PHASE][last_uid] = player
+    all_players[last_uid] = player
 
     for comp in all_comps:
-        if comp.player not in all_players[comp.phase]:
-            all_players[comp.phase][comp.player] = PlayerPhase(comp.player, comp.phase)
-        all_players[comp.phase][comp.player].add_comp(comp)
+        if comp.player not in all_players:
+            all_players[comp.player] = PlayerPhase(comp.player)
+        all_players[comp.player].add_comp(comp)
 
     with open("../char_results/uids.csv", "w", newline="") as f:
         csv_writer = csv.writer(f)

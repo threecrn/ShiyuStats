@@ -7,7 +7,7 @@ import statistics
 import warnings
 from itertools import chain
 
-from comp_rates_config import RECENT_PHASE, da_mode, f2p_only, sig_weaps, whale_only
+from comp_rates_config import da_mode, f2p_only, sig_weaps, whale_only
 from percentile import calculate_percentile
 from player_phase import PlayerPhase
 
@@ -71,7 +71,7 @@ class CharApp(RoundApp):
 
 
 def appearances(
-    users: dict[str, dict[str, PlayerPhase]],
+    users: dict[str, PlayerPhase],
     chambers: list[str] = ROOMS,
     info_char: bool = False,
 ) -> dict[int, tuple[dict[str, CharApp], dict[str, CharApp]]]:
@@ -97,7 +97,7 @@ def appearances(
         app_boos[boo] = CharApp()
 
     # There's probably a better way to cache these things
-    for user in users[RECENT_PHASE].values():
+    for user in users.values():
         for chamber in user.chambers:
             if chamber not in chambers:
                 continue

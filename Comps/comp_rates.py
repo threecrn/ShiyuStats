@@ -14,7 +14,6 @@ import char_usage as cu
 from comp_rates_config import (
     CHARACTERS,
     DEFAULT_ROUND,
-    RECENT_PHASE,
     app_rate_threshold,
     app_rate_threshold_round,
     archetype,
@@ -49,7 +48,7 @@ da_filename = "_da" if da_mode else ""
 
 loaded_data: PickleData = load_pickle_data("../data/pickle/data" + da_filename + ".pkl")
 
-all_players: dict[str, dict[str, PlayerPhase]] = loaded_data.all_players
+all_players: dict[str, PlayerPhase] = loaded_data.all_players
 all_comps: list[Composition] = loaded_data.all_comps
 avg_round_stage: dict[str, list[int]] = loaded_data.avg_round_stage
 sample_size: dict[int | str, dict[str, int | float]] = loaded_data.sample_size
@@ -350,7 +349,6 @@ class CompUsage(Composition):
 def used_comps(
     rooms: list[str],
     filename: str,
-    phase: str = RECENT_PHASE,
 ) -> list[dict[tuple[str, ...], CompUsage]]:
     """Return the dictionary of all the comps used and how many times they were used."""
     comps_dict: list[dict[tuple[str, ...], CompUsage]] = [{}, {}, {}, {}, {}]
@@ -383,13 +381,13 @@ def used_comps(
                     if comp.char_cons[comp_tuple[char]] > 0:
                         whale_comp = True
                 elif (
-                    comp_tuple[char] in all_players[phase][comp.player].owned
-                    and all_players[phase][comp.player].owned[comp_tuple[char]].cons > 0
+                    comp_tuple[char] in all_players[comp.player].owned
+                    and all_players[comp.player].owned[comp_tuple[char]].cons > 0
                 ):
                     whale_comp = True
             if (
-                comp_tuple[char] in all_players[phase][comp.player].owned
-                and all_players[phase][comp.player].owned[comp_tuple[char]].weapon
+                comp_tuple[char] in all_players[comp.player].owned
+                and all_players[comp.player].owned[comp_tuple[char]].weapon
                 not in sig_weaps
             ):
                 f2p_comp = False
@@ -513,7 +511,6 @@ def duo_usages(
 def used_duos(
     rooms: list[str],
     usage: dict[int, dict[str, cu.CharUsageData]],
-    phase: str = RECENT_PHASE,
 ) -> dict[str, dict[str, cu.RoundApp]]:
     """Return dictionary of all the duos used and how many times they were used."""
     duos_dict: dict[tuple[str, str], cu.RoundApp] = {}
@@ -530,8 +527,8 @@ def used_duos(
                     if comp.char_cons[char] > 0:
                         whale_comp = True
                 elif (
-                    char in all_players[phase][comp.player].owned
-                    and all_players[phase][comp.player].owned[char].cons > 0
+                    char in all_players[comp.player].owned
+                    and all_players[comp.player].owned[char].cons > 0
                 ):
                     whale_comp = True
 
