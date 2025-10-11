@@ -98,7 +98,7 @@ def appearances(
 
     # There's probably a better way to cache these things
     for user in users.values():
-        for chamber in user.chambers:
+        for chamber, cur_user in user.chambers.items():
             if chamber not in chambers:
                 continue
             whale_comp = False
@@ -106,14 +106,14 @@ def appearances(
             dps_count = 0
             found_duo = []
             for duo_dps in valid_duo_dps:
-                if set(duo_dps).issubset(user.chambers[chamber].characters):
+                if set(duo_dps).issubset(cur_user.characters):
                     found_duo = duo_dps
                     break
 
-            for char in user.chambers[chamber].characters:
+            for char in cur_user.characters:
                 if CHARACTERS[char]["availability"] == "Limited S":
-                    if user.chambers[chamber].char_cons:
-                        if user.chambers[chamber].char_cons[char] > 0:
+                    if cur_user.char_cons:
+                        if cur_user.char_cons[char] > 0:
                             whale_comp = True
                     elif char in user.owned and user.owned[char].cons > 0:
                         whale_comp = True
@@ -123,14 +123,14 @@ def appearances(
                     dps_count += 1
             dps_count = 1
             if da_mode:
-                if not whale_comp and user.chambers[chamber].round_num > 50000:
+                if not whale_comp and cur_user.round_num > 50000:
                     cheated_uids.add(user.player)
                     continue
             elif whale_comp:
-                if user.chambers[chamber].round_num < 10:
+                if cur_user.round_num < 10:
                     cheated_uids.add(user.player)
                     continue
-            elif user.chambers[chamber].round_num < 20:
+            elif cur_user.round_num < 20:
                 cheated_uids.add(user.player)
                 continue
 
@@ -141,7 +141,7 @@ def appearances(
                 continue
 
             cur_chamber = next(iter(str(chamber).split("-")))
-            for char in user.chambers[chamber].characters:
+            for char in cur_user.characters:
                 if chambers == ["7-1", "7-2"] or (
                     da_mode and chambers == ["1-1", "1-2", "1-3"]
                 ):
@@ -159,10 +159,10 @@ def appearances(
                 ):
                     if CHARACTERS[char]["availability"] == "Limited S":
                         app[char_name].cons_freq[0].round_list[cur_chamber].append(
-                            user.chambers[chamber].round_num,
+                            cur_user.round_num,
                         )
                     app[char_name].round_list[cur_chamber].append(
-                        user.chambers[chamber].round_num,
+                        cur_user.round_num,
                     )
                 # In case of character in comp data missing from character data
                 if da_mode:
@@ -182,11 +182,11 @@ def appearances(
                             app[char_name].cons_freq[cons].round_list[
                                 cur_chamber
                             ].append(
-                                user.chambers[chamber].round_num,
+                                cur_user.round_num,
                             )
                     elif not whale_comp:
                         app[char_name].cons_freq[cons].round_list[cur_chamber].append(
-                            user.chambers[chamber].round_num,
+                            cur_user.round_num,
                         )
                 app[char_name].cons_avg += cons
 
@@ -197,7 +197,7 @@ def appearances(
                     app[char_name].weap_freq[weapon].app_flat += 1
                     if not whale_comp and dps_count == 1:
                         app[char_name].weap_freq[weapon].round_list[cur_chamber].append(
-                            user.chambers[chamber].round_num,
+                            cur_user.round_num,
                         )
 
                 artifact = user.owned[char].artifacts
@@ -209,10 +209,10 @@ def appearances(
                         app[char_name].arti_freq[artifact].round_list[
                             cur_chamber
                         ].append(
-                            user.chambers[chamber].round_num,
+                            cur_user.round_num,
                         )
 
-            boo = user.chambers[chamber].bangboo
+            boo = cur_user.bangboo
             if boo:
                 if chambers == ["7-1", "7-2"] or (
                     da_mode and chambers == ["1-1", "1-2", "1-3"]
@@ -226,7 +226,7 @@ def appearances(
                     and dps_count == 1
                 ):
                     app_boos[boo].round_list[cur_chamber].append(
-                        user.chambers[chamber].round_num,
+                        cur_user.round_num,
                     )
 
     total = len(all_uids) / 100.0
