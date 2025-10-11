@@ -277,11 +277,6 @@ else:
 
 def main() -> None:
     """Compile data."""
-    global usage
-    usage = {}
-    global boo_usage
-    boo_usage = {}
-
     if "Char usages all stages" in run_commands:
         char_usages(all_stages, filename="all")
         cur_time = time.time()
@@ -316,72 +311,75 @@ def main() -> None:
         cur_time = time.time()
         print("done char 8 - 10: ", (cur_time - start_time), "s")
 
-    if "Char usages for each stage" in run_commands:
-        char_chambers: dict[str, dict[int, dict[str, cu.CharUsageData]]] = {
-            "all": {},
-        }
-        boo_chambers: dict[str, dict[int, dict[str, cu.CharUsageData]]] = {
-            "all": {},
-        }
-        for star_num in usage:
-            char_chambers["all"][star_num] = usage[star_num].copy()
-            boo_chambers["all"][star_num] = boo_usage[star_num].copy()
-        # for room in all_stages:
-        for room in three_stages:
-            char_chambers[room], boo_chambers[room] = char_usages(
-                [room],
-                filename=room,
-            )
+        if "Char usages for each stage" in run_commands:
+            char_chambers: dict[str, dict[int, dict[str, cu.CharUsageData]]] = {
+                "all": {},
+            }
+            boo_chambers: dict[str, dict[int, dict[str, cu.CharUsageData]]] = {
+                "all": {},
+            }
+            for star_num in usage:
+                char_chambers["all"][star_num] = usage[star_num].copy()
+                boo_chambers["all"][star_num] = boo_usage[star_num].copy()
+            # for room in all_stages:
+            for room in three_stages:
+                char_chambers[room], boo_chambers[room] = char_usages(
+                    [room],
+                    filename=room,
+                )
 
-        appearances_write, rounds_write = compile_app_round(char_chambers)
-        if not whale_only and not f2p_only:
-            with open("../char_results/appearance.json", "w") as out_file:
-                out_file.write(json.dumps(appearances_write, indent=2))
-            with open("../char_results/rounds.json", "w") as out_file:
-                out_file.write(json.dumps(rounds_write, indent=2))
+            appearances_write, rounds_write = compile_app_round(char_chambers)
+            if not whale_only and not f2p_only:
+                with open("../char_results/appearance.json", "w") as out_file:
+                    out_file.write(json.dumps(appearances_write, indent=2))
+                with open("../char_results/rounds.json", "w") as out_file:
+                    out_file.write(json.dumps(rounds_write, indent=2))
 
-        appearances_write, rounds_write = compile_app_round(boo_chambers)
-        if not whale_only and not f2p_only:
-            with open("../char_results/bangboo_appearance.json", "w") as out_file:
-                out_file.write(json.dumps(appearances_write, indent=2))
-            with open("../char_results/bangboo_rounds.json", "w") as out_file:
-                out_file.write(json.dumps(rounds_write, indent=2))
+            appearances_write, rounds_write = compile_app_round(boo_chambers)
+            if not whale_only and not f2p_only:
+                with open("../char_results/bangboo_appearance.json", "w") as out_file:
+                    out_file.write(json.dumps(appearances_write, indent=2))
+                with open("../char_results/bangboo_rounds.json", "w") as out_file:
+                    out_file.write(json.dumps(rounds_write, indent=2))
 
-        cur_time = time.time()
-        print("done char stage: ", (cur_time - start_time), "s")
+            cur_time = time.time()
+            print("done char stage: ", (cur_time - start_time), "s")
 
-    if "Char usages for each stage (combined)" in run_commands:
-        char_chambers = {"all": {}}
-        boo_chambers = {"all": {}}
-        for star_num in usage:
-            char_chambers["all"][star_num] = usage[star_num].copy()
-            boo_chambers["all"][star_num] = boo_usage[star_num].copy()
-        # for room in all_double_stages:
-        for room in three_double_stages:
-            char_chambers[room[0]], boo_chambers[room[0]] = char_usages(
-                room,
-                filename=room[0].split("-")[0],
-            )
+        if "Char usages for each stage (combined)" in run_commands:
+            char_chambers = {"all": {}}
+            boo_chambers = {"all": {}}
+            for star_num in usage:
+                char_chambers["all"][star_num] = usage[star_num].copy()
+                boo_chambers["all"][star_num] = boo_usage[star_num].copy()
+            # for room in all_double_stages:
+            for room in three_double_stages:
+                char_chambers[room[0]], boo_chambers[room[0]] = char_usages(
+                    room,
+                    filename=room[0].split("-")[0],
+                )
 
-        appearances_write, rounds_write = compile_app_round(char_chambers)
-        if not whale_only and not f2p_only:
-            with open("../char_results/appearance_combine.json", "w") as out_file:
-                out_file.write(json.dumps(appearances_write, indent=2))
-            with open("../char_results/rounds_combine.json", "w") as out_file:
-                out_file.write(json.dumps(rounds_write, indent=2))
+            appearances_write, rounds_write = compile_app_round(char_chambers)
+            if not whale_only and not f2p_only:
+                with open("../char_results/appearance_combine.json", "w") as out_file:
+                    out_file.write(json.dumps(appearances_write, indent=2))
+                with open("../char_results/rounds_combine.json", "w") as out_file:
+                    out_file.write(json.dumps(rounds_write, indent=2))
 
-        appearances_write, rounds_write = compile_app_round(boo_chambers)
-        if not whale_only and not f2p_only:
-            with open(
-                "../char_results/bangboo_appearance_combine.json",
-                "w",
-            ) as out_file:
-                out_file.write(json.dumps(appearances_write, indent=2))
-            with open("../char_results/bangboo_rounds_combine.json", "w") as out_file:
-                out_file.write(json.dumps(rounds_write, indent=2))
+            appearances_write, rounds_write = compile_app_round(boo_chambers)
+            if not whale_only and not f2p_only:
+                with open(
+                    "../char_results/bangboo_appearance_combine.json",
+                    "w",
+                ) as out_file:
+                    out_file.write(json.dumps(appearances_write, indent=2))
+                with open(
+                    "../char_results/bangboo_rounds_combine.json",
+                    "w",
+                ) as out_file:
+                    out_file.write(json.dumps(rounds_write, indent=2))
 
-        cur_time = time.time()
-        print("done char stage (combine): ", (cur_time - start_time), "s")
+            cur_time = time.time()
+            print("done char stage (combine): ", (cur_time - start_time), "s")
 
     if "Comp usage all stages" in run_commands:
         comp_usages(all_stages, filename="all", floor=True)
