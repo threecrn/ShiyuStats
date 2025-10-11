@@ -74,7 +74,7 @@ def appearances(
     users: dict[str, PlayerPhase],
     chambers: list[str] = ROOMS,
     info_char: bool = False,
-) -> dict[int, tuple[dict[str, CharApp], dict[str, CharApp]]]:
+) -> tuple[dict[str, CharApp], dict[str, CharApp]]:
     """Calculate appearance data for each character."""
     app: dict[str, CharApp] = {}
     user_chars: dict[str, set[str]] = {}
@@ -304,7 +304,7 @@ def appearances(
             continue
         # Calculate constellations
         app_flat = char_item.owned / 100.0
-        # if owns[star_num][char.app_flat > 0:
+        # if owns[char.app_flat > 0:
         if char_item.owned > 0:
             char_item.cons_avg = round(
                 char_item.cons_avg / char_item.owned,
@@ -416,7 +416,7 @@ def appearances(
                 char_item.arti_freq[arti].round = 600
                 if da_mode:
                     char_item.arti_freq[arti].round = 0
-    return {4: (app, app_boos)}
+    return (app, app_boos)
 
 
 class CharUsageData(CharApp):
@@ -448,17 +448,19 @@ class CharUsageData(CharApp):
 
 
 def usages(
-    app: dict[int, tuple[dict[str, CharApp], dict[str, CharApp]]],
+    app: tuple[dict[str, CharApp], dict[str, CharApp]],
     past_phase: str,
     chambers: list[str] = ROOMS,
-) -> tuple[dict[int, dict[str, CharUsageData]], dict[int, dict[str, CharUsageData]]]:
+) -> tuple[dict[str, CharUsageData], dict[str, CharUsageData]]:
     """Calculate usage data for each character."""
-    uses: dict[int, dict[str, CharUsageData]] = {}
-    uses_boos: dict[int, dict[str, CharUsageData]] = {}
-    past_usage: dict[str, dict[str, dict[str, dict[str, float]]]] = {}
-    past_rounds: dict[str, dict[str, dict[str, dict[str, float]]]] = {}
-    past_usage_boos: dict[str, dict[str, dict[str, dict[str, float]]]] = {}
-    past_rounds_boos: dict[str, dict[str, dict[str, dict[str, float]]]] = {}
+    uses: dict[str, CharUsageData] = {}
+    uses_boos: dict[str, CharUsageData] = {}
+    past_usage: dict[str, dict[str, dict[str, float]]] = {}
+    past_rounds: dict[str, dict[str, dict[str, float]]] = {}
+    past_usage_boos: dict[str, dict[str, dict[str, float]]] = {}
+    past_rounds_boos: dict[str, dict[str, dict[str, float]]] = {}
+    rates: list[float] = []
+    rates_boos: list[float] = []
 
     if chambers == ["7-1", "7-2"] or (da_mode and chambers == ["1-1", "1-2", "1-3"]):
         stage = "all"
@@ -482,94 +484,81 @@ def usages(
     except FileNotFoundError:
         pass
 
-    for star_num, (app_chars, app_boos) in app.items():
-        uses[star_num] = {}
-        uses_boos[star_num] = {}
-        rates: list[float] = []
-        rates_boos: list[float] = []
+    app_chars, app_boos = app
 
-        for boo, app_boo in app_boos.items():
-            uses_boos[star_num][boo] = CharUsageData(app_boo, boo)
-            rates_boos.append(uses_boos[star_num][boo].app)
-            if stage not in past_usage_boos:
+    for boo, app_boo in app_boos.items():
+        uses_boos[boo] = CharUsageData(app_boo, boo)
+        rates_boos.append(uses_boos[boo].app)
+        if stage not in past_usage_boos:
+            continue
+        if boo in past_usage_boos[stage]:
+            uses_boos[boo].diff = str(
+                round(
+                    app_boo.app - past_usage_boos[stage][boo]["app"],
+                    2,
+                ),
+            )
+        if boo in past_rounds_boos[stage]:
+            uses_boos[boo].diff_rounds = str(
+                round(
+                    app_boo.round - past_rounds_boos[stage][boo]["round"],
+                    2,
+                ),
+            )
+    rates_boos.sort(reverse=True)
+    for uses_boo in uses_boos.values():
+        # if owns[boo.app_flat > 0:
+        uses_boo.rank = rates_boos.index(uses_boo.app) + 1
+
+    for char, app_char in app_chars.items():
+        uses[char] = CharUsageData(app_char, char)
+        rates.append(uses[char].app)
+
+        if stage in past_usage and char in past_usage[stage]:
+            uses[char].diff = str(
+                round(
+                    app_char.app - past_usage[stage][char]["app"],
+                    2,
+                ),
+            )
+        if stage in past_rounds and char in past_rounds[stage]:
+            uses[char].diff_rounds = str(
+                round(
+                    app_char.round - past_rounds[stage][char]["round"],
+                    2,
+                ),
+            )
+
+        for i in range(7):
+            uses[char].cons_usage[i] = {
+                "app": "-",
+                "own": "-",
+                "usage": "-",
+            }
+
+        if da_mode:
+            if chambers != ["1-1", "1-2", "1-3"]:
                 continue
-            if boo in past_usage_boos[stage][str(star_num)]:
-                uses_boos[star_num][boo].diff = str(
-                    round(
-                        app_boo.app - past_usage_boos[stage][str(star_num)][boo]["app"],
-                        2,
-                    ),
-                )
-            if boo in past_rounds_boos[stage][str(star_num)]:
-                uses_boos[star_num][boo].diff_rounds = str(
-                    round(
-                        app_boo.round
-                        - past_rounds_boos[stage][str(star_num)][boo]["round"],
-                        2,
-                    ),
-                )
-        rates_boos.sort(reverse=True)
-        for uses_boo in uses_boos[star_num].values():
-            # if owns[star_num][boo.app_flat > 0:
-            uses_boo.rank = rates_boos.index(uses_boo.app) + 1
+        elif chambers != ["7-1", "7-2"]:
+            continue
 
-        for char, app_char in app_chars.items():
-            uses[star_num][char] = CharUsageData(app_char, char)
-            rates.append(uses[star_num][char].app)
+        weapons = list(app_char.weap_freq)
+        for i in range(len(weapons)):
+            uses[char].weapons[weapons[i]] = app_char.weap_freq[weapons[i]]
 
-            if past_usage and char in past_usage[stage][str(star_num)]:
-                uses[star_num][char].diff = str(
-                    round(
-                        app_char.app - past_usage[stage][str(star_num)][char]["app"],
-                        2,
-                    ),
-                )
-            if past_rounds and char in past_rounds[stage][str(star_num)]:
-                uses[star_num][char].diff_rounds = str(
-                    round(
-                        app_char.round
-                        - past_rounds[stage][str(star_num)][char]["round"],
-                        2,
-                    ),
-                )
+        artifacts = list(app_char.arti_freq)
+        for i in range(len(artifacts)):
+            uses[char].artifacts[artifacts[i]] = app_char.arti_freq[artifacts[i]]
 
-            for i in range(7):
-                uses[star_num][char].cons_usage[i] = {
-                    "app": "-",
-                    "own": "-",
-                    "usage": "-",
-                }
-
-            if da_mode:
-                if chambers != ["1-1", "1-2", "1-3"]:
-                    continue
-            elif chambers != ["7-1", "7-2"]:
-                continue
-            if star_num != 4:
-                continue
-
-            weapons = list(app_char.weap_freq)
-            for i in range(len(weapons)):
-                uses[star_num][char].weapons[weapons[i]] = app_char.weap_freq[
-                    weapons[i]
-                ]
-
-            artifacts = list(app_char.arti_freq)
-            for i in range(len(artifacts)):
-                uses[star_num][char].artifacts[artifacts[i]] = app_char.arti_freq[
-                    artifacts[i]
-                ]
-
-            for i in range(7):
-                uses[star_num][char].cons_usage[i]["app"] = str(
-                    app_char.cons_freq[i].app,
-                )
-                uses[star_num][char].cons_usage[i]["round"] = str(
-                    app_char.cons_freq[i].round,
-                )
-        rates.sort(reverse=True)
-        for char in uses[star_num]:
-            # if owns[star_num][char.app_flat > 0:
-            uses[star_num][char].rank = rates.index(uses[star_num][char].app) + 1
+        for i in range(7):
+            uses[char].cons_usage[i]["app"] = str(
+                app_char.cons_freq[i].app,
+            )
+            uses[char].cons_usage[i]["round"] = str(
+                app_char.cons_freq[i].round,
+            )
+    rates.sort(reverse=True)
+    for char, char_use in uses.items():
+        uses[char].rank = rates.index(char_use.app) + 1
 
     return uses, uses_boos

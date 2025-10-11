@@ -16,7 +16,6 @@ class Composition:
         uid: str,
         comp_chars: list[str],
         round_num: str,
-        star_num: int,
         room: str,
         bangboo: str,
         comp_chars_cons: list[int],
@@ -25,7 +24,6 @@ class Composition:
         self.player = str(uid)
         self.room = room
         self.round_num = int(round_num)
-        self.star_num = star_num
         self.char_structs(comp_chars, comp_chars_cons)
         self.bangboo = bangboo
 

@@ -135,15 +135,12 @@ def main() -> None:
         print("done char 8 - 10: ", (cur_time - start_time), "s")
 
         if "Char usages for each stage" in run_commands:
-            char_chambers: dict[str, dict[int, dict[str, cu.CharUsageData]]] = {
-                "all": {},
+            char_chambers: dict[str, dict[str, cu.CharUsageData]] = {
+                "all": usage.copy(),
             }
-            boo_chambers: dict[str, dict[int, dict[str, cu.CharUsageData]]] = {
-                "all": {},
+            boo_chambers: dict[str, dict[str, cu.CharUsageData]] = {
+                "all": boo_usage.copy(),
             }
-            for star_num in usage:
-                char_chambers["all"][star_num] = usage[star_num].copy()
-                boo_chambers["all"][star_num] = boo_usage[star_num].copy()
             # for room in all_stages:
             for room in three_stages:
                 char_chambers[room], boo_chambers[room] = char_usages(
@@ -169,11 +166,8 @@ def main() -> None:
             print("done char stage: ", (cur_time - start_time), "s")
 
         if "Char usages for each stage (combined)" in run_commands:
-            char_chambers = {"all": {}}
-            boo_chambers = {"all": {}}
-            for star_num in usage:
-                char_chambers["all"][star_num] = usage[star_num].copy()
-                boo_chambers["all"][star_num] = boo_usage[star_num].copy()
+            char_chambers = {"all": usage.copy()}
+            boo_chambers = {"all": boo_usage.copy()}
             # for room in all_double_stages:
             for room in three_double_stages:
                 char_chambers[room[0]], boo_chambers[room[0]] = char_usages(
@@ -259,54 +253,49 @@ def main() -> None:
 
 
 def compile_app_round(
-    char_chambers: dict[str, dict[int, dict[str, cu.CharUsageData]]],
+    char_chambers: dict[str, dict[str, cu.CharUsageData]],
 ) -> tuple[
-    dict[str, dict[int, dict[str, dict[str, float | str]]]],
-    dict[str, dict[int, dict[str, dict[str, float | str]]]],
+    dict[str, dict[str, dict[str, float | str]]],
+    dict[str, dict[str, dict[str, float | str]]],
 ]:
     """Compile appearance and round data."""
-    appearances: dict[str, dict[int, dict[str, cu.CharUsageData]]] = {}
-    rounds: dict[str, dict[int, dict[str, cu.CharUsageData]]] = {}
+    appearances: dict[str, dict[str, cu.CharUsageData]] = {}
+    rounds: dict[str, dict[str, cu.CharUsageData]] = {}
     appearances_write: dict[
         str,
-        dict[int, dict[str, dict[str, float | str]]],
+        dict[str, dict[str, float | str]],
     ] = {}
-    rounds_write: dict[str, dict[int, dict[str, dict[str, float | str]]]] = {}
+    rounds_write: dict[str, dict[str, dict[str, float | str]]] = {}
     for room, char_cham in char_chambers.items():
-        appearances[room] = {}
-        rounds[room] = {}
+        appearances[room] = dict(
+            sorted(
+                char_cham.items(),
+                key=lambda t: t[1].app,
+                reverse=True,
+            ),
+        )
         appearances_write[room] = {}
         rounds_write[room] = {}
-        for star_num in char_cham:
-            appearances[room][star_num] = dict(
-                sorted(
-                    char_cham[star_num].items(),
-                    key=lambda t: t[1].app,
-                    reverse=True,
-                ),
-            )
-            appearances_write[room][star_num] = {}
-            rounds_write[room][star_num] = {}
-            rounds[room][star_num] = dict(
-                sorted(
-                    char_cham[star_num].items(),
-                    key=lambda t: t[1].round,
-                    reverse=da_mode,
-                ),
-            )
-            for char in char_cham[star_num]:
-                appearances_write[room][star_num][char] = {
-                    "app": char_cham[star_num][char].app,
-                    "rarity": char_cham[star_num][char].rarity,
-                    "diff": char_cham[star_num][char].diff,
-                }
-                if char_cham[star_num][char].round == 0:
-                    continue
-                rounds_write[room][star_num][char] = {
-                    "round": char_cham[star_num][char].round,
-                    "rarity": char_cham[star_num][char].rarity,
-                    "diff": char_cham[star_num][char].diff_rounds,
-                }
+        rounds[room] = dict(
+            sorted(
+                char_cham.items(),
+                key=lambda t: t[1].round,
+                reverse=da_mode,
+            ),
+        )
+        for char in char_cham:
+            appearances_write[room][char] = {
+                "app": char_cham[char].app,
+                "rarity": char_cham[char].rarity,
+                "diff": char_cham[char].diff,
+            }
+            if char_cham[char].round == 0:
+                continue
+            rounds_write[room][char] = {
+                "round": char_cham[char].round,
+                "rarity": char_cham[char].rarity,
+                "diff": char_cham[char].diff_rounds,
+            }
     return (appearances_write, rounds_write)
 
 
@@ -349,9 +338,9 @@ class CompUsage(Composition):
 def used_comps(
     rooms: list[str],
     filename: str,
-) -> list[dict[tuple[str, ...], CompUsage]]:
+) -> dict[tuple[str, ...], CompUsage]:
     """Return the dictionary of all the comps used and how many times they were used."""
-    comps_dict: list[dict[tuple[str, ...], CompUsage]] = [{}, {}, {}, {}, {}]
+    comps_dict: dict[tuple[str, ...], CompUsage] = {}
     total_self_comps = 0
     all_comp_uids.clear()
     all_comp_self_uids: set[str] = set()
@@ -411,14 +400,14 @@ def used_comps(
         elif comp.round_num < 20:
             continue
 
-        if comp_tuple not in comps_dict[4]:
-            comps_dict[4][comp_tuple] = CompUsage(comp)
-        comps_dict[4][comp_tuple].uses += 1
-        comps_dict[4][comp_tuple].players.add(comp.player)
+        if comp_tuple not in comps_dict:
+            comps_dict[comp_tuple] = CompUsage(comp)
+        comps_dict[comp_tuple].uses += 1
+        comps_dict[comp_tuple].players.add(comp.player)
         if whale_comp:
-            comps_dict[4][comp_tuple].whale_count.add(comp.player)
+            comps_dict[comp_tuple].whale_count.add(comp.player)
         if whale_comp == whale_only and (not f2p_only or f2p_comp):
-            comps_dict[4][comp_tuple].round_num[cur_room].append(comp.round_num)
+            comps_dict[comp_tuple].round_num[cur_room].append(comp.round_num)
             if dps_count == 1:
                 avg_round_stage[cur_room].append(
                     comp.round_num,
@@ -443,41 +432,41 @@ def used_comps(
 
 
 def rank_usages(
-    comps_dict: list[dict[tuple[str, ...], CompUsage]],
+    comps_dict: dict[tuple[str, ...], CompUsage],
     rooms: list[str],
 ) -> None:
     """Calculate the usage rate and sort the comps according to it."""
     # Calculate the usage rate and sort the comps according to it
     total = len(all_comp_uids) / 100.0
     rates: list[float] = []
-    for comp in comps_dict[4]:
+    for cur_comp in comps_dict.values():
         avg_round: list[float] = []
         uses_room: dict[int, int] = {}
 
         for room_num in range(1, 8):
-            if comps_dict[4][comp].round_num[str(room_num)]:
+            if cur_comp.round_num[str(room_num)]:
                 uses_room[room_num] = len(
-                    comps_dict[4][comp].round_num[str(room_num)],
+                    cur_comp.round_num[str(room_num)],
                 )
                 avg_round.append(
                     statistics.mean(
-                        comps_dict[4][comp].round_num[str(room_num)],
+                        cur_comp.round_num[str(room_num)],
                     ),
                 )
 
-        comps_dict[4][comp].is_count_round = True
-        comps_dict[4][comp].is_count_round_print = True
+        cur_comp.is_count_round = True
+        cur_comp.is_count_round_print = True
         if (rooms == one_stage) or (da_mode and rooms == ["1-1", "1-2", "1-3"]):
             for uses_room_num in uses_room.values():
                 if uses_room_num < 20:
-                    comps_dict[4][comp].is_count_round = False
+                    cur_comp.is_count_round = False
                 if uses_room_num < 3:
-                    comps_dict[4][comp].is_count_round_print = False
+                    cur_comp.is_count_round_print = False
         elif len(rooms) == 1:
-            if comps_dict[4][comp].uses < 20:
-                comps_dict[4][comp].is_count_round = False
-            if comps_dict[4][comp].uses < 3:
-                comps_dict[4][comp].is_count_round_print = False
+            if cur_comp.uses < 20:
+                cur_comp.is_count_round = False
+            if cur_comp.uses < 3:
+                cur_comp.is_count_round_print = False
 
         rounded_avg_round: float
         if avg_round:
@@ -486,20 +475,20 @@ def rank_usages(
             rounded_avg_round = DEFAULT_ROUND
 
         if total == 0:
-            print(comps_dict[4][comp].uses)
-        app = round(comps_dict[4][comp].uses / total, 2)
-        comps_dict[4][comp].app_rate = app
-        comps_dict[4][comp].round = rounded_avg_round
-        comps_dict[4][comp].usage_rate = 0
-        comps_dict[4][comp].own_rate = 0
+            print(cur_comp.uses)
+        app = round(cur_comp.uses / total, 2)
+        cur_comp.app_rate = app
+        cur_comp.round = rounded_avg_round
+        cur_comp.usage_rate = 0
+        cur_comp.own_rate = 0
         rates.append(app)
     rates.sort(reverse=True)
-    for comp in comps_dict[4]:
-        comps_dict[4][comp].app_rank = rates.index(comps_dict[4][comp].app_rate) + 1
+    for comp, cur_comp in comps_dict.items():
+        comps_dict[comp].app_rank = rates.index(cur_comp.app_rate) + 1
 
 
 def duo_usages(
-    usage: dict[int, dict[str, cu.CharUsageData]],
+    usage: dict[str, cu.CharUsageData],
     archetype: str,
     rooms: list[str],
 ) -> None:
@@ -510,7 +499,7 @@ def duo_usages(
 
 def used_duos(
     rooms: list[str],
-    usage: dict[int, dict[str, cu.CharUsageData]],
+    usage: dict[str, cu.CharUsageData],
 ) -> dict[str, dict[str, cu.RoundApp]]:
     """Return dictionary of all the duos used and how many times they were used."""
     duos_dict: dict[tuple[str, str], cu.RoundApp] = {}
@@ -555,10 +544,10 @@ def used_duos(
     return_duos: dict[str, dict[str, cu.RoundApp]] = {}
     for duo in duos_dict:
         cur_duo = duos_dict[duo]
-        if usage[4][duo[0]].app_flat > 0:
+        if usage[duo[0]].app_flat > 0:
             # Calculate the appearance rate of the duo by dividing the appearance count
             # of the duo with the appearance count of the first character
-            cur_duo.app = round(cur_duo.app_flat * 100 / usage[4][duo[0]].app_flat, 2)
+            cur_duo.app = round(cur_duo.app_flat * 100 / usage[duo[0]].app_flat, 2)
             cur_duo.app_flat = 0
             avg_round: list[float] = []
             for room_num in range(1, 8):
@@ -580,20 +569,20 @@ def char_usages(
     filename: str = "char_usages",
     info_char: bool = False,
 ) -> tuple[
-    dict[int, dict[str, cu.CharUsageData]],
-    dict[int, dict[str, cu.CharUsageData]],
+    dict[str, cu.CharUsageData],
+    dict[str, cu.CharUsageData],
 ]:
     """Calculate character usage."""
     app = cu.appearances(all_players, chambers=rooms, info_char=info_char)
     chars_dict, boos_dict = cu.usages(app, past_phase, chambers=rooms)
     if (not da_mode and rooms == one_stage) or da_mode:
-        char_usages_write(chars_dict[4], filename, archetype)
-        boo_usages_write(boos_dict[4], "bangboo_" + filename, archetype)
+        char_usages_write(chars_dict, filename, archetype)
+        boo_usages_write(boos_dict, "bangboo_" + filename, archetype)
     return (chars_dict, boos_dict)
 
 
 def comp_usages_write(
-    comps_dict: list[dict[tuple[str, ...], CompUsage]],
+    comps_dict: dict[tuple[str, ...], CompUsage],
     filename: str,
     floor: int,
     info_char: bool,
@@ -608,16 +597,16 @@ def comp_usages_write(
     threshold = app_rate_threshold if sort_app else app_rate_threshold_round
 
     if sort_app:
-        comps_dict[4] = dict(
+        comps_dict = dict(
             sorted(
-                comps_dict[4].items(),
+                comps_dict.items(),
                 key=lambda t: t[1].app_rate,
                 reverse=True,
             ),
         )
-    comps_dict[4] = dict(
+    comps_dict = dict(
         sorted(
-            comps_dict[4].items(),
+            comps_dict.items(),
             key=lambda t: t[1].round,
             reverse=da_mode,
         ),
@@ -625,10 +614,10 @@ def comp_usages_write(
     comp_names: list[str] = []
     dual_comp_names: list[str] = []
 
-    for comp in comps_dict[4]:
+    for comp in comps_dict:
         if info_char and filename not in comp:
             continue
-        cur_comp = comps_dict[4][comp]
+        cur_comp = comps_dict[comp]
         comp_name = cur_comp.comp_name
         dual_comp_name = cur_comp.dual_comp_name
         alt_comp_name = cur_comp.alt_comp_name
@@ -725,7 +714,6 @@ def comp_usages_write(
             out_json_dict["app_rate"] = cur_comp.app_rate
             out_json_dict["rank"] = cur_comp.app_rank
             out_json_dict["avg_round"] = cur_comp.round
-            out_json_dict["star_num"] = str(4)
             out_json.append(out_json_dict)
 
     if info_char:
@@ -760,7 +748,7 @@ def comp_usages_write(
 
 def duo_write(
     duos_dict: dict[str, dict[str, cu.RoundApp]],
-    usage: dict[int, dict[str, cu.CharUsageData]],
+    usage: dict[str, cu.CharUsageData],
     filename: str,
     archetype: str,
 ) -> None:
@@ -768,10 +756,10 @@ def duo_write(
     out_duos: list[dict[str, str | float]] = []
     for char, char_duo in duos_dict.items():
         duo_keys = list(char_duo.keys())
-        if usage[4][char].app_flat > 0:
+        if usage[char].app_flat > 0:
             out_duos_append = {
                 "char": char,
-                "app": usage[4][char].app,
+                "app": usage[char].app,
             }
             for i in range(duo_dict_len):
                 j = str(i + 1)
@@ -831,11 +819,11 @@ def duo_write(
                     duo_app_j >= 1
                     and float(duos["app_flat_" + j]) >= 10
                     and (
-                        (duo_round_j < usage[4][duo_j].round)
-                        or (duo_round_j < usage[4][duo_char].round)
+                        (duo_round_j < usage[duo_j].round)
+                        or (duo_round_j < usage[duo_char].round)
                     )
-                    and usage[4][duo_j].round != 1
-                    and usage[4][duo_j].round != 0
+                    and usage[duo_j].round != 1
+                    and usage[duo_j].round != 0
                 ):
                     out_duos_check[duo_char][duo_j] = {
                         "app": duo_app_j,

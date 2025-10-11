@@ -78,9 +78,6 @@ def main() -> None:
         reader = list(reader)
     all_comps: list[Composition] = []
     all_chambers = ["1"] if da_mode else ["1", "2", "3", "4", "5", "6", "7"]
-    three_star_sample = {}
-    for chamber_num in all_chambers:
-        three_star_sample[chamber_num] = 0
 
     # uid_freq_comp will help detect duplicate UIDs
     uid_freq_comp: dict[str, int] = {}
@@ -131,7 +128,6 @@ def main() -> None:
                         line[0],
                         comp_chars_temp,
                         line[3],
-                        int(line[2]),
                         "1-" + stage,
                         line[12],
                         cons_chars_temp,
@@ -141,15 +137,12 @@ def main() -> None:
                         line[0],
                         comp_chars_temp,
                         line[4],
-                        star_num,
                         stage + "-" + str(line[2]),
                         line[11],
                         cons_chars_temp,
                     )
                 )
                 all_comps.append(comp)
-                if int(star_num) == 3:
-                    three_star_sample[stage] += 1
 
     sample_size: dict[int | str, dict[str, int | float]] = {}
     for chamber_num in all_chambers:
