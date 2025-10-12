@@ -326,6 +326,8 @@ class CompUsage(Composition):
         self.round_num = {str(i): list[int]() for i in range(1, 13)}
         self.whale_count = set[str]()
         self.players = set[str]()
+        self.boo_freq: dict[str, int] = {}
+        self.bangboo: str
         self.is_count_round: bool
         self.is_count_round_print: bool
         self.app_rate: float
@@ -404,6 +406,12 @@ def used_comps(
             comps_dict[comp_tuple] = CompUsage(comp)
         comps_dict[comp_tuple].uses += 1
         comps_dict[comp_tuple].players.add(comp.player)
+
+        if comp.bangboo:
+            if comp.bangboo not in comps_dict[comp_tuple].boo_freq:
+                comps_dict[comp_tuple].boo_freq[comp.bangboo] = 0
+            comps_dict[comp_tuple].boo_freq[comp.bangboo] += 1
+
         if whale_comp:
             comps_dict[comp_tuple].whale_count.add(comp.player)
         if whale_comp == whale_only and (not f2p_only or f2p_comp):
@@ -473,6 +481,13 @@ def rank_usages(
             rounded_avg_round = round(statistics.mean(avg_round))
         else:
             rounded_avg_round = DEFAULT_ROUND
+
+        if cur_comp.boo_freq:
+            # Find the bangboo with most usage
+            cur_comp.bangboo = max(
+                cur_comp.boo_freq,
+                key=lambda k: cur_comp.boo_freq.get(k, 0),
+            )
 
         if total == 0:
             print(cur_comp.uses)
@@ -711,6 +726,7 @@ def comp_usages_write(
                 "char_two": out[1],
                 "char_three": out[2],
             }
+            out_json_dict["bangboo"] = slugify(cur_comp.bangboo)
             out_json_dict["app_rate"] = cur_comp.app_rate
             out_json_dict["rank"] = cur_comp.app_rank
             out_json_dict["avg_round"] = cur_comp.round
