@@ -50,10 +50,12 @@ RECENT_PHASE = "2.2.2"
 # if no past phase, past_phase = "null"
 past_phase = "2.2.1"
 # if as: da_mode = True
-da_mode = args.deadly_assault
+da_mode: bool = args.deadly_assault
 
 if not da_mode:
     da_mode = False
+
+sd_mode: bool = not da_mode
 
 DEFAULT_ROUND = 0 if da_mode else 600
 

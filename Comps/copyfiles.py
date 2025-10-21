@@ -3,7 +3,7 @@
 import shutil
 from os import listdir, mkdir, path
 
-from comp_rates_config import RECENT_PHASE, da_mode
+from comp_rates_config import RECENT_PHASE, da_mode, sd_mode
 from send2trash import send2trash
 
 suffix = ""
@@ -23,6 +23,11 @@ source_dirs = [
 
 target_dir: str = ""
 temp_target_dir: str = ""
+
+if sd_mode and path.exists("../web_results"):
+    send2trash("../web_results")
+    mkdir("../web_results")
+mkdir("../web_results/" + sd_suffix)
 
 for source_dir in source_dirs:
     if "comp_results" in source_dir:
