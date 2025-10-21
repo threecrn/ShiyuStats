@@ -295,7 +295,6 @@ data/pickle
 Comps/client_secret.json
 Comps/sheets.googleapis.com-python.json
 Comps/sort.py
-Comps/hash.py
 Comps/compile_usage.py
 enka.network/results_real
 enka.network/images
