@@ -236,5 +236,19 @@
         "id": "54019",
         "name": "Mercury",
         "availability": "S"
+    },
+    "Bild N. Boolok": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole41.png",
+        "desc": "Want some building blocks? I've got all kinds of styles here!",
+        "id": "53019",
+        "name": "Bild N. Boolok",
+        "availability": "A"
+    },
+    "Birkblick": {
+        "icon": "UI/Sprite/A1DynamicLoad/BangbooModGarage/UnPacker/BangbooRole/BangbooGarageRole42.png",
+        "desc": "Bangboo_Desc_54020",
+        "id": "54020",
+        "name": "Birkblick",
+        "availability": "S"
     }
 }

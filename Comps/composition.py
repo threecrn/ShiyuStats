@@ -63,6 +63,7 @@ class Composition:
                 "Hugo",
                 "Yixuan",
                 "Alice",
+                "Manato",
             ]:
                 self.dps.insert(0, character)
             if character in [
@@ -107,6 +108,7 @@ class Composition:
                 "Astra Yao",
                 "Pan Yinhu",
                 "Yuzuha",
+                "Lucia",
             ]:
                 self.support.insert(0, character)
             elif character in [
