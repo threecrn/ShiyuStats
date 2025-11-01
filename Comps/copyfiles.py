@@ -1,7 +1,9 @@
+"""Copy files to web directory."""
+
 import shutil
 from os import listdir, mkdir, path
 
-from comp_rates_config import RECENT_PHASE, da_mode
+from comp_rates_config import RECENT_PHASE, da_mode, sd_mode
 from send2trash import send2trash
 
 suffix = ""
@@ -22,6 +24,11 @@ source_dirs = [
 target_dir: str = ""
 temp_target_dir: str = ""
 
+if sd_mode and path.exists("../web_results"):
+    send2trash("../web_results")
+    mkdir("../web_results")
+mkdir("../web_results/" + sd_suffix)
+
 for source_dir in source_dirs:
     if "comp_results" in source_dir:
         target_dir = "../web_results/" + sd_suffix + "/comps"
@@ -34,7 +41,7 @@ for source_dir in source_dirs:
     mkdir(target_dir)
     for file_name in file_names:
         if "comp_results" in source_dir or (
-            file_name == "duo_usages.json"
+            file_name in ["duo_usages.json", "bangboo_all.json"]
             or file_name == ("demographic_collect" + suffix + ".json")
             or (file_name == "builds.json" and (RECENT_PHASE + "_da") in source_dir)
             or (

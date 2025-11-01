@@ -335,13 +335,13 @@ for char, char_value in stats.items():
     app_dict: dict[str, float] = {}
     if not (da_mode):
         app_dict = {
-            "7_app": APP["7-1"]["4"][char]["app"],
-            "7_round": ROUND["7-1"]["4"][char]["round"],
+            "7_app": APP["7-1"][char]["app"],
+            "7_round": ROUND["7-1"][char]["round"],
         }
     else:
         app_dict = {
-            "1_app": APP["1-1"]["4"][char]["app"],
-            "1_round": ROUND["1-1"]["4"][char]["round"],
+            "1_app": APP["1-1"][char]["app"],
+            "1_round": ROUND["1-1"][char]["round"],
         }
     temp_stats.append((CHARACTERS[iter_char] | char_value.stats_write) | app_dict)
     iter_char += 1

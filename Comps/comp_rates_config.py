@@ -1,3 +1,5 @@
+"""Config file for comp_rates.py."""
+
 import argparse
 import json
 import os
@@ -11,6 +13,7 @@ parser.add_argument("-off", "--offline_collect", action="store_true")
 parser.add_argument("-save", "--save_to_file", action="store_true")
 parser.add_argument("-a", "--all", action="store_true")
 parser.add_argument("-ca", "--comps_all", action="store_true")
+parser.add_argument("-cha", "--chars_all", action="store_true")
 parser.add_argument("-d", "--duos", action="store_true")
 parser.add_argument("-t", "--top", action="store_true")
 parser.add_argument("-cht", "--chars_top", action="store_true")
@@ -42,15 +45,19 @@ with open(str(os.getenv("REPO_PATH")) + "/data/w-engine.json") as char_file:
     WENGINE = json.load(char_file)
 
 # no need to add 2.2.1"_da"
-RECENT_PHASE = "2.2.1"
+RECENT_PHASE = "2.3.1"
 
 # if no past phase, past_phase = "null"
-past_phase = "2.1.2"
+past_phase = "2.2.2"
 # if as: da_mode = True
-da_mode = args.deadly_assault
+da_mode: bool = args.deadly_assault
 
 if not da_mode:
     da_mode = False
+
+sd_mode: bool = not da_mode
+
+DEFAULT_ROUND = 0 if da_mode else 600
 
 suffix = ""
 if da_mode:
@@ -76,8 +83,8 @@ duo_dict_len_print = 10
 skip_self = False
 skip_random = False
 archetype = "all"
-whaleOnly: bool = args.whale
-f2pOnly: bool = args.f2p
+whale_only: bool = args.whale
+f2p_only: bool = args.f2p
 
 # Char infographics should be separated from overall comp rankings
 run_commands = [
@@ -117,6 +124,13 @@ elif args.all:
         "Comp usages for each stage",
     ]
 
+elif args.chars_all:
+    run_commands = [
+        "Char usages 8 - 10",
+        "Char usages for each stage",
+        "Char usages for each stage (combined)",
+    ]
+
 elif args.comps_all:
     run_commands = [
         "Comp usage 8 - 10",
@@ -128,10 +142,10 @@ elif args.duos:
         "Duos check",
     ]
 
-sigWeaps: list[str] = []
+sig_weaps: list[str] = []
 for wengine in WENGINE:
     if WENGINE[wengine]["availability"] == "Limited S":
-        sigWeaps += [WENGINE[wengine]["name"]]
+        sig_weaps += [WENGINE[wengine]["name"]]
 
 alt_comps = "Character specific infographics" in run_commands
 if alt_comps and char_app_rate_threshold > app_rate_threshold:

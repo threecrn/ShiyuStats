@@ -814,5 +814,20 @@
         "id": "13144",
         "name": "Grill O'Wisp",
         "availability": "A"
+    },
+    "Banyue Test W-Engine": {
+        "icon": "Weapon_S_1471",
+        "desc": "Item_Weapon_S_1471_ShortDesc",
+        "id": "14147",
+        "name": "Banyue Test W-Engine",
+        "availability": "Limited S"
+    },
+    "Dialyn Test W-Engine": {
+        "icon": "Weapon_S_1481",
+        "desc": "Item_Weapon_S_1481_ShortDesc",
+        "id": "14148",
+        "name": "Dialyn Test W-Engine",
+        "availability": "Limited S",
+        "role": "Stun"
     }
 }

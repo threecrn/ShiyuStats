@@ -1,3 +1,5 @@
+"""Move files to correct directory."""
+
 import shutil
 from os import listdir, mkdir, path
 
@@ -32,7 +34,7 @@ for source_dir in source_dirs:
     for file_name in file_names:
         if (source_dir == "../enka.network" and file_name.startswith("output")) or (
             source_dir != "../enka.network"
-            and file_name.endswith(tuple([".json", ".csv"]))
+            and file_name.endswith((".json", ".csv"))
             and (
                 "demographic_collect" not in file_name
                 or file_name == ("demographic_collect" + suffix + ".json")
