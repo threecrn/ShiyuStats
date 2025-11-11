@@ -829,5 +829,28 @@
         "name": "Dialyn Test W-Engine",
         "availability": "Limited S",
         "role": "Stun"
+    },
+    "Wrathful Vajra": {
+        "icon": "Weapon_S_1471",
+        "desc": "Even the flames of purgatory couldn't break me.",
+        "id": "14147",
+        "name": "Wrathful Vajra",
+        "availability": "Limited S"
+    },
+    "Item_Weapon_A_Common_19_Name": {
+        "icon": "Weapon_A_Common_19",
+        "desc": "Item_Weapon_A_Common_19_ShortDesc",
+        "id": "13019",
+        "name": "Item_Weapon_A_Common_19_Name",
+        "availability": "A",
+        "role": "Stun"
+    },
+    "Yesterday Calls": {
+        "icon": "Weapon_S_1481",
+        "desc": "That missed call you had? She picked it up.",
+        "id": "14148",
+        "name": "Yesterday Calls",
+        "availability": "Limited S",
+        "role": "Stun"
     }
 }

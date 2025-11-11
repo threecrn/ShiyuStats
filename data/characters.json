@@ -505,5 +505,23 @@
         "name": "Manato",
         "availability": "A",
         "role": "Damage Dealer"
+    },
+    "Yidhari": {
+        "element": "Ice",
+        "camp": "11",
+        "icon": "IconRole52",
+        "potential": [],
+        "skin": {
+            "3110510": {
+                "Name": "AvatarSkin_Yidhari_Name_000",
+                "Desc": "AvatarSkin_Yidhari_Desc_000",
+                "Image": "IconRole52"
+            }
+        },
+        "desc": "In addition to her role as an Agent, Yidhari doubles as both a Proxy, and a contributor for Spook Shack.\nTo most, she comes across as laid-back and leisurely, but according to records, it's less \"laziness\" than a shroud of nothingness, leaving her at odds with the world around her.\nPerhaps to most people, this would seem like the usual quirk of someone absorbed in their craft. As a gifted writer of bizarre tales, Yidhari should be more prone than most to immersing herself in the worlds of her own imagination.\nIn truth, however, her unusual behavior stems more from the burden of her own abilities.\nIn the Hollows, she's exposed to vast torrents of information unimaginable to most, tangled with years upon years of memories that have amassed there. That crushing weight of countless pasts constantly batters her sense of reality, until even her emotions are gradually worn dull.\nThe fact that she can bear this burden, turn it into her own strength, and still live life in her own way \u2014 that's what sets Yidhari apart as gifted beyond others.",
+        "id": "1051",
+        "name": "Yidhari",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
     }
 }
