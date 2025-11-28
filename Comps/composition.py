@@ -64,6 +64,7 @@ class Composition:
                 "Yixuan",
                 "Alice",
                 "Manato",
+                "Yidhari",
             ]:
                 self.dps.insert(0, character)
             if character in [
