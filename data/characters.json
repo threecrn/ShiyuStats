@@ -523,5 +523,23 @@
         "name": "Yidhari",
         "availability": "Limited S",
         "role": "Damage Dealer"
+    },
+    "Dialyn": {
+        "element": "Physical",
+        "camp": "12",
+        "icon": "IconRole54",
+        "potential": [],
+        "skin": {
+            "3114810": {
+                "Name": "AvatarSkin_Azural_Name_000",
+                "Desc": "AvatarSkin_Azural_Desc_000",
+                "Image": "IconRole29"
+            }
+        },
+        "desc": "Dialyn works as a customer service representative for TOPS' Cross-Department Customer Service Center, though few know her other identity \u2014 a Krampus Compliance Authority Judge.\n\nShe calls herself TOPS' top-rated representative, yet she also tops the list for the most complaints in the department. Despite never flaunting her authority as a Judge, she always delivers verdicts that cut closest to the truth.\n\nDialyn was born with the ability to hear the voices of those on the brink of death within the Hollows \u2014 a talent that's unmatched. Yet to a young Dialyn, it was a tormenting curse.\n\nBe it gift or curse, she has long turned it into a blade for discerning the truth. Despite the trials and tribulations she's borne, she's come far.",
+        "id": "1481",
+        "name": "Dialyn",
+        "availability": "Limited S",
+        "role": "Stun"
     }
 }

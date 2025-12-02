@@ -98,6 +98,7 @@ class Composition:
                 "Pulchra",
                 "Trigger",
                 "Ju Fufu",
+                "Dialyn",
             ]:
                 self.stun.insert(0, character)
             elif character in [

@@ -852,5 +852,21 @@
         "name": "Yesterday Calls",
         "availability": "Limited S",
         "role": "Stun"
+    },
+    "Lone Light in the Clouds": {
+        "icon": "Weapon_S_1431",
+        "desc": "Test text",
+        "id": "14143",
+        "name": "Lone Light in the Clouds",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Half-Sugar Hail": {
+        "icon": "Weapon_S_1341",
+        "desc": "Test text",
+        "id": "14134",
+        "name": "Half-Sugar Hail",
+        "availability": "Limited S",
+        "role": "Stun"
     }
 }

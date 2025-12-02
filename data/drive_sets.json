@@ -1,11 +1,11 @@
 {
     "33500": {
-        "icon": "",
+        "icon": "UI/Sprite/A1DynamicLoad/IconSuit/UnPacker/SuitWhiteWaterBallad.png",
         "id": "33500",
-        "name": "EquipmentSuit_33500_name",
+        "name": "White Water Ballad",
         "desc": [
-            "ATK +10%",
-            "Upon becoming the active character in combat, the equipper's ATK increases by 25% for 10s. This effect can trigger once every 20s."
+            "EquipmentSuit_33500_2_des",
+            "While the equipper is within any [Ether Veil], their CRIT Rate increases by 12%. After leaving the [Ether Veil], this buff persists for 15 seconds. When the equipper is an [Attack] Character, activating or extending the duration of [Ether Veil] additionally increases their CRIT Rate by 12% for 30 seconds; repeated triggers reset the duration."
         ]
     },
     "31900": {
@@ -18,12 +18,12 @@
         ]
     },
     "33600": {
-        "icon": "",
+        "icon": "UI/Sprite/A1DynamicLoad/IconSuit/UnPacker/SuitShiningAria.png",
         "id": "33600",
-        "name": "EquipmentSuit_33600_name",
+        "name": "Shining Aria",
         "desc": [
-            "ATK +10%",
-            "Upon becoming the active character in combat, the equipper's ATK increases by 25% for 10s. This effect can trigger once every 20s."
+            "Ether DMG +10%",
+            "When the equipper hits an enemy with [Basic Attack], their Anomaly Proficiency increases by 36 points for 8 seconds, repeated triggers reset the duration; when enemies on the field become Stunned, the equipper's DMG increases by 25% for 18 seconds, repeated triggers reset the duration."
         ]
     },
     "31300": {
