@@ -868,5 +868,28 @@
         "name": "Half-Sugar Hail",
         "availability": "Limited S",
         "role": "Stun"
+    },
+    "Cloudcleave Radiance": {
+        "icon": "Weapon_S_1431",
+        "desc": "The world may change, but my heart remains constant, like clouds standing eternal.",
+        "id": "14143",
+        "name": "Cloudcleave Radiance",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
+    },
+    "Half-Sugar Bunny": {
+        "icon": "Weapon_S_1341",
+        "desc": "...",
+        "id": "14134",
+        "name": "Half-Sugar Bunny",
+        "availability": "Limited S",
+        "role": "Stun"
+    },
+    "Cauldron of Clarity": {
+        "icon": "Weapon_A_Common_19",
+        "desc": "...",
+        "id": "13019",
+        "name": "Cauldron of Clarity",
+        "availability": "A"
     }
 }

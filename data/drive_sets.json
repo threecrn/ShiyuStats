@@ -4,8 +4,8 @@
         "id": "33500",
         "name": "White Water Ballad",
         "desc": [
-            "EquipmentSuit_33500_2_des",
-            "While the equipper is within any [Ether Veil], their CRIT Rate increases by 12%. After leaving the [Ether Veil], this buff persists for 15 seconds. When the equipper is an [Attack] Character, activating or extending the duration of [Ether Veil] additionally increases their CRIT Rate by 12% for 30 seconds; repeated triggers reset the duration."
+            "Physical DMG +10%",
+            "When the equipper is within any [Ether Veil], their CRIT Rate increases by 10%. After leaving the Ether Veil, this buff remains for 15s. If the equipper is an Attack character, activating an Ether Veil or extending an Ether Veil's duration increases their CRIT Rate by 10% and ATK by 10% for 30s. Repeated triggers reset the duration."
         ]
     },
     "31900": {
@@ -23,7 +23,7 @@
         "name": "Shining Aria",
         "desc": [
             "Ether DMG +10%",
-            "When the equipper hits an enemy with [Basic Attack], their Anomaly Proficiency increases by 36 points for 8 seconds, repeated triggers reset the duration; when enemies on the field become Stunned, the equipper's DMG increases by 25% for 18 seconds, repeated triggers reset the duration."
+            "When the equipper's Basic Attack hits an enemy, their Anomaly Proficiency increases by 36, lasting 8s. Repeated triggers reset the duration. When any enemy on the field is Stunned, the equipper's DMG increases by 25% for 18s. Repeated triggers reset the duration."
         ]
     },
     "31300": {

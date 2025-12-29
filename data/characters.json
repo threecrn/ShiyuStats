@@ -541,5 +541,23 @@
         "name": "Dialyn",
         "availability": "Limited S",
         "role": "Stun"
+    },
+    "Banyue": {
+        "element": "Fire",
+        "camp": "12",
+        "icon": "IconRole53",
+        "potential": [],
+        "skin": {
+            "3114710": {
+                "Name": "Banyue: Blazestone Heart",
+                "Desc": "He carries a righteous, unshakable aura \u2014 every bit the master he is. Don't judge him by his silence; a stone heart makes no sound, and compassion doesn't speak aloud either.",
+                "Image": "IconRole53"
+            }
+        },
+        "desc": "Banyue is an Intelligent Construct who runs a martial arts school in Waifei, known to many as \"Banyue Shifu.\" He has lived for a long time, his stone-lion-like presence commanding respect. A martial arts expert of great skill, he shares a long-standing friendship with Yunkui Summit's current High Preceptor, Yixuan.\n\nAs a martial master, Banyue is quiet but dependable. His methods and beliefs are rooted in tradition, and he disciplines his students with strict yet thoughtful guidance, teaching them not just how to fight, but how to learn. Known as a true master of the martial arts, in battle, he can assume a special form known as the Visage of Wrath to vanquish all evil.\n\nA long inhabitant of Waifei, Banyue is quiet and even-tempered. He doesn't express emotions easily and has the manner of someone from another era. Knowing he's out of touch with modern trends, he's been secretly trying to learn the latest internet slang... yet his half-baked grasp of it tends to end in funny little misunderstandings.\n\nBanyue also appears to have a strange liking for round things \u2014 stone balls, spherical bollards, and the like. If the conversation ever goes silent while you're alone with him, bringing up something spherical usually does the trick.",
+        "id": "1471",
+        "name": "Banyue",
+        "availability": "Limited S",
+        "role": "Damage Dealer"
     }
 }
