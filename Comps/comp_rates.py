@@ -365,7 +365,6 @@ def used_comps(
 
         whale_comp = False
         f2p_comp = True
-        dps_count = 0
         for char in range(3):
             if CHARACTERS[comp_tuple[char]]["availability"] == "Limited S":
                 if comp.char_cons:
@@ -382,8 +381,6 @@ def used_comps(
                 not in sig_weaps
             ):
                 f2p_comp = False
-            if CHARACTERS[comp_tuple[char]]["role"] == "Damage Dealer":
-                dps_count += 1
 
         if whale_comp:
             whale_count += 1
@@ -416,10 +413,9 @@ def used_comps(
             comps_dict[comp_tuple].whale_count.add(comp.player)
         if whale_comp == whale_only and (not f2p_only or f2p_comp):
             comps_dict[comp_tuple].round_num[cur_room].append(comp.round_num)
-            if dps_count == 1:
-                avg_round_stage[cur_room].append(
-                    comp.round_num,
-                )
+            avg_round_stage[cur_room].append(
+                comp.round_num,
+            )
 
     for stage, round_stage in avg_round_stage.items():
         sample_size[stage]["avg_round"] = round(
