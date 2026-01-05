@@ -7,31 +7,13 @@ import statistics
 import warnings
 from itertools import chain
 
-from comp_rates_config import da_mode, f2p_only, sig_weaps, whale_only
+from comp_rates_config import DEFAULT_ROUND, da_mode, f2p_only, sig_weaps, whale_only
 from percentile import calculate_percentile
 from player_phase import PlayerPhase
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
-ROOMS = (
-    ["1-1", "1-2", "1-3"]
-    if da_mode
-    else [
-        "1-1",
-        "1-2",
-        "2-1",
-        "2-2",
-        "3-1",
-        "3-2",
-        "4-1",
-        "4-2",
-        "5-1",
-        "5-2",
-        "6-1",
-        "6-2",
-        "7-1",
-        "7-2",
-    ]
-)
+ONE_STAGE = ["1-1", "1-2", "1-3"] if da_mode else ["5-1", "5-2", "5-3"]
+ROOMS = ONE_STAGE if da_mode else ["5-1", "5-2", "5-3"]
 gear_app_threshold = 0
 with open("../data/characters.json") as char_file:
     CHARACTERS = json.load(char_file)
@@ -122,15 +104,7 @@ def appearances(
                 if CHARACTERS[char]["role"] == "Damage Dealer":
                     dps_count += 1
             dps_count = 1
-            if da_mode:
-                if not whale_comp and cur_user.round_num > 50000:
-                    cheated_uids.add(user.player)
-                    continue
-            elif whale_comp:
-                if cur_user.round_num < 10:
-                    cheated_uids.add(user.player)
-                    continue
-            elif cur_user.round_num < 20:
+            if not whale_comp and cur_user.round_num > 50000:
                 cheated_uids.add(user.player)
                 continue
 
@@ -142,9 +116,7 @@ def appearances(
 
             cur_chamber = next(iter(str(chamber).split("-")))
             for char in cur_user.characters:
-                if chambers == ["7-1", "7-2"] or (
-                    da_mode and chambers == ["1-1", "1-2", "1-3"]
-                ):
+                if chambers == ONE_STAGE:
                     user_chars[char].add(user.player)
 
                 char_name = char
@@ -165,10 +137,7 @@ def appearances(
                         cur_user.round_num,
                     )
                 # In case of character in comp data missing from character data
-                if da_mode:
-                    if chambers != ["1-1", "1-2", "1-3"]:
-                        continue
-                elif chambers != ["7-1", "7-2"]:
+                if chambers != ONE_STAGE:
                     continue
                 if char not in user.owned:
                     continue
@@ -214,9 +183,7 @@ def appearances(
 
             boo = cur_user.bangboo
             if boo:
-                if chambers == ["7-1", "7-2"] or (
-                    da_mode and chambers == ["1-1", "1-2", "1-3"]
-                ):
+                if chambers == ONE_STAGE:
                     user_boos[boo].add(user.player)
                 app_boos[boo].app_flat += 1
 
@@ -247,10 +214,7 @@ def appearances(
                             statistics.stdev(round_list),
                         )
                         q1_round.append(
-                            calculate_percentile(
-                                round_list,
-                                75 if da_mode else 25,
-                            ),
+                            calculate_percentile(round_list, 75),
                         )
                     else:
                         std_dev_round.append(0)
@@ -263,13 +227,8 @@ def appearances(
             is_count_cycles = True
             if not uses_room:
                 is_count_cycles = False
-            elif chambers == ["7-1", "7-2"] or (
-                da_mode and chambers == ["1-1", "1-2", "1-3"]
-            ):
-                if len(uses_room) != len(chambers) / 2 and not da_mode:
-                    is_count_cycles = False
-                else:
-                    char_item.sample_app_flat = uses_room[1 if da_mode else 7]
+            elif chambers == ONE_STAGE:
+                char_item.sample_app_flat = uses_room[1 if da_mode else 5]
             for uses_room_num in uses_room.values():
                 if uses_room_num < 10:
                     is_count_cycles = False
@@ -281,26 +240,17 @@ def appearances(
                 char_item.std_dev_round = round(statistics.mean(std_dev_round))
                 char_item.q1_round = round(statistics.mean(q1_round))
             else:
-                char_item.round = 600
-                char_item.q1_round = 600
-                if da_mode:
-                    char_item.round = 0
-                    char_item.q1_round = 0
+                char_item.round = DEFAULT_ROUND
+                char_item.q1_round = DEFAULT_ROUND
         else:
-            char_item.round = 600
-            char_item.q1_round = 600
-            if da_mode:
-                char_item.round = 0
-                char_item.q1_round = 0
+            char_item.round = DEFAULT_ROUND
+            char_item.q1_round = DEFAULT_ROUND
 
         char_item.sample = len(
             user_chars[char] if char in user_chars else user_boos[char],
         )
 
-        if da_mode:
-            if chambers != ["1-1", "1-2", "1-3"]:
-                continue
-        elif chambers != ["7-1", "7-2"]:
+        if chambers != ONE_STAGE:
             continue
         # Calculate constellations
         app_flat = char_item.owned / 100.0
@@ -329,14 +279,10 @@ def appearances(
                         statistics.mean(avg_round),
                     )
                 else:
-                    char_item.cons_freq[cons].round = 600
-                    if da_mode:
-                        char_item.cons_freq[cons].round = 0
+                    char_item.cons_freq[cons].round = DEFAULT_ROUND
             else:
                 char_item.cons_freq[cons].app = 0.00
-                char_item.cons_freq[cons].round = 600
-                if da_mode:
-                    char_item.cons_freq[cons].round = 0
+                char_item.cons_freq[cons].round = DEFAULT_ROUND
 
         # Calculate weapons
         sorted_weapons = sorted(
@@ -369,14 +315,10 @@ def appearances(
                         statistics.mean(avg_round),
                     )
                 else:
-                    char_item.weap_freq[weapon].round = 600
-                    if da_mode:
-                        char_item.weap_freq[weapon].round = 0
+                    char_item.weap_freq[weapon].round = DEFAULT_ROUND
             else:
                 char_item.weap_freq[weapon].app = 0
-                char_item.weap_freq[weapon].round = 600
-                if da_mode:
-                    char_item.weap_freq[weapon].round = 0
+                char_item.weap_freq[weapon].round = DEFAULT_ROUND
 
         # Remove flex artifacts
         if "Flex" in char_item.arti_freq:
@@ -408,14 +350,10 @@ def appearances(
                         statistics.mean(avg_round),
                     )
                 else:
-                    char_item.arti_freq[arti].round = 600
-                    if da_mode:
-                        char_item.arti_freq[arti].round = 0
+                    char_item.arti_freq[arti].round = DEFAULT_ROUND
             else:
                 char_item.arti_freq[arti].app = 0
-                char_item.arti_freq[arti].round = 600
-                if da_mode:
-                    char_item.arti_freq[arti].round = 0
+                char_item.arti_freq[arti].round = DEFAULT_ROUND
     return (app, app_boos)
 
 
@@ -462,10 +400,7 @@ def usages(
     rates: list[float] = []
     rates_boos: list[float] = []
 
-    if chambers == ["7-1", "7-2"] or (da_mode and chambers == ["1-1", "1-2", "1-3"]):
-        stage = "all"
-    else:
-        stage = chambers[0]
+    stage = "all" if chambers == ONE_STAGE else chambers[0]
 
     try:
         with open("../char_results/" + past_phase + "/appearance.json") as stats:
@@ -536,10 +471,7 @@ def usages(
                 "usage": "-",
             }
 
-        if da_mode:
-            if chambers != ["1-1", "1-2", "1-3"]:
-                continue
-        elif chambers != ["7-1", "7-2"]:
+        if chambers != ONE_STAGE:
             continue
 
         weapons = list(app_char.weap_freq)

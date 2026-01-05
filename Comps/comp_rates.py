@@ -68,49 +68,10 @@ if da_mode:
     one_stage = ["1-1", "1-2", "1-3"]
     all_stages = ["1-1", "1-2", "1-3"]
 else:
-    one_stage = ["7-1", "7-2"]
-
-    three_stages = [
-        "1-1",
-        "1-2",
-        "2-1",
-        "2-2",
-        "3-1",
-        "3-2",
-        "4-1",
-        "4-2",
-        "5-1",
-        "5-2",
-        "6-1",
-        "6-2",
-        "7-1",
-        "7-2",
-    ]
-    three_double_stages = [
-        ["1-1", "1-2"],
-        ["2-1", "2-2"],
-        ["3-1", "3-2"],
-        ["4-1", "4-2"],
-        ["5-1", "5-2"],
-        ["6-1", "6-2"],
-        ["7-1", "7-2"],
-    ]
-    all_stages = [
-        "1-1",
-        "1-2",
-        "2-1",
-        "2-2",
-        "3-1",
-        "3-2",
-        "4-1",
-        "4-2",
-        "5-1",
-        "5-2",
-        "6-1",
-        "6-2",
-        "7-1",
-        "7-2",
-    ]
+    three_stages = ["5-1", "5-2", "5-3"]
+    three_double_stages = [["5-1", "5-2", "5-3"]]
+    one_stage = ["5-1", "5-2", "5-3"]
+    all_stages = ["5-1", "5-2", "5-3"]
 
 
 def main() -> None:
@@ -280,7 +241,7 @@ def compile_app_round(
             sorted(
                 char_cham.items(),
                 key=lambda t: t[1].round,
-                reverse=da_mode,
+                reverse=True,
             ),
         )
         for char in char_cham:
@@ -390,13 +351,7 @@ def used_comps(
             f2p_count += 1
         if f2p_only and (not f2p_comp or whale_comp):
             continue
-        if da_mode:
-            if not whale_comp and comp.round_num > 50000:
-                continue
-        elif whale_comp:
-            if comp.round_num < 10:
-                continue
-        elif comp.round_num < 20:
+        if not whale_comp and comp.round_num > 50000:
             continue
 
         if comp_tuple not in comps_dict:
@@ -460,7 +415,7 @@ def rank_usages(
 
         cur_comp.is_count_round = True
         cur_comp.is_count_round_print = True
-        if (rooms == one_stage) or (da_mode and rooms == ["1-1", "1-2", "1-3"]):
+        if rooms == one_stage:
             for uses_room_num in uses_room.values():
                 if uses_room_num < 20:
                     cur_comp.is_count_round = False
@@ -586,9 +541,8 @@ def char_usages(
     """Calculate character usage."""
     app = cu.appearances(all_players, chambers=rooms, info_char=info_char)
     chars_dict, boos_dict = cu.usages(app, past_phase, chambers=rooms)
-    if (not da_mode and rooms == one_stage) or da_mode:
-        char_usages_write(chars_dict, filename, archetype)
-        boo_usages_write(boos_dict, "bangboo_" + filename, archetype)
+    char_usages_write(chars_dict, filename, archetype)
+    boo_usages_write(boos_dict, "bangboo_" + filename, archetype)
     return (chars_dict, boos_dict)
 
 
@@ -619,7 +573,7 @@ def comp_usages_write(
         sorted(
             comps_dict.items(),
             key=lambda t: t[1].round,
-            reverse=da_mode,
+            reverse=True,
         ),
     )
     comp_names: list[str] = []

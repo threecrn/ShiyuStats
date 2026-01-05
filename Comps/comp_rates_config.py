@@ -57,7 +57,7 @@ if not da_mode:
 
 sd_mode: bool = not da_mode
 
-DEFAULT_ROUND = 0 if da_mode else 600
+DEFAULT_ROUND = 0
 
 suffix = ""
 if da_mode:

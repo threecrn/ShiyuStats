@@ -156,7 +156,7 @@ mainstats: dict[str, dict[str, dict[str, float]]] = {}
 spiral_rows: dict[int, dict[str, int]] = {}
 for spiral_row in spiral:
     room_num = int(spiral_row[1])
-    if (room_num > 6 or da_mode) and (
+    if (room_num > 4 or da_mode) and (
         spiral_row[3] == "S" or (da_mode and spiral_row[2] == "3")
     ):
         cur_uid = int(spiral_row[0])
@@ -335,8 +335,8 @@ for char, char_value in stats.items():
     app_dict: dict[str, float] = {}
     if not (da_mode):
         app_dict = {
-            "7_app": APP["7-1"][char]["app"] if char in APP["7-1"] else 0,
-            "7_round": ROUND["7-1"][char]["round"] if char in ROUND["7-1"] else 600,
+            "5_app": APP["5-1"][char]["app"] if char in APP["5-1"] else 0,
+            "5_round": ROUND["5-1"][char]["round"] if char in ROUND["5-1"] else 600,
         }
     else:
         app_dict = {
