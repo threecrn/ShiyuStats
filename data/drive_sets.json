@@ -5,7 +5,7 @@
         "name": "White Water Ballad",
         "desc": [
             "Physical DMG +10%",
-            "When the equipper is within any [Ether Veil], their CRIT Rate increases by 10%. After leaving the Ether Veil, this buff remains for 15s. If the equipper is an Attack character, activating an Ether Veil or extending an Ether Veil's duration increases their CRIT Rate by 10% and ATK by 10% for 30s. Repeated triggers reset the duration."
+            "When the equipper is within any Ether Veil, their CRIT Rate increases by 10%. After leaving the Ether Veil, this buff remains for 15s. If the equipper is an Attack character, activating an Ether Veil or extending an Ether Veil's duration increases their CRIT Rate by 10% and ATK by 10% for 30s. Repeated triggers reset the duration."
         ]
     },
     "31900": {
