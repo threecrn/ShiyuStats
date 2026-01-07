@@ -1,17 +1,21 @@
+"""Update data from hakushin."""
+
 import io
 import json
 import re
 
 import requests
 
-download = requests.get("https://api.hakush.in/zzz/data/equipment.json").content.decode(
-    "utf-8"
+download = requests.get(
+    "https://api.hakush.in/zzz/data/equipment.json",
+    timeout=10,
+).content.decode(
+    "utf-8",
 )
 artifacts = json.load(io.StringIO(download))
 
-with open("../data/drive_affixes.json") as artifact_file:
+with open("../../data/drive_affixes.json") as artifact_file:
     artifacts2 = json.load(artifact_file)
-# artifacts2 = {}
 
 artifacts_affixes: dict[str, list[str]] = {}
 for artifact in artifacts:
@@ -41,8 +45,6 @@ for artifact in artifacts:
     if "Reduces " in affix:
         affix = affix.replace("Reduces ", "")
         affix = affix.replace("by ", "-")
-        # split = affix.split(" ")
-        # affix = split[1] + " +" + split[0]
 
     affix = affix.replace("CRIT Rate", "CR")
     affix = affix.replace("Anomaly Proficiency", "AP")
@@ -67,24 +69,23 @@ for artifact in list(artifacts_affixes.keys()):
         del artifacts_affixes[artifact]
 print()
 
-with open("../data/drive_sets.json", "w") as out_file:
+with open("../../data/drive_sets.json", "w") as out_file:
     out_file.write(json.dumps(artifacts, indent=4))
 
-with open("../data/drive_affixes.json", "w") as out_file:
+with open("../../data/drive_affixes.json", "w") as out_file:
     out_file.write(json.dumps(artifacts2, indent=4))
 
-with open("../data/w-engine.json") as char_file:
+with open("../../data/w-engine.json") as char_file:
     wengine1 = json.load(char_file)
-download = requests.get("https://api.hakush.in/zzz/data/weapon.json").content.decode(
-    "utf-8"
-)
+download = requests.get(
+    "https://api.hakush.in/zzz/data/weapon.json",
+    timeout=10,
+).content.decode("utf-8")
 wengine2 = json.load(io.StringIO(download))
 
 for weap in wengine2:
     weap_name = wengine2[weap]["EN"]
     if weap_name not in wengine1:
-        # add_weap = input("Add " + weap_name + "? (y/n): ")
-        # if add_weap == "y":
         wengine1[weap_name] = wengine2[weap].copy()
         wengine1[weap_name]["id"] = weap
         wengine1[weap_name]["name"] = weap_name
@@ -94,12 +95,7 @@ for weap in wengine2:
         elif wengine2[weap]["rank"] == 3:
             wengine1[weap_name]["availability"] = "A"
         elif wengine2[weap]["rank"] == 4:
-            # print(weap_name)
-            # add_weap = input("Limited W-Engine? (y/n): ")
-            # if add_weap == "y":
             wengine1[weap_name]["availability"] = "Limited S"
-            # else:
-            #     wengine1[weap_name]["availability"] = "Standard S"
 
         match str(wengine1[weap_name]["type"]):
             case "1":
@@ -112,6 +108,8 @@ for weap in wengine2:
                 wengine1[weap_name]["role"] = "Support"
             case "5":
                 wengine1[weap_name]["role"] = "Stun"
+            case _:
+                print("Unknown weapon type: " + wengine1[weap_name]["type"])
 
         del wengine1[weap_name]["rank"]
         del wengine1[weap_name]["type"]
@@ -120,15 +118,16 @@ for weap in wengine2:
         del wengine1[weap_name]["CHS"]
         del wengine1[weap_name]["JA"]
 
-with open("../data/w-engine.json", "w") as out_file:
+with open("../../data/w-engine.json", "w") as out_file:
     out_file.write(json.dumps(wengine1, indent=4))
 
 
-with open("../data/characters.json") as char_file:
+with open("../../data/characters.json") as char_file:
     chars1 = json.load(char_file)
-download = requests.get("https://api.hakush.in/zzz/data/character.json").content.decode(
-    "utf-8"
-)
+download = requests.get(
+    "https://api.hakush.in/zzz/data/character.json",
+    timeout=10,
+).content.decode("utf-8")
 chars2 = json.load(io.StringIO(download))
 
 for char in chars2:
@@ -144,28 +143,29 @@ for char in chars2:
                 chars1[char_name]["availability"] = "A"
             elif chars2[char]["rank"] == 4:
                 print(char_name)
-                # add_char = input("Limited Character? (y/n): ")
-                # if add_char == "y":
                 chars1[char_name]["availability"] = "Limited S"
-                # else:
-                #     chars1[char_name]["availability"] = "Standard S"
 
-            # print("Role? 0: DPS, 1: Amplifier, 2: Sustain")
-            # role_char = input()
-            # match str(role_char):
             match str(chars1[char_name]["type"]):
                 case "1":
+                    chars1[char_name]["specialty"] = "Attack"
                     chars1[char_name]["role"] = "Damage Dealer"
                 case "2":
+                    chars1[char_name]["specialty"] = "Stun"
                     chars1[char_name]["role"] = "Stun"
                 case "3":
+                    chars1[char_name]["specialty"] = "Anomaly"
                     chars1[char_name]["role"] = "Damage Dealer"
                 case "4":
+                    chars1[char_name]["specialty"] = "Support"
                     chars1[char_name]["role"] = "Support"
                 case "5":
+                    chars1[char_name]["specialty"] = "Defense"
                     chars1[char_name]["role"] = "Support"
                 case "6":
+                    chars1[char_name]["specialty"] = "Rupture"
                     chars1[char_name]["role"] = "Damage Dealer"
+                case _:
+                    print("Unknown character type: " + chars1[char_name]["type"])
 
             match str(chars1[char_name]["element"]):
                 case "200":
@@ -178,6 +178,8 @@ for char in chars2:
                     chars1[char_name]["element"] = "Electric"
                 case "205":
                     chars1[char_name]["element"] = "Ether"
+                case _:
+                    print("Unknown element: " + chars1[char_name]["element"])
 
             match str(chars1[char_name]["camp"]):
                 case "1":
@@ -200,6 +202,11 @@ for char in chars2:
                     chars1[char_name]["camp"] = str(chars1[char_name]["camp"])
 
             del chars1[char_name]["code"]
+            del chars1[char_name]["potential"]
+            del chars1[char_name]["skin"]
+            del chars1[char_name]["desc"]
+            if "spelement" in chars1[char_name]:
+                del chars1[char_name]["spelement"]
             del chars1[char_name]["rank"]
             del chars1[char_name]["type"]
             del chars1[char_name]["hit"]
@@ -208,14 +215,17 @@ for char in chars2:
             del chars1[char_name]["CHS"]
             del chars1[char_name]["JA"]
 
-with open("../data/characters.json", "w") as out_file:
+with open("../../data/characters.json", "w") as out_file:
     out_file.write(json.dumps(chars1, indent=4))
 
 
-with open("../data/bangboos.json") as bangboo_file:
+with open("../../data/bangboos.json") as bangboo_file:
     bangboos1 = json.load(bangboo_file)
-download = requests.get("https://api.hakush.in/zzz/data/bangboo.json").content.decode(
-    "utf-8"
+download = requests.get(
+    "https://api.hakush.in/zzz/data/bangboo.json",
+    timeout=10,
+).content.decode(
+    "utf-8",
 )
 bangboos2 = json.load(io.StringIO(download))
 
@@ -237,10 +247,6 @@ for bangboo in bangboos2:
         elif bangboos2[bangboo]["rank"] == 4:
             bangboos1[bangboo_name]["availability"] = "S"
 
-        # print("Role? 0: DPS, 1: Amplifier, 2: Sustain")
-        # role_bangboo = input()
-        # match str(role_bangboo):
-
         del bangboos1[bangboo_name]["codename"]
         del bangboos1[bangboo_name]["rank"]
         del bangboos1[bangboo_name]["EN"]
@@ -248,22 +254,5 @@ for bangboo in bangboos2:
         del bangboos1[bangboo_name]["CHS"]
         del bangboos1[bangboo_name]["JA"]
 
-with open("../data/bangboos.json", "w") as out_file:
+with open("../../data/bangboos.json", "w") as out_file:
     out_file.write(json.dumps(bangboos1, indent=4))
-
-# download = requests.get("https://github.com/Mar-7th/StarRailRes/raw/master/index_new/en/simulated_blessings.json").content.decode('utf-8')
-# with open("../data/simulated_blessings.json", "w") as out_file:
-#     out_file.write(json.dumps(json.load(io.StringIO(download)),indent=4))
-
-# download = requests.get("https://github.com/Mar-7th/StarRailRes/raw/master/index_new/en/simulated_curios.json").content.decode('utf-8')
-# curio_json = json.load(io.StringIO(download))
-# curio_json["901"] = curio_json["109"].copy()
-# curio_json["902"] = curio_json["109"].copy()
-# curio_json["901"]["id"] = "901"
-# curio_json["902"]["id"] = "902"
-# with open("../data/simulated_curios.json", "w") as out_file:
-#     out_file.write(json.dumps(curio_json,indent=4))
-
-# download = requests.get("https://github.com/Mar-7th/StarRailRes/raw/master/index_new/en/simulated_blocks.json").content.decode('utf-8')
-# with open("../data/simulated_blocks.json", "w") as out_file:
-#     out_file.write(json.dumps(json.load(io.StringIO(download)),indent=4))

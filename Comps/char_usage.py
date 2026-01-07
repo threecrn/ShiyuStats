@@ -104,7 +104,7 @@ def appearances(
                 if CHARACTERS[char]["role"] == "Damage Dealer":
                     dps_count += 1
             dps_count = 1
-            if not whale_comp and cur_user.round_num > 50000:
+            if cur_user.flag_cheat:
                 cheated_uids.add(user.player)
                 continue
 

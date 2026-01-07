@@ -286,7 +286,8 @@ class CompUsage(Composition):
         self.owns = 0
         self.round_num = {str(i): list[int]() for i in range(1, 13)}
         self.whale_count = set[str]()
-        self.players = set[str]()
+        self.players = set[Composition]()
+        self.exc_comps = set[Composition]()
         self.boo_freq: dict[str, int] = {}
         self.bangboo: str
         self.is_count_round: bool
@@ -351,13 +352,15 @@ def used_comps(
             f2p_count += 1
         if f2p_only and (not f2p_comp or whale_comp):
             continue
-        if not whale_comp and comp.round_num > 50000:
-            continue
 
         if comp_tuple not in comps_dict:
             comps_dict[comp_tuple] = CompUsage(comp)
+        if comp.flag_cheat:
+            if not whale_comp:
+                comps_dict[comp_tuple].exc_comps.add(comp)
+            continue
+
         comps_dict[comp_tuple].uses += 1
-        comps_dict[comp_tuple].players.add(comp.player)
 
         if comp.bangboo:
             if comp.bangboo not in comps_dict[comp_tuple].boo_freq:
@@ -368,6 +371,7 @@ def used_comps(
             comps_dict[comp_tuple].whale_count.add(comp.player)
         if whale_comp == whale_only and (not f2p_only or f2p_comp):
             comps_dict[comp_tuple].round_num[cur_room].append(comp.round_num)
+            comps_dict[comp_tuple].players.add(comp)
             avg_round_stage[cur_room].append(
                 comp.round_num,
             )
@@ -399,6 +403,14 @@ def rank_usages(
     total = len(all_comp_uids) / 100.0
     rates: list[float] = []
     for cur_comp in comps_dict.values():
+        if total == 0:
+            print(cur_comp.uses)
+        app = round(cur_comp.uses / total, 2)
+        cur_comp.app_rate = app
+        cur_comp.usage_rate = 0
+        cur_comp.own_rate = 0
+        rates.append(app)
+
         avg_round: list[float] = []
         uses_room: dict[int, int] = {}
 
@@ -407,12 +419,14 @@ def rank_usages(
                 uses_room[room_num] = len(
                     cur_comp.round_num[str(room_num)],
                 )
-                avg_round.append(
-                    statistics.mean(
-                        cur_comp.round_num[str(room_num)],
-                    ),
+                comp_mean = statistics.mean(
+                    cur_comp.round_num[str(room_num)],
                 )
+                avg_round.append(comp_mean)
 
+        list_round = [
+            item for sublist in cur_comp.round_num.values() for item in sublist
+        ]
         cur_comp.is_count_round = True
         cur_comp.is_count_round_print = True
         if rooms == one_stage:
@@ -422,9 +436,9 @@ def rank_usages(
                 if uses_room_num < 3:
                     cur_comp.is_count_round_print = False
         elif len(rooms) == 1:
-            if cur_comp.uses < 20:
+            if len(list_round) < 20:
                 cur_comp.is_count_round = False
-            if cur_comp.uses < 3:
+            if len(list_round) < 3:
                 cur_comp.is_count_round_print = False
 
         rounded_avg_round: float
@@ -432,6 +446,7 @@ def rank_usages(
             rounded_avg_round = round(statistics.mean(avg_round))
         else:
             rounded_avg_round = DEFAULT_ROUND
+        cur_comp.round = rounded_avg_round
 
         if cur_comp.boo_freq:
             # Find the bangboo with most usage
@@ -439,15 +454,6 @@ def rank_usages(
                 cur_comp.boo_freq,
                 key=lambda k: cur_comp.boo_freq.get(k, 0),
             )
-
-        if total == 0:
-            print(cur_comp.uses)
-        app = round(cur_comp.uses / total, 2)
-        cur_comp.app_rate = app
-        cur_comp.round = rounded_avg_round
-        cur_comp.usage_rate = 0
-        cur_comp.own_rate = 0
-        rates.append(app)
     rates.sort(reverse=True)
     for comp, cur_comp in comps_dict.items():
         comps_dict[comp].app_rank = rates.index(cur_comp.app_rate) + 1
@@ -556,6 +562,7 @@ def comp_usages_write(
     """Write comp usage."""
     out_json: list[dict[str, str | float]] = []
     out_comps: list[dict[str, str | int]] = []
+    exc_comps: list[dict[str, str | int | float]] = []
     outvar_comps: list[dict[str, str | int]] = []
     var_comps: list[dict[str, str | int]] = []
     variations: dict[str, int] = {}
@@ -630,9 +637,6 @@ def comp_usages_write(
                 out_comps_append["whale_count"] = str(
                     len(cur_comp.whale_count),
                 )
-                out_comps_append["app_flat"] = str(
-                    len(cur_comp.players),
-                )
                 out_comps_append["uses"] = str(
                     cur_comp.uses,
                 )
@@ -682,6 +686,22 @@ def comp_usages_write(
             out_json_dict["avg_round"] = cur_comp.round
             out_json.append(out_json_dict)
 
+            for exc_comp in cur_comp.exc_comps:
+                exc_comp_append = {
+                    "player": exc_comp.player,
+                    "char_one": exc_comp.characters[0],
+                    "char_one_cons": exc_comp.char_cons[exc_comp.characters[0]],
+                    "char_two": exc_comp.characters[1],
+                    "char_two_cons": exc_comp.char_cons[exc_comp.characters[1]],
+                    "char_three": exc_comp.characters[2],
+                    "char_three_cons": exc_comp.char_cons[exc_comp.characters[2]],
+                    "score": exc_comp.round_num,
+                    "avg_score": cur_comp.round,
+                    "app_rate": cur_comp.app_rate,
+                    "stage": exc_comp.room,
+                }
+                exc_comps.append(exc_comp_append)
+
     if info_char:
         out_comps += var_comps
 
@@ -706,8 +726,20 @@ def comp_usages_write(
             for comps in out_comps:
                 csv_writer.writerow(comps.values())
 
-    if not info_char and sort_app:
+    if not info_char:
         all_comps_json[filename] = out_json.copy()
+        if (len(exc_comps) > 0) and sort_app:
+            with open(
+                "../comp_results/comps_usage_exc" + filename + ".csv",
+                "w",
+                newline="",
+            ) as f:
+                csv_writer = csv.writer(f)
+                csv_writer.writerow(exc_comps[0].keys())
+                for comps in exc_comps:
+                    csv_writer.writerow(comps.values())
+            with open("../comp_results/json/exc" + filename + ".json", "w") as out_file:
+                out_file.write(json.dumps(exc_comps, indent=2))
         with open("../comp_results/json/" + filename + ".json", "w") as out_file:
             out_file.write(json.dumps(out_json, indent=2))
 
