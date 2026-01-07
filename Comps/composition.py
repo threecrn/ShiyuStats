@@ -1,11 +1,23 @@
 """An object that stores information about a particular composition."""
 
 import json
+from typing import Literal
+
+from comp_rates_config import da_mode
 
 # Set class constants in initialization
 # Load the list of characters from their file
 with open("../data/characters.json") as char_file:
     CHARACTERS = json.load(char_file)
+
+RoleLit = Literal[
+    "Attack",
+    "Stun",
+    "Anomaly",
+    "Support",
+    "Defense",
+    "Rupture",
+]
 
 
 class Composition:
@@ -37,20 +49,29 @@ class Composition:
         self.stun: list[str] = []
         self.support: list[str] = []
         self.anomaly: list[str] = []
-        len_element = {
+        len_elem: dict[str, int] = {
             "Ice": 0,
             "Fire": 0,
             "Ether": 0,
             "Electric": 0,
             "Physical": 0,
         }
+        len_role: dict[RoleLit, int] = {
+            "Attack": 0,
+            "Stun": 0,
+            "Anomaly": 0,
+            "Support": 0,
+            "Defense": 0,
+            "Rupture": 0,
+        }
         if comp_chars_cons:
             for char_iter in range(len(comp_chars)):
                 self.char_cons[comp_chars[char_iter]] = int(comp_chars_cons[char_iter])
         comp_chars.sort()
         for character in comp_chars:
+            char_data = CHARACTERS[character]
             self.char_presence[character] = True
-            if CHARACTERS[character]["availability"] in ["Limited S", "Standard S"]:
+            if char_data["availability"] in ["Limited S", "Standard S"]:
                 fives.append(character)
 
             if character in [
@@ -65,6 +86,8 @@ class Composition:
                 "Alice",
                 "Manato",
                 "Yidhari",
+                "Banyue",
+                "Ye Shunguang",
             ]:
                 self.dps.insert(0, character)
             if character in [
@@ -98,6 +121,7 @@ class Composition:
                 "Pulchra",
                 "Trigger",
                 "Ju Fufu",
+                "Dialyn",
             ]:
                 self.stun.insert(0, character)
             elif character in [
@@ -110,6 +134,7 @@ class Composition:
                 "Pan Yinhu",
                 "Yuzuha",
                 "Lucia",
+                "Zhao",
             ]:
                 self.support.insert(0, character)
             elif character in [
@@ -129,18 +154,12 @@ class Composition:
             ]:
                 self.anomaly.append(character)
 
-            if CHARACTERS[character]["element"] == "Ice":
-                len_element["Ice"] += 1
-            if CHARACTERS[character]["element"] == "Fire":
-                len_element["Fire"] += 1
-            if CHARACTERS[character]["element"] == "Ether":
-                len_element["Ether"] += 1
-            if CHARACTERS[character]["element"] == "Electric":
-                len_element["Electric"] += 1
-            if CHARACTERS[character]["element"] == "Physical":
-                len_element["Physical"] += 1
+            len_elem[char_data["element"]] += 1
+            len_role[char_data["specialty"]] += 1
         self.fivecount = len(fives)
         self.characters = self.dps + self.subdps + self.stun + self.support
+
+        self.flag_cheat = self.detect_cheat(len_elem, len_role)
 
         if not self.dps and not self.subdps and "Soukaku" in self.support:
             self.support.remove("Soukaku")
@@ -171,6 +190,36 @@ class Composition:
                 self.comp_name = self.characters[0] + archetype
             else:
                 self.comp_name = "Full Support"
+
+    def detect_cheat(
+        self,
+        len_elem: dict[str, int],
+        len_role: dict[RoleLit, int],
+    ) -> bool:
+        """Return a bool whether this comp is a cheat."""
+        cur_room = int(next(iter(str(self.room).split("-"))))
+
+        da_weak: list[bool] = [
+            cur_room == 1 and len_elem["Physical"] == 0,
+            cur_room == 2 and (len_elem["Physical"] + len_elem["Ether"]) == 0,
+            cur_room == 3 and (len_elem["Fire"] + len_elem["Ice"]) == 0,
+        ]
+
+        sd_weak: list[bool] = [
+            cur_room == 1 and (len_elem["Physical"] + len_elem["Fire"]) == 0,
+            cur_room == 2 and (len_elem["Physical"] + len_elem["Electric"]) == 0,
+            cur_room == 3 and (len_elem["Ice"]) == 0,
+        ]
+
+        cheat_conditions: list[bool] = [
+            len_role["Anomaly"] > 0 and len_role["Attack"] + len_role["Rupture"] > 0,
+            any(sd_weak) and not da_mode,
+            any(da_weak) and da_mode,
+        ]
+
+        high_score = self.round_num >= (50000 if da_mode else 45000)
+        max_score = self.round_num >= (55000 if da_mode else 49000)
+        return (any(cheat_conditions) and high_score) or max_score
 
     def contains_chars(self, chars: list[str]) -> bool:
         """Return a bool whether this comp contains all the chars in included list."""

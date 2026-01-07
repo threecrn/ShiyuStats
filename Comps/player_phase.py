@@ -1,6 +1,7 @@
 """An object that stores information about a player on a phase."""
 
 import json
+from typing import Literal, cast
 
 from composition import Composition
 
@@ -10,6 +11,15 @@ with open("../data/characters.json") as char_file:
     CHARACTERS = json.load(char_file)
 with open("../data/drive_affixes.json") as relic_file:
     articombinations = json.load(relic_file)
+
+
+ElemLit = Literal[
+    "Ice",
+    "Fire",
+    "Ether",
+    "Electric",
+    "Physical",
+]
 
 
 class OwnedChars:
@@ -27,7 +37,7 @@ class OwnedChars:
         self.level: int = int(level)
         self.cons: int = int(cons)
         self.weapon: str = weapon
-        self.element: str = element
+        self.element: ElemLit = cast("ElemLit", element)
         self.artifacts: str = artifacts
 
 

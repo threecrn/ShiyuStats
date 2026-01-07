@@ -68,49 +68,10 @@ if da_mode:
     one_stage = ["1-1", "1-2", "1-3"]
     all_stages = ["1-1", "1-2", "1-3"]
 else:
-    one_stage = ["7-1", "7-2"]
-
-    three_stages = [
-        "1-1",
-        "1-2",
-        "2-1",
-        "2-2",
-        "3-1",
-        "3-2",
-        "4-1",
-        "4-2",
-        "5-1",
-        "5-2",
-        "6-1",
-        "6-2",
-        "7-1",
-        "7-2",
-    ]
-    three_double_stages = [
-        ["1-1", "1-2"],
-        ["2-1", "2-2"],
-        ["3-1", "3-2"],
-        ["4-1", "4-2"],
-        ["5-1", "5-2"],
-        ["6-1", "6-2"],
-        ["7-1", "7-2"],
-    ]
-    all_stages = [
-        "1-1",
-        "1-2",
-        "2-1",
-        "2-2",
-        "3-1",
-        "3-2",
-        "4-1",
-        "4-2",
-        "5-1",
-        "5-2",
-        "6-1",
-        "6-2",
-        "7-1",
-        "7-2",
-    ]
+    three_stages = ["5-1", "5-2", "5-3"]
+    three_double_stages = [["5-1", "5-2", "5-3"]]
+    one_stage = ["5-1", "5-2", "5-3"]
+    all_stages = ["5-1", "5-2", "5-3"]
 
 
 def main() -> None:
@@ -280,7 +241,7 @@ def compile_app_round(
             sorted(
                 char_cham.items(),
                 key=lambda t: t[1].round,
-                reverse=da_mode,
+                reverse=True,
             ),
         )
         for char in char_cham:
@@ -325,7 +286,8 @@ class CompUsage(Composition):
         self.owns = 0
         self.round_num = {str(i): list[int]() for i in range(1, 13)}
         self.whale_count = set[str]()
-        self.players = set[str]()
+        self.players = set[Composition]()
+        self.exc_comps = set[Composition]()
         self.boo_freq: dict[str, int] = {}
         self.bangboo: str
         self.is_count_round: bool
@@ -365,7 +327,6 @@ def used_comps(
 
         whale_comp = False
         f2p_comp = True
-        dps_count = 0
         for char in range(3):
             if CHARACTERS[comp_tuple[char]]["availability"] == "Limited S":
                 if comp.char_cons:
@@ -382,8 +343,6 @@ def used_comps(
                 not in sig_weaps
             ):
                 f2p_comp = False
-            if CHARACTERS[comp_tuple[char]]["role"] == "Damage Dealer":
-                dps_count += 1
 
         if whale_comp:
             whale_count += 1
@@ -393,19 +352,15 @@ def used_comps(
             f2p_count += 1
         if f2p_only and (not f2p_comp or whale_comp):
             continue
-        if da_mode:
-            if not whale_comp and comp.round_num > 50000:
-                continue
-        elif whale_comp:
-            if comp.round_num < 10:
-                continue
-        elif comp.round_num < 20:
-            continue
 
         if comp_tuple not in comps_dict:
             comps_dict[comp_tuple] = CompUsage(comp)
+        if comp.flag_cheat:
+            if not whale_comp:
+                comps_dict[comp_tuple].exc_comps.add(comp)
+            continue
+
         comps_dict[comp_tuple].uses += 1
-        comps_dict[comp_tuple].players.add(comp.player)
 
         if comp.bangboo:
             if comp.bangboo not in comps_dict[comp_tuple].boo_freq:
@@ -416,10 +371,10 @@ def used_comps(
             comps_dict[comp_tuple].whale_count.add(comp.player)
         if whale_comp == whale_only and (not f2p_only or f2p_comp):
             comps_dict[comp_tuple].round_num[cur_room].append(comp.round_num)
-            if dps_count == 1:
-                avg_round_stage[cur_room].append(
-                    comp.round_num,
-                )
+            comps_dict[comp_tuple].players.add(comp)
+            avg_round_stage[cur_room].append(
+                comp.round_num,
+            )
 
     for stage, round_stage in avg_round_stage.items():
         sample_size[stage]["avg_round"] = round(
@@ -448,6 +403,14 @@ def rank_usages(
     total = len(all_comp_uids) / 100.0
     rates: list[float] = []
     for cur_comp in comps_dict.values():
+        if total == 0:
+            print(cur_comp.uses)
+        app = round(cur_comp.uses / total, 2)
+        cur_comp.app_rate = app
+        cur_comp.usage_rate = 0
+        cur_comp.own_rate = 0
+        rates.append(app)
+
         avg_round: list[float] = []
         uses_room: dict[int, int] = {}
 
@@ -456,24 +419,26 @@ def rank_usages(
                 uses_room[room_num] = len(
                     cur_comp.round_num[str(room_num)],
                 )
-                avg_round.append(
-                    statistics.mean(
-                        cur_comp.round_num[str(room_num)],
-                    ),
+                comp_mean = statistics.mean(
+                    cur_comp.round_num[str(room_num)],
                 )
+                avg_round.append(comp_mean)
 
+        list_round = [
+            item for sublist in cur_comp.round_num.values() for item in sublist
+        ]
         cur_comp.is_count_round = True
         cur_comp.is_count_round_print = True
-        if (rooms == one_stage) or (da_mode and rooms == ["1-1", "1-2", "1-3"]):
+        if rooms == one_stage:
             for uses_room_num in uses_room.values():
                 if uses_room_num < 20:
                     cur_comp.is_count_round = False
                 if uses_room_num < 3:
                     cur_comp.is_count_round_print = False
         elif len(rooms) == 1:
-            if cur_comp.uses < 20:
+            if len(list_round) < 20:
                 cur_comp.is_count_round = False
-            if cur_comp.uses < 3:
+            if len(list_round) < 3:
                 cur_comp.is_count_round_print = False
 
         rounded_avg_round: float
@@ -481,6 +446,7 @@ def rank_usages(
             rounded_avg_round = round(statistics.mean(avg_round))
         else:
             rounded_avg_round = DEFAULT_ROUND
+        cur_comp.round = rounded_avg_round
 
         if cur_comp.boo_freq:
             # Find the bangboo with most usage
@@ -488,15 +454,6 @@ def rank_usages(
                 cur_comp.boo_freq,
                 key=lambda k: cur_comp.boo_freq.get(k, 0),
             )
-
-        if total == 0:
-            print(cur_comp.uses)
-        app = round(cur_comp.uses / total, 2)
-        cur_comp.app_rate = app
-        cur_comp.round = rounded_avg_round
-        cur_comp.usage_rate = 0
-        cur_comp.own_rate = 0
-        rates.append(app)
     rates.sort(reverse=True)
     for comp, cur_comp in comps_dict.items():
         comps_dict[comp].app_rank = rates.index(cur_comp.app_rate) + 1
@@ -590,9 +547,8 @@ def char_usages(
     """Calculate character usage."""
     app = cu.appearances(all_players, chambers=rooms, info_char=info_char)
     chars_dict, boos_dict = cu.usages(app, past_phase, chambers=rooms)
-    if (not da_mode and rooms == one_stage) or da_mode:
-        char_usages_write(chars_dict, filename, archetype)
-        boo_usages_write(boos_dict, "bangboo_" + filename, archetype)
+    char_usages_write(chars_dict, filename, archetype)
+    boo_usages_write(boos_dict, "bangboo_" + filename, archetype)
     return (chars_dict, boos_dict)
 
 
@@ -606,6 +562,7 @@ def comp_usages_write(
     """Write comp usage."""
     out_json: list[dict[str, str | float]] = []
     out_comps: list[dict[str, str | int]] = []
+    exc_comps: list[dict[str, str | int | float]] = []
     outvar_comps: list[dict[str, str | int]] = []
     var_comps: list[dict[str, str | int]] = []
     variations: dict[str, int] = {}
@@ -623,7 +580,7 @@ def comp_usages_write(
         sorted(
             comps_dict.items(),
             key=lambda t: t[1].round,
-            reverse=da_mode,
+            reverse=True,
         ),
     )
     comp_names: list[str] = []
@@ -680,9 +637,6 @@ def comp_usages_write(
                 out_comps_append["whale_count"] = str(
                     len(cur_comp.whale_count),
                 )
-                out_comps_append["app_flat"] = str(
-                    len(cur_comp.players),
-                )
                 out_comps_append["uses"] = str(
                     cur_comp.uses,
                 )
@@ -732,6 +686,22 @@ def comp_usages_write(
             out_json_dict["avg_round"] = cur_comp.round
             out_json.append(out_json_dict)
 
+            for exc_comp in cur_comp.exc_comps:
+                exc_comp_append = {
+                    "player": exc_comp.player,
+                    "char_one": exc_comp.characters[0],
+                    "char_one_cons": exc_comp.char_cons[exc_comp.characters[0]],
+                    "char_two": exc_comp.characters[1],
+                    "char_two_cons": exc_comp.char_cons[exc_comp.characters[1]],
+                    "char_three": exc_comp.characters[2],
+                    "char_three_cons": exc_comp.char_cons[exc_comp.characters[2]],
+                    "score": exc_comp.round_num,
+                    "avg_score": cur_comp.round,
+                    "app_rate": cur_comp.app_rate,
+                    "stage": exc_comp.room,
+                }
+                exc_comps.append(exc_comp_append)
+
     if info_char:
         out_comps += var_comps
 
@@ -756,8 +726,20 @@ def comp_usages_write(
             for comps in out_comps:
                 csv_writer.writerow(comps.values())
 
-    if not info_char and sort_app:
+    if not info_char:
         all_comps_json[filename] = out_json.copy()
+        if (len(exc_comps) > 0) and sort_app:
+            with open(
+                "../comp_results/comps_usage_exc" + filename + ".csv",
+                "w",
+                newline="",
+            ) as f:
+                csv_writer = csv.writer(f)
+                csv_writer.writerow(exc_comps[0].keys())
+                for comps in exc_comps:
+                    csv_writer.writerow(comps.values())
+            with open("../comp_results/json/exc" + filename + ".json", "w") as out_file:
+                out_file.write(json.dumps(exc_comps, indent=2))
         with open("../comp_results/json/" + filename + ".json", "w") as out_file:
             out_file.write(json.dumps(out_json, indent=2))
 
