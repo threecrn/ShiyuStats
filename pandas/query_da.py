@@ -14,7 +14,7 @@ basedir = scriptdir / '../'
 import common
 
 def load_da(ver='1.7.1'):
-    fpath = basedir / 'data/raw_csvs' / f"{ver}_da.csv"
+    fpath = basedir / 'data' / f"{ver}_da.csv"
     logging.debug(f"load_da fpath={fpath}")
     df = pd.read_csv(fpath, dtype={
         'ch1_rank': 'Int8',

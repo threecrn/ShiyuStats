@@ -14,7 +14,7 @@ basedir = scriptdir / '../'
 import common
 
 def load_shiyu(ver:str='1.7.1') -> pd.DataFrame:
-    fpath = basedir / 'data/raw_csvs' / f"{ver}.csv"
+    fpath = basedir / 'data' / f"{ver}.csv"
     logging.debug(f"load_shiyu fpath={fpath}")
     df = pd.read_csv(fpath, dtype={
         'ch1_rank': 'Int8',

@@ -159,7 +159,7 @@ def roaster_to_query(s: str) -> str:
     return query
 
 def load_char(ver:str='1.7.1') -> pd.DataFrame:
-    fpath = basedir / 'data/raw_csvs' / f"{ver}_char.csv"
+    fpath = basedir / 'data' / f"{ver}_char.csv"
     logging.debug(f"load_char fpath={fpath}")
     df = pd.read_csv(fpath)
     logging.debug(f"load_char df=[\n{df}\n]")
