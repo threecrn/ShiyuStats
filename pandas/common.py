@@ -17,7 +17,12 @@ boss_aliases = {
     'NPompey': 'Notorious - Pompey',
     'Marionette': 'Notorious - Marionette',
     'NButcher':   'Notorious - Dead End Butcher',
-    'Fiend':   'Miasmic Fiend - Unfathomable',
+    'Fiend':      'Miasmic Fiend - Unfathomable',
+    'Defiler':    'The Defiler',
+    'Priest':     'Miasma Priest',
+    'Hunter':     'Wandering Hunter',
+    'Nightmare':  'Primordial Nightmare',
+    'Thrall':     '??? the Thrall',
 }
 
 da_boss_shortended = {
@@ -25,12 +30,15 @@ da_boss_shortended = {
 }
 
 agent_aliases = {
-    'SAnby': 'Soldier 0 - Anby',
-    'S0':    'Soldier 0 - Anby',
-    'Sanby': 'Soldier 0 - Anby',
-    'Astra': 'Astra Yao',
-    'S11':   'Soldier 11',
-    'ZY':    'Zhu Yuan',
+    'SAnby':  'Soldier 0 - Anby',
+    'S0':     'Soldier 0 - Anby',
+    'Sanby':  'Soldier 0 - Anby',
+    'Astra':  'Astra Yao',
+    'S11':    'Soldier 11',
+    'ZY':     'Zhu Yuan',
+    'YSG':    'Ye Shunguang',
+    'Orphie': 'Orphie & Magus',
+    'Pan':    'Pan Yinhu',
 }
 
 agent_shortended = {

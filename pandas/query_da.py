@@ -54,6 +54,8 @@ def load_and_filter_version(version, args) -> pd.DataFrame:
         df['ch2'] = common.series_shorten_agent(df['ch2'])
         df['ch3'] = common.series_shorten_agent(df['ch3'])
         df['boss'] = common.series_shorten_da_boss(df['boss'])
+    if args.boss:
+        df = df[df["boss"] == args.boss]
     def team_string(ch1, ch1_rank, ch2, ch2_rank, ch3, ch3_rank):
         return ",".join([f"{p[0]}M{p[1]}" for p in sorted([i for i in [(ch1,ch1_rank), (ch2,ch2_rank), (ch3,ch3_rank)] if type(i[0]) == str])])
     df['team'] = df.apply(lambda row: team_string(row['ch1'], row['ch1_rank'], row['ch2'], row['ch2_rank'], row['ch3'], row['ch3_rank']), axis=1) #df['ch1'] + 'M' + df['ch1_rank'] # + ',' + df['ch2'] + 'M' + df['ch2_rank'] + ',' + df['ch3'] + 'M' + df['ch3_rank']
@@ -81,6 +83,7 @@ def get_arg_parser():
     parser.add_argument('--debug',  action="store_true", help='debug mode')
     parser.add_argument('command', choices=[name[4:] for name in command_map.keys()])
     parser.add_argument('--floor', type=int, help="only specific floor/boss [1..3]")
+    parser.add_argument('--boss', help="only specific boss")
 
     common.add_query_arguments(parser)
     
