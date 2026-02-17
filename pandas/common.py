@@ -39,6 +39,7 @@ agent_aliases = {
     'YSG':    'Ye Shunguang',
     'Orphie': 'Orphie & Magus',
     'Pan':    'Pan Yinhu',
+    'JuFufu':   'Ju Fufu',
 }
 
 agent_shortended = {
